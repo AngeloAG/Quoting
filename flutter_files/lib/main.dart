@@ -14,11 +14,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       routeInformationParser: BeamerParser(),
-      routerDelegate: beamerDelegate,
+      routerDelegate: routerDelegate,
+      backButtonDispatcher: BeamerBackButtonDispatcher(
+        delegate: routerDelegate,
+      ),
       title: 'Quoting',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 98, 183, 58)),
         useMaterial3: true,
       ),
     );

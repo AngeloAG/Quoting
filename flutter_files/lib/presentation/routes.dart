@@ -1,20 +1,19 @@
 import 'package:beamer/beamer.dart';
-import 'package:flutter_files/presentation/pages/authors/authors.dart';
+import 'package:flutter_files/presentation/pages/home/home.dart';
 import 'package:flutter_files/presentation/pages/login/login.dart';
-import 'package:flutter_files/presentation/pages/new_quote/new_quote.dart';
-import 'package:flutter_files/presentation/pages/quotes/quotes.dart';
 import 'package:flutter_files/presentation/pages/settings/settings.dart';
-import 'package:flutter_files/presentation/pages/sources/sources.dart';
 
-var beamerDelegate = BeamerDelegate(
+var routerDelegate = BeamerDelegate(
   locationBuilder: RoutesLocationBuilder(
     routes: {
-      '': (context, state, data) => const QuotesPage(),
+      '': (context, state, data) => const Home(initialIndex: 0),
+      'quotes': (context, state, data) => const Home(initialIndex: 0),
       'login': (context, state, data) => const LoginPage(),
-      'authors': (context, state, data) => const AuthorsPage(),
-      'new_quote': (context, state, data) => const NewQuotePage(),
+      'authors': (context, state, data) => const Home(initialIndex: 1),
+      'new_quote': (context, state, data) => const Home(initialIndex: 2),
       'settings': (context, state, data) => const SettingsPage(),
-      'sources': (context, state, data) => const SourcesPage()
+      'labels': (context, state, data) => const Home(initialIndex: 3),
+      'sources': (context, state, data) => const Home(initialIndex: 4)
     },
   ),
 );
