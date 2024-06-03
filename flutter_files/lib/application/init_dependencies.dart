@@ -1,5 +1,6 @@
 import 'package:flutter_files/application/common/interfaces/ilabels_repository.dart';
 import 'package:flutter_files/application/labels/commands/upload_label_handler.dart';
+import 'package:flutter_files/domain/models/failure.dart';
 import 'package:flutter_files/domain/models/label.dart';
 import 'package:flutter_files/infrastructure/repositories/labels_repository.dart';
 import 'package:fpdart/fpdart.dart';
@@ -11,7 +12,7 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
 
   final mediator = Mediator(Pipeline());
 
-  mediator.registerHandler<UploadLabelRequest, Either<String, Label>,
+  mediator.registerHandler<UploadLabelRequest, Either<Failure, Label>,
       UploadLabelHandler>(() => UploadLabelHandler(serviceLocator()));
 
   serviceLocator.registerLazySingleton(() => mediator);
