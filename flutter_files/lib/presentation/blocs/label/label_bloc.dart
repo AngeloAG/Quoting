@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_files/application/labels/commands/upload_label_handler.dart';
+import 'package:flutter_files/domain/models/failure.dart';
 import 'package:flutter_files/domain/models/label.dart';
 import 'package:flutter_files/domain/works/create_label_work.dart';
 import 'package:fpdart/fpdart.dart';
@@ -24,11 +25,11 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
     final createLabelWork = CreateLabelWork(label: event.labelContent);
 
     final response =
-        await _mediator.send<UploadLabelRequest, Either<String, Label>>(
+        await _mediator.send<UploadLabelRequest, Either<Failure, Label>>(
             UploadLabelRequest(createLabelWork));
 
     response.fold(
-      (errorString) => emit(LabelUploadFailure(errorString)),
+      (failure) => emit(LabelUploadFailure(failure.message)),
       (uploadedLabel) => emit(LabelUploadSuccess(uploadedLabel)),
     );
   }
