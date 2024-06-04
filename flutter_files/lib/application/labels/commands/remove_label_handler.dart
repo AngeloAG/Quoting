@@ -6,7 +6,7 @@ import 'package:mediatr/mediatr.dart';
 class RemoveLabelRequest extends IRequest<Either<Failure, dynamic>> {
   final String labelId;
 
-  RemoveLabelRequest(this.labelId);
+  RemoveLabelRequest({required this.labelId});
 }
 
 class RemoveLabelHandler

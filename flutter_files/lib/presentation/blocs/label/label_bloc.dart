@@ -26,7 +26,7 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
 
     final response =
         await _mediator.send<UploadLabelRequest, Either<Failure, Label>>(
-            UploadLabelRequest(createLabelWork));
+            UploadLabelRequest(createLabelWork: createLabelWork));
 
     response.fold(
       (failure) => emit(LabelUploadFailure(failure.message)),

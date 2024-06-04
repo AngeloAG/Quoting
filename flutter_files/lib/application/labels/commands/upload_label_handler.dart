@@ -8,7 +8,7 @@ import 'package:mediatr/mediatr.dart';
 class UploadLabelRequest extends IRequest<Either<Failure, Label>> {
   final CreateLabelWork createLabelWork;
 
-  UploadLabelRequest(this.createLabelWork);
+  UploadLabelRequest({required this.createLabelWork});
 }
 
 class UploadLabelHandler

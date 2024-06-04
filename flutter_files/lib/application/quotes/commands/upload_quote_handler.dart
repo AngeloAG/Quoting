@@ -15,7 +15,7 @@ class UploadQuoteHandler
     extends IRequestHandler<UploadQuoteRequest, Either<Failure, Quote>> {
   final IQuotesRepository iQuotesRepository;
 
-  UploadQuoteHandler(this.iQuotesRepository);
+  UploadQuoteHandler({required this.iQuotesRepository});
 
   @override
   Future<Either<Failure, Quote>> call(UploadQuoteRequest request) {
