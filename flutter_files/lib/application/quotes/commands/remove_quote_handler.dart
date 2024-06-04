@@ -12,7 +12,7 @@ class RemoveQuoteHandler
     extends IRequestHandler<RemoveQuoteRequest, Either<Failure, dynamic>> {
   final IQuotesRepository iQuotesRepository;
 
-  RemoveQuoteHandler({required this.iQuotesRepository});
+  RemoveQuoteHandler(this.iQuotesRepository);
 
   @override
   Future<Either<Failure, dynamic>> call(RemoveQuoteRequest request) {
