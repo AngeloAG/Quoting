@@ -1,10 +1,6 @@
 import 'package:flutter_files/application/authors/commands/remove_author_handler.dart';
 import 'package:flutter_files/application/authors/commands/upload_author_handler.dart';
 import 'package:flutter_files/application/authors/queries/get_all_authors_handler.dart';
-import 'package:flutter_files/application/common/interfaces/iauthors_repository.dart';
-import 'package:flutter_files/application/common/interfaces/ilabels_repository.dart';
-import 'package:flutter_files/application/common/interfaces/iquotes_repository.dart';
-import 'package:flutter_files/application/common/interfaces/isources_repository.dart';
 import 'package:flutter_files/application/labels/commands/remove_label_handler.dart';
 import 'package:flutter_files/application/labels/commands/upload_label_handler.dart';
 import 'package:flutter_files/application/labels/queries/get_all_labels_handler.dart';
@@ -19,17 +15,11 @@ import 'package:flutter_files/domain/models/failure.dart';
 import 'package:flutter_files/domain/models/label.dart';
 import 'package:flutter_files/domain/models/quote.dart';
 import 'package:flutter_files/domain/models/source.dart';
-import 'package:flutter_files/infrastructure/repositories/authors_repository.dart';
-import 'package:flutter_files/infrastructure/repositories/labels_repository.dart';
-import 'package:flutter_files/infrastructure/repositories/quotes_repository.dart';
-import 'package:flutter_files/infrastructure/repositories/sources_repository.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mediatr/mediatr.dart';
 
 Future<void> initApplicationDependencies(GetIt serviceLocator) async {
-  _initRepos(serviceLocator);
-
   final mediator = Mediator(Pipeline());
 
   mediator.registerHandler<UploadLabelRequest, Either<Failure, Label>,
@@ -69,14 +59,4 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
       GetAllQuotesHandler>(() => GetAllQuotesHandler(serviceLocator()));
 
   serviceLocator.registerLazySingleton(() => mediator);
-}
-
-void _initRepos(GetIt serviceLocator) {
-  serviceLocator.registerFactory<ILabelsRepository>(() => LabelsRepository());
-
-  serviceLocator.registerFactory<IAuthorsRepository>(() => AuthorsRepository());
-
-  serviceLocator.registerFactory<ISourcesRepository>(() => SourceRepository());
-
-  serviceLocator.registerFactory<IQuotesRepository>(() => QuotesRepository());
 }

@@ -41,6 +41,7 @@ dependencies:
   mediatr: ^0.2.1
   get_it: ^7.6.7
   flutter_bloc: ^8.1.5
+  sqflite: ^2.3.2
 
 dev_dependencies:
   flutter_test:
