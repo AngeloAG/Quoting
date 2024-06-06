@@ -11,20 +11,19 @@ class AuthorsRepository implements IAuthorsRepository {
   AuthorsRepository(this.iAuthorsDataSource);
 
   @override
-  Future<Either<Failure, List<Author>>> getAllAuthors() {
+  TaskEither<Failure, List<Author>> getAllAuthors() {
     // TODO: implement getAllAuthors
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, dynamic>> removeAuthorById(String authorId) {
+  TaskEither<Failure, dynamic> removeAuthorById(String authorId) {
     // TODO: implement removeAuthorById
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, Author>> uploadAuthor(
-      CreateAuthorWork createAuthorWork) {
+  TaskEither<Failure, Author> uploadAuthor(CreateAuthorWork createAuthorWork) {
     // TODO: implement uploadAuthor
     throw UnimplementedError();
   }

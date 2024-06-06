@@ -17,6 +17,6 @@ class RemoveAuthorHandler
 
   @override
   Future<Either<Failure, dynamic>> call(RemoveAuthorRequest request) {
-    return iAuthorsRepository.removeAuthorById(request.authorId);
+    return iAuthorsRepository.removeAuthorById(request.authorId).run();
   }
 }

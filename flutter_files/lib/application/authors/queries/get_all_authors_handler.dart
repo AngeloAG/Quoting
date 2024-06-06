@@ -14,6 +14,6 @@ class GetAllAuthorsHandler extends IRequestHandler<GetAllAuthorsRequest,
 
   @override
   Future<Either<Failure, List<Author>>> call(GetAllAuthorsRequest request) {
-    return iAuthorsRepository.getAllAuthors();
+    return iAuthorsRepository.getAllAuthors().run();
   }
 }

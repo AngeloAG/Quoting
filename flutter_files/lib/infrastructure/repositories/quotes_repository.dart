@@ -11,19 +11,19 @@ class QuotesRepository implements IQuotesRepository {
   QuotesRepository(this.iQuotesDataSource);
 
   @override
-  Future<Either<Failure, List<Quote>>> getAllQuotes() {
+  TaskEither<Failure, List<Quote>> getAllQuotes() {
     // TODO: implement getAllQuotes
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, dynamic>> removeQuoteById(String quoteId) {
+  TaskEither<Failure, dynamic> removeQuoteById(String quoteId) {
     // TODO: implement removeQuoteById
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, Quote>> uploadQuote(CreateQuoteWork createQuoteWork) {
+  TaskEither<Failure, Quote> uploadQuote(CreateQuoteWork createQuoteWork) {
     // TODO: implement uploadQuote
     throw UnimplementedError();
   }

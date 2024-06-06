@@ -21,74 +21,74 @@ class LocalDataSource
   LocalDataSource(this.db);
 
   @override
-  Future<Either<Failure, List<AuthorModel>>> getAllAuthors() {
+  TaskEither<Failure, List<AuthorModel>> getAllAuthors() {
     // TODO: implement getAllAuthors
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, List<LabelModel>>> getAllLabels() {
+  TaskEither<Failure, List<LabelModel>> getAllLabels() {
     // TODO: implement getAllLabels
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, List<QuoteModel>>> getAllQuotes() {
+  TaskEither<Failure, List<QuoteModel>> getAllQuotes() {
     // TODO: implement getAllQuotes
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, List<SourceModel>>> getAllSources() {
+  TaskEither<Failure, List<SourceModel>> getAllSources() {
     // TODO: implement getAllSources
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, dynamic>> removeAuthorById(String id) {
+  TaskEither<Failure, dynamic> removeAuthorById(String id) {
     // TODO: implement removeAuthorById
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, dynamic>> removeLabelById(String id) {
+  TaskEither<Failure, dynamic> removeLabelById(String id) {
     // TODO: implement removeLabelById
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, dynamic>> removeQuoteById(String id) {
+  TaskEither<Failure, dynamic> removeQuoteById(String id) {
     // TODO: implement removeQuoteById
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, dynamic>> removeSourceById(String id) {
+  TaskEither<Failure, dynamic> removeSourceById(String id) {
     // TODO: implement removeSourceById
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, AuthorModel>> uploadAuthor(String author) {
+  TaskEither<Failure, AuthorModel> uploadAuthor(String author) {
     // TODO: implement uploadAuthor
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, LabelModel>> uploadLabel(String label) {
+  TaskEither<Failure, LabelModel> uploadLabel(String label) {
     // TODO: implement uploadLabel
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, QuoteModel>> uploadQuote(String authorId,
-      String labelId, String sourceId, String details, String content) {
+  TaskEither<Failure, QuoteModel> uploadQuote(String authorId, String labelId,
+      String sourceId, String details, String content) {
     // TODO: implement uploadQuote
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, SourceModel>> uploadSource(String source) {
+  TaskEither<Failure, SourceModel> uploadSource(String source) {
     // TODO: implement uploadSource
     throw UnimplementedError();
   }

@@ -4,10 +4,9 @@ import 'package:flutter_files/domain/works/create_author_work.dart';
 import 'package:fpdart/fpdart.dart';
 
 abstract interface class IAuthorsRepository {
-  Future<Either<Failure, dynamic>> removeAuthorById(String authorId);
+  TaskEither<Failure, dynamic> removeAuthorById(String authorId);
 
-  Future<Either<Failure, Author>> uploadAuthor(
-      CreateAuthorWork createAuthorWork);
+  TaskEither<Failure, Author> uploadAuthor(CreateAuthorWork createAuthorWork);
 
-  Future<Either<Failure, List<Author>>> getAllAuthors();
+  TaskEither<Failure, List<Author>> getAllAuthors();
 }

@@ -19,6 +19,6 @@ class UploadAuthorHandler
 
   @override
   Future<Either<Failure, Author>> call(UploadAuthorRequest request) {
-    return iAuthorsRepository.uploadAuthor(request.createAuthorWork);
+    return iAuthorsRepository.uploadAuthor(request.createAuthorWork).run();
   }
 }

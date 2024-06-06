@@ -16,6 +16,6 @@ class RemoveQuoteHandler
 
   @override
   Future<Either<Failure, dynamic>> call(RemoveQuoteRequest request) {
-    return iQuotesRepository.removeQuoteById(request.quoteId);
+    return iQuotesRepository.removeQuoteById(request.quoteId).run();
   }
 }

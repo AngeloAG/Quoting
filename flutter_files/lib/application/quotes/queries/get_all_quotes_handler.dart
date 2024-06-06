@@ -14,6 +14,6 @@ class GetAllQuotesHandler
 
   @override
   Future<Either<Failure, List<Quote>>> call(GetAllQuotesRequest request) {
-    return iQuotesRepository.getAllQuotes();
+    return iQuotesRepository.getAllQuotes().run();
   }
 }

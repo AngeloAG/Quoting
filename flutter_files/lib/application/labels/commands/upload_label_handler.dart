@@ -19,6 +19,6 @@ class UploadLabelHandler
 
   @override
   Future<Either<Failure, Label>> call(UploadLabelRequest request) {
-    return iLabelsRepository.uploadLabel(request.createLabelWork);
+    return iLabelsRepository.uploadLabel(request.createLabelWork).run();
   }
 }

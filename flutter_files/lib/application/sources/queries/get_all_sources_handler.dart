@@ -14,6 +14,6 @@ class GetAllSourcesHandler extends IRequestHandler<GetAllSourcesRequest,
 
   @override
   Future<Either<Failure, List<Source>>> call(GetAllSourcesRequest request) {
-    return iSourcesRepository.getAllSources();
+    return iSourcesRepository.getAllSources().run();
   }
 }

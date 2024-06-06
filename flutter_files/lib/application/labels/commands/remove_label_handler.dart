@@ -17,6 +17,6 @@ class RemoveLabelHandler
 
   @override
   Future<Either<Failure, dynamic>> call(RemoveLabelRequest request) {
-    return iLabelsRepository.removeLabelById(request.labelId);
+    return iLabelsRepository.removeLabelById(request.labelId).run();
   }
 }

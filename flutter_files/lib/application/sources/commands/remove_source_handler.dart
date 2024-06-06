@@ -17,6 +17,6 @@ class RemoveSourceHandler
 
   @override
   Future<Either<Failure, dynamic>> call(RemoveSourceRequest request) {
-    return iSourcesRepository.removeSourceById(request.sourceId);
+    return iSourcesRepository.removeSourceById(request.sourceId).run();
   }
 }

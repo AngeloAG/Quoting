@@ -11,24 +11,21 @@ class LabelsRepository implements ILabelsRepository {
   LabelsRepository(this.iLabelsDataSource);
 
   @override
-  Future<Either<Failure, List<Label>>> getAllLabels() {
+  TaskEither<Failure, List<Label>> getAllLabels() {
     // TODO: implement getAllLabels
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, dynamic>> removeLabelById(String labelId) {
+  TaskEither<Failure, dynamic> removeLabelById(String labelId) {
     // TODO: implement removeLabelById
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, Label>> uploadLabel(
-      CreateLabelWork createLabelWork) async {
-    print("label created");
-    if (createLabelWork.label == "bad") {
-      return left(Failure(message: "Failed to create label"));
-    }
-    return right(Label(id: "sdfgsdfgsdfgs", label: createLabelWork.label));
+  TaskEither<Failure, Label> uploadLabel(CreateLabelWork createLabelWork) {
+    var d = Task<Either<String, int>>.of(Either<String, int>.of(10));
+
+    throw UnimplementedError();
   }
 }

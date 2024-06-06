@@ -19,6 +19,6 @@ class UploadQuoteHandler
 
   @override
   Future<Either<Failure, Quote>> call(UploadQuoteRequest request) {
-    return iQuotesRepository.uploadQuote(request.createQuoteWork);
+    return iQuotesRepository.uploadQuote(request.createQuoteWork).run();
   }
 }

@@ -14,6 +14,6 @@ class GetAllLabelsHandler
 
   @override
   Future<Either<Failure, List<Label>>> call(GetAllLabelsRequest request) {
-    return iLabelsRepository.getAllLabels();
+    return iLabelsRepository.getAllLabels().run();
   }
 }

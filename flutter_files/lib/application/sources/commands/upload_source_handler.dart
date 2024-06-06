@@ -19,6 +19,6 @@ class UploadSourceHandler
 
   @override
   Future<Either<Failure, Source>> call(UploadSourceRequest request) {
-    return iSourcesRepository.uploadSource(request.createSourceWork);
+    return iSourcesRepository.uploadSource(request.createSourceWork).run();
   }
 }
