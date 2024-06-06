@@ -1,18 +1,14 @@
-import 'package:flutter_files/domain/models/author.dart';
-import 'package:flutter_files/domain/models/label.dart';
-import 'package:flutter_files/domain/models/source.dart';
-
 class CreateQuoteWork {
-  final Author author;
-  final Label label;
-  final Source source;
+  final String authorId;
+  final String labelId;
+  final String sourceId;
   final String details;
   final String content;
 
   CreateQuoteWork({
-    required this.author,
-    required this.label,
-    required this.source,
+    required this.authorId,
+    required this.labelId,
+    required this.sourceId,
     required this.details,
     required this.content,
   });

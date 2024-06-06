@@ -12,19 +12,21 @@ class AuthorsRepository implements IAuthorsRepository {
 
   @override
   TaskEither<Failure, List<Author>> getAllAuthors() {
-    // TODO: implement getAllAuthors
-    throw UnimplementedError();
+    return iAuthorsDataSource.getAllAuthors().map((authorsModels) =>
+        authorsModels
+            .map((authorModel) =>
+                Author(id: authorModel.id, name: authorModel.author))
+            .toList());
   }
 
   @override
   TaskEither<Failure, dynamic> removeAuthorById(String authorId) {
-    // TODO: implement removeAuthorById
-    throw UnimplementedError();
+    return iAuthorsDataSource.removeAuthorById(authorId);
   }
 
   @override
   TaskEither<Failure, Author> uploadAuthor(CreateAuthorWork createAuthorWork) {
-    // TODO: implement uploadAuthor
-    throw UnimplementedError();
+    return iAuthorsDataSource.uploadAuthor(createAuthorWork.name).map(
+        (authorModel) => Author(id: authorModel.id, name: authorModel.author));
   }
 }

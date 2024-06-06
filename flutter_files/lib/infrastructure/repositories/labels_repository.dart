@@ -12,20 +12,20 @@ class LabelsRepository implements ILabelsRepository {
 
   @override
   TaskEither<Failure, List<Label>> getAllLabels() {
-    // TODO: implement getAllLabels
-    throw UnimplementedError();
+    return iLabelsDataSource.getAllLabels().map((labelsModels) => labelsModels
+        .map((labelModel) => Label(id: labelModel.id, label: labelModel.label))
+        .toList());
   }
 
   @override
   TaskEither<Failure, dynamic> removeLabelById(String labelId) {
-    // TODO: implement removeLabelById
-    throw UnimplementedError();
+    return iLabelsDataSource.removeLabelById(labelId);
   }
 
   @override
   TaskEither<Failure, Label> uploadLabel(CreateLabelWork createLabelWork) {
-    var d = Task<Either<String, int>>.of(Either<String, int>.of(10));
-
-    throw UnimplementedError();
+    return iLabelsDataSource
+        .uploadLabel(createLabelWork.label)
+        .map((labelModel) => Label(id: labelModel.id, label: labelModel.label));
   }
 }

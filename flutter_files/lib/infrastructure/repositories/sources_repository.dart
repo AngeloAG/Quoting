@@ -12,19 +12,22 @@ class SourceRepository implements ISourcesRepository {
 
   @override
   TaskEither<Failure, List<Source>> getAllSources() {
-    // TODO: implement getAllSources
-    throw UnimplementedError();
+    return iSourcesDataSource.getAllSources().map((sourcesModels) =>
+        sourcesModels
+            .map((sourceModel) =>
+                Source(id: sourceModel.id, source: sourceModel.source))
+            .toList());
   }
 
   @override
   TaskEither<Failure, dynamic> removeSourceById(String sourceId) {
-    // TODO: implement removeSourceById
-    throw UnimplementedError();
+    return iSourcesDataSource.removeSourceById(sourceId);
   }
 
   @override
   TaskEither<Failure, Source> uploadSource(CreateSourceWork createSourceWork) {
-    // TODO: implement uploadSource
-    throw UnimplementedError();
+    return iSourcesDataSource.uploadSource(createSourceWork.source).map(
+        (sourceModel) =>
+            Source(id: sourceModel.id, source: sourceModel.source));
   }
 }
