@@ -18,3 +18,15 @@ final class LabelUploadFailure extends LabelState {
 
   LabelUploadFailure(this.error);
 }
+
+final class LabelLoadSuccess extends LabelState {
+  final List<Label> labels;
+
+  LabelLoadSuccess(this.labels);
+}
+
+final class LabelLoadFailure extends LabelState {
+  final String error;
+
+  LabelLoadFailure(this.error);
+}

@@ -28,8 +28,20 @@ class LocalDataSource
 
   @override
   TaskEither<Failure, List<LabelModel>> getAllLabels() {
-    // TODO: implement getAllLabels
-    throw UnimplementedError();
+    return TaskEither.rightTask(Task.of([
+      LabelModel("1452345234524", "Comments"),
+      LabelModel("2487787686768", "Moments"),
+      LabelModel("5678484587978", "Other"),
+      LabelModel("4578568568345", "Quotes"),
+      LabelModel("7697658373457", "Important"),
+      LabelModel("5768475673475", "Notes"),
+      LabelModel("1452345234524", "Comments"),
+      LabelModel("2487787686768", "Moments"),
+      LabelModel("5678484587978", "Other"),
+      LabelModel("4578568568345", "Quotes"),
+      LabelModel("7697658373457", "Important"),
+      LabelModel("5768475673475", "Notes"),
+    ]));
   }
 
   @override

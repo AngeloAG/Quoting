@@ -8,3 +8,5 @@ final class LabelUploadEvent extends LabelEvent {
 
   LabelUploadEvent({required this.labelContent});
 }
+
+final class LabelLoadEvent extends LabelEvent {}
