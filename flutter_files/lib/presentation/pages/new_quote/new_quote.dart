@@ -155,7 +155,7 @@ class NewQuotePage extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {},
-              child: Text('Save'),
+              child: const Text('Save'),
             )
           ],
         ),
