@@ -12,10 +12,25 @@ import 'package:flutter_files/infrastructure/repositories/labels_repository.dart
 import 'package:flutter_files/infrastructure/repositories/quotes_repository.dart';
 import 'package:flutter_files/infrastructure/repositories/sources_repository.dart';
 import 'package:get_it/get_it.dart';
+import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 Future<void> initInfrastructureDependencies(GetIt serviceLocator) async {
-  var db = await openDatabase('my_db.db');
+  final dbPath = await getDatabasesPath();
+  final path = join(dbPath, 'quoting_db.db');
+  var db = await openDatabase(
+    path,
+    version: 1,
+    onCreate: (db, version) async {
+      db.execute('''
+          DROP TABLE label;
+          CREATE TABLE label (
+            id INT PRIMARY KEY,
+            label TEXT NOT NULL
+          )
+          ''');
+    },
+  );
 
   serviceLocator.registerLazySingleton<Database>(() => db);
   _initDataSources(serviceLocator);

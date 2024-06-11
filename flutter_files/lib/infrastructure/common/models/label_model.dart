@@ -19,7 +19,7 @@ class LabelModel {
 
   factory LabelModel.fromMap(Map<String, dynamic> map) {
     return LabelModel(
-      map['id'] as String,
+      (map['id'] as int).toString(),
       map['label'] as String,
     );
   }

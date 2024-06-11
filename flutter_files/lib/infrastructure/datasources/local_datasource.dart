@@ -28,20 +28,16 @@ class LocalDataSource
 
   @override
   TaskEither<Failure, List<LabelModel>> getAllLabels() {
-    return TaskEither.rightTask(Task.of([
-      LabelModel("1452345234524", "Comments"),
-      LabelModel("2487787686768", "Moments"),
-      LabelModel("5678484587978", "Other"),
-      LabelModel("4578568568345", "Quotes"),
-      LabelModel("7697658373457", "Important"),
-      LabelModel("5768475673475", "Notes"),
-      LabelModel("1452345234524", "Comments"),
-      LabelModel("2487787686768", "Moments"),
-      LabelModel("5678484587978", "Other"),
-      LabelModel("4578568568345", "Quotes"),
-      LabelModel("7697658373457", "Important"),
-      LabelModel("5768475673475", "Notes"),
-    ]));
+    return TaskEither.tryCatch(
+      () => db.query('label'),
+      (error, stackTrace) => Failure(message: 'Failed to get labels from DB'),
+    ).flatMap(
+      (labelsMaps) => TaskEither.tryCatch(
+          () async => labelsMaps
+              .map((labelMap) => LabelModel.fromMap(labelMap))
+              .toList(),
+          (error, stackTrace) => Failure(message: 'Failed to parse maps')),
+    );
   }
 
   @override
@@ -88,8 +84,35 @@ class LocalDataSource
 
   @override
   TaskEither<Failure, LabelModel> uploadLabel(String label) {
-    // TODO: implement uploadLabel
-    throw UnimplementedError();
+    // final labelId = db.insert('labebl', {'laebel': label});
+    // final labels = await db.query('label',
+    //     columns: ['labebl_id', 'label'],
+    //     where: 'labebl_id = ?',
+    //     whereArgs: [labelId]);
+    // if (labels.isEmpty) {
+    //   return TaskEither.left(Failure(message: 'Failed to insert label in database'));
+    // } else {
+    //   return TaskEither.right(LabelModel.fromMap(labels[0]));
+    // }
+
+    return TaskEither.tryCatch(
+      () => db.insert('label', {'label': label}),
+      (error, stackTrace) => Failure(message: 'Failed to insert label in DB'),
+    )
+        .flatMap(
+          (labelId) => TaskEither.tryCatch(
+              () => db.query('label',
+                  columns: ['id', 'label'],
+                  where: 'id = ?',
+                  whereArgs: [labelId]),
+              ((error, stackTrace) =>
+                  Failure(message: 'Failed to query label from DB'))),
+        )
+        .flatMap(
+          (labelsMaps) => TaskEither.fromEither(labelsMaps.isEmpty
+              ? left(Failure(message: 'Failed to retrieve label from DB'))
+              : right(LabelModel.fromMap(labelsMaps[0]))),
+        );
   }
 
   @override

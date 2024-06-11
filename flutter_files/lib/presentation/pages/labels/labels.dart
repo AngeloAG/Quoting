@@ -71,6 +71,15 @@ class _LabelsPageState extends State<LabelsPage> {
                       ),
                     );
                 }
+                if (state is LabelUploadFailure) {
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(
+                        content: Text(state.error),
+                      ),
+                    );
+                }
               },
               builder: (context, state) {
                 if (state is LabelLoading) {
