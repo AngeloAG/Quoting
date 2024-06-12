@@ -26,3 +26,11 @@ final class LabelLoadFailure extends LabelState {
 
   LabelLoadFailure(this.error);
 }
+
+final class LabelRemoveSuccess extends LabelState {}
+
+final class LabelRemoveFailure extends LabelState {
+  final String error;
+
+  LabelRemoveFailure(this.error);
+}

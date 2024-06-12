@@ -80,6 +80,19 @@ class _LabelsPageState extends State<LabelsPage> {
                       ),
                     );
                 }
+                if (state is LabelRemoveFailure) {
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(
+                        content: Text(state.error),
+                      ),
+                    );
+                }
+                if (state is LabelUploadSuccess ||
+                    state is LabelRemoveSuccess) {
+                  context.read<LabelBloc>().add(LabelLoadEvent());
+                }
               },
               builder: (context, state) {
                 if (state is LabelLoading) {
@@ -104,7 +117,11 @@ class _LabelsPageState extends State<LabelsPage> {
                               ),
                               IconButton(
                                 icon: const Icon(Icons.delete_sharp),
-                                onPressed: () {},
+                                onPressed: () {
+                                  context.read<LabelBloc>().add(
+                                      LabelRemoveEvent(
+                                          labelId: state.labels[index].id));
+                                },
                               ),
                             ]),
                           ),
@@ -135,6 +152,8 @@ class _LabelsPageState extends State<LabelsPage> {
                     onPressed: () {
                       context.read<LabelBloc>().add(LabelUploadEvent(
                           labelContent: newLabelController.text));
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      newLabelController.clear();
                     },
                     icon: const Icon(Icons.add),
                   );

@@ -57,8 +57,19 @@ class LocalDataSource
 
   @override
   TaskEither<Failure, Unit> removeLabelById(String id) {
-    // TODO: implement removeLabelById
-    throw UnimplementedError();
+    return Either.tryCatch(
+      () => int.parse(id),
+      (o, s) => Failure(
+          message: "The id is not a valid int with error ${o.toString()}"),
+    ).toTaskEither().flatMap((idAsInt) => TaskEither.tryCatch(
+          () async {
+            await db.delete('label', where: 'id = ?', whereArgs: [idAsInt]);
+            return unit;
+          },
+          (error, stackTrace) => Failure(
+              message:
+                  'Failed to delete from DB with error ${error.toString()}'),
+        ));
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_files/application/labels/commands/remove_label_handler.dart';
 import 'package:flutter_files/application/labels/commands/upload_label_handler.dart';
 import 'package:flutter_files/application/labels/queries/get_all_labels_handler.dart';
 import 'package:flutter_files/domain/models/failure.dart';
@@ -21,6 +22,7 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
     on<LabelEvent>((event, emit) => emit(LabelLoading()));
     on<LabelUploadEvent>(_onLabelUpload);
     on<LabelLoadEvent>(_onLabelLoad);
+    on<LabelRemoveEvent>(_onLabelRemove);
   }
 
   void _onLabelUpload(LabelUploadEvent event, Emitter<LabelState> emit) async {
@@ -44,6 +46,17 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
     response.fold(
       (failure) => emit(LabelLoadFailure(failure.message)),
       (labels) => emit(LabelLoadSuccess(labels)),
+    );
+  }
+
+  void _onLabelRemove(LabelRemoveEvent event, Emitter emit) async {
+    final response =
+        await _mediator.send<RemoveLabelRequest, Either<Failure, Unit>>(
+            RemoveLabelRequest(labelId: event.labelId));
+
+    response.fold(
+      (failure) => emit(LabelRemoveFailure(failure.message)),
+      (unit) => emit(LabelRemoveSuccess()),
     );
   }
 }
