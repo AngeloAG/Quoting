@@ -20,13 +20,12 @@ class AuthorsRepository implements IAuthorsRepository {
   }
 
   @override
-  TaskEither<Failure, dynamic> removeAuthorById(String authorId) {
+  TaskEither<Failure, Unit> removeAuthorById(String authorId) {
     return iAuthorsDataSource.removeAuthorById(authorId);
   }
 
   @override
-  TaskEither<Failure, Author> uploadAuthor(CreateAuthorWork createAuthorWork) {
-    return iAuthorsDataSource.uploadAuthor(createAuthorWork.name).map(
-        (authorModel) => Author(id: authorModel.id, name: authorModel.author));
+  TaskEither<Failure, Unit> uploadAuthor(CreateAuthorWork createAuthorWork) {
+    return iAuthorsDataSource.uploadAuthor(createAuthorWork.name);
   }
 }

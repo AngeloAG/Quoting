@@ -7,11 +7,7 @@ final class LabelInitial extends LabelState {}
 
 final class LabelLoading extends LabelState {}
 
-final class LabelUploadSuccess extends LabelState {
-  final Label label;
-
-  LabelUploadSuccess(this.label);
-}
+final class LabelUploadSuccess extends LabelState {}
 
 final class LabelUploadFailure extends LabelState {
   final String error;

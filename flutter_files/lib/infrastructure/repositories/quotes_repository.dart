@@ -36,31 +36,17 @@ class QuotesRepository implements IQuotesRepository {
   }
 
   @override
-  TaskEither<Failure, dynamic> removeQuoteById(String quoteId) {
+  TaskEither<Failure, Unit> removeQuoteById(String quoteId) {
     return iQuotesDataSource.removeQuoteById(quoteId);
   }
 
   @override
-  TaskEither<Failure, Quote> uploadQuote(CreateQuoteWork createQuoteWork) {
-    return iQuotesDataSource
-        .uploadQuote(
-            createQuoteWork.authorId,
-            createQuoteWork.labelId,
-            createQuoteWork.sourceId,
-            createQuoteWork.details,
-            createQuoteWork.content)
-        .map((quoteModel) {
-      var author = Author(id: quoteModel.authorId, name: quoteModel.author);
-      var label = Label(id: quoteModel.labelId, label: quoteModel.label);
-      var source = Source(id: quoteModel.sourceId, source: quoteModel.source);
-
-      return Quote(
-          id: quoteModel.id,
-          author: author,
-          label: label,
-          source: source,
-          content: quoteModel.content,
-          details: quoteModel.details);
-    });
+  TaskEither<Failure, Unit> uploadQuote(CreateQuoteWork createQuoteWork) {
+    return iQuotesDataSource.uploadQuote(
+        createQuoteWork.authorId,
+        createQuoteWork.labelId,
+        createQuoteWork.sourceId,
+        createQuoteWork.details,
+        createQuoteWork.content);
   }
 }

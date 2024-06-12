@@ -18,14 +18,12 @@ class LabelsRepository implements ILabelsRepository {
   }
 
   @override
-  TaskEither<Failure, dynamic> removeLabelById(String labelId) {
+  TaskEither<Failure, Unit> removeLabelById(String labelId) {
     return iLabelsDataSource.removeLabelById(labelId);
   }
 
   @override
-  TaskEither<Failure, Label> uploadLabel(CreateLabelWork createLabelWork) {
-    return iLabelsDataSource
-        .uploadLabel(createLabelWork.label)
-        .map((labelModel) => Label(id: labelModel.id, label: labelModel.label));
+  TaskEither<Failure, Unit> uploadLabel(CreateLabelWork createLabelWork) {
+    return iLabelsDataSource.uploadLabel(createLabelWork.label);
   }
 }

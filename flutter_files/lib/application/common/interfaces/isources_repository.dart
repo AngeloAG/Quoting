@@ -4,9 +4,9 @@ import 'package:flutter_files/domain/works/create_source_work.dart';
 import 'package:fpdart/fpdart.dart';
 
 abstract interface class ISourcesRepository {
-  TaskEither<Failure, dynamic> removeSourceById(String sourceId);
+  TaskEither<Failure, Unit> removeSourceById(String sourceId);
 
-  TaskEither<Failure, Source> uploadSource(CreateSourceWork createSourceWork);
+  TaskEither<Failure, Unit> uploadSource(CreateSourceWork createSourceWork);
 
   TaskEither<Failure, List<Source>> getAllSources();
 }

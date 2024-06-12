@@ -53,37 +53,37 @@ class LocalDataSource
   }
 
   @override
-  TaskEither<Failure, dynamic> removeAuthorById(String id) {
+  TaskEither<Failure, Unit> removeAuthorById(String id) {
     // TODO: implement removeAuthorById
     throw UnimplementedError();
   }
 
   @override
-  TaskEither<Failure, dynamic> removeLabelById(String id) {
+  TaskEither<Failure, Unit> removeLabelById(String id) {
     // TODO: implement removeLabelById
     throw UnimplementedError();
   }
 
   @override
-  TaskEither<Failure, dynamic> removeQuoteById(String id) {
+  TaskEither<Failure, Unit> removeQuoteById(String id) {
     // TODO: implement removeQuoteById
     throw UnimplementedError();
   }
 
   @override
-  TaskEither<Failure, dynamic> removeSourceById(String id) {
+  TaskEither<Failure, Unit> removeSourceById(String id) {
     // TODO: implement removeSourceById
     throw UnimplementedError();
   }
 
   @override
-  TaskEither<Failure, AuthorModel> uploadAuthor(String author) {
+  TaskEither<Failure, Unit> uploadAuthor(String author) {
     // TODO: implement uploadAuthor
     throw UnimplementedError();
   }
 
   @override
-  TaskEither<Failure, LabelModel> uploadLabel(String label) {
+  TaskEither<Failure, Unit> uploadLabel(String label) {
     // final labelId = db.insert('labebl', {'laebel': label});
     // final labels = await db.query('label',
     //     columns: ['labebl_id', 'label'],
@@ -96,34 +96,23 @@ class LocalDataSource
     // }
 
     return TaskEither.tryCatch(
-      () => db.insert('label', {'label': label}),
+      () async {
+        await db.insert('label', {'label': label});
+        return unit;
+      },
       (error, stackTrace) => Failure(message: 'Failed to insert label in DB'),
-    )
-        .flatMap(
-          (labelId) => TaskEither.tryCatch(
-              () => db.query('label',
-                  columns: ['id', 'label'],
-                  where: 'id = ?',
-                  whereArgs: [labelId]),
-              ((error, stackTrace) =>
-                  Failure(message: 'Failed to query label from DB'))),
-        )
-        .flatMap(
-          (labelsMaps) => TaskEither.fromEither(labelsMaps.isEmpty
-              ? left(Failure(message: 'Failed to retrieve label from DB'))
-              : right(LabelModel.fromMap(labelsMaps[0]))),
-        );
+    );
   }
 
   @override
-  TaskEither<Failure, QuoteModel> uploadQuote(String authorId, String labelId,
+  TaskEither<Failure, Unit> uploadQuote(String authorId, String labelId,
       String sourceId, String details, String content) {
     // TODO: implement uploadQuote
     throw UnimplementedError();
   }
 
   @override
-  TaskEither<Failure, SourceModel> uploadSource(String source) {
+  TaskEither<Failure, Unit> uploadSource(String source) {
     // TODO: implement uploadSource
     throw UnimplementedError();
   }
