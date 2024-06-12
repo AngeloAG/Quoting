@@ -31,13 +31,10 @@ class LocalDataSource
     return TaskEither.tryCatch(
       () => db.query('label'),
       (error, stackTrace) => Failure(message: 'Failed to get labels from DB'),
-    ).flatMap(
-      (labelsMaps) => TaskEither.tryCatch(
-          () async => labelsMaps
-              .map((labelMap) => LabelModel.fromMap(labelMap))
-              .toList(),
-          (error, stackTrace) => Failure(message: 'Failed to parse maps')),
-    );
+    ).flatMap((labels) => Either.tryCatch(
+          () => labels.map((labelMap) => LabelModel.fromMap(labelMap)).toList(),
+          (o, s) => Failure(message: "Failed to parse labels from database"),
+        ).toTaskEither());
   }
 
   @override
@@ -84,17 +81,6 @@ class LocalDataSource
 
   @override
   TaskEither<Failure, Unit> uploadLabel(String label) {
-    // final labelId = db.insert('labebl', {'laebel': label});
-    // final labels = await db.query('label',
-    //     columns: ['labebl_id', 'label'],
-    //     where: 'labebl_id = ?',
-    //     whereArgs: [labelId]);
-    // if (labels.isEmpty) {
-    //   return TaskEither.left(Failure(message: 'Failed to insert label in database'));
-    // } else {
-    //   return TaskEither.right(LabelModel.fromMap(labels[0]));
-    // }
-
     return TaskEither.tryCatch(
       () async {
         await db.insert('label', {'label': label});
