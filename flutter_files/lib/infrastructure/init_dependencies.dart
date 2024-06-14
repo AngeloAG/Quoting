@@ -16,21 +16,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 Future<void> initInfrastructureDependencies(GetIt serviceLocator) async {
-  final dbPath = await getDatabasesPath();
-  final path = join(dbPath, 'quoting_db.db');
-  var db = await openDatabase(
-    path,
-    version: 1,
-    onCreate: (db, version) async {
-      db.execute('''
-          DROP TABLE label;
-          CREATE TABLE label (
-            id INT PRIMARY KEY,
-            label TEXT NOT NULL
-          )
-          ''');
-    },
-  );
+  var db = await _initDatabase();
 
   serviceLocator.registerLazySingleton<Database>(() => db);
   _initDataSources(serviceLocator);
@@ -67,4 +53,58 @@ void _initRepos(GetIt serviceLocator) {
 
   serviceLocator.registerFactory<IQuotesRepository>(
       () => QuotesRepository(serviceLocator()));
+}
+
+Future<Database> _initDatabase() async {
+  final dbPath = await getDatabasesPath();
+  final path = join(dbPath, 'quoting_db.db');
+  return await openDatabase(
+    path,
+    version: 2,
+    onUpgrade: (db, oldVersion, newVersion) async {
+      db.execute('''
+          drop table if exists labels;
+
+          drop table if exists authors;
+
+          drop table if exists sources;
+
+          drop table if exists quotes;
+          ''');
+    },
+    onCreate: (db, version) async {
+      db.execute('''
+          drop table if exists labels;
+          create table if not exists labels (
+            id int not null primary key,
+            label text,
+          );
+
+          drop table if exists authors;
+          create table if not exists authors (
+            id int not null primary key,
+            author text not null,
+          );
+
+          drop table if exists sources;
+          create table if not exists sources (
+            id int not null primary key,
+            source text not null,
+          );
+
+          drop table if exists quotes;
+          create table if not exists quotes (
+            id int not null primary key,
+            content text not null,
+            details text,
+            author_id int,
+            label_id int,
+            source_id int,
+            foreign key (author_id) references authors(id),
+            foreign key (label_id) references labels(id),
+            foreign key (source_id) references sources(id)
+          );
+          ''');
+    },
+  );
 }

@@ -33,8 +33,8 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
             UploadLabelRequest(createLabelWork: createLabelWork));
 
     response.fold(
-      (failure) => emit(LabelUploadFailure(failure.message)),
-      (uploadedLabel) => emit(LabelUploadSuccess()),
+      (failure) => emit(LabelFailure(failure.message)),
+      (uploadedLabel) => emit(LabelSuccess()),
     );
   }
 
@@ -44,7 +44,7 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
             GetAllLabelsRequest());
 
     response.fold(
-      (failure) => emit(LabelLoadFailure(failure.message)),
+      (failure) => emit(LabelFailure(failure.message)),
       (labels) => emit(LabelLoadSuccess(labels)),
     );
   }
@@ -55,8 +55,8 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
             RemoveLabelRequest(labelId: event.labelId));
 
     response.fold(
-      (failure) => emit(LabelRemoveFailure(failure.message)),
-      (unit) => emit(LabelRemoveSuccess()),
+      (failure) => emit(LabelFailure(failure.message)),
+      (unit) => emit(LabelSuccess()),
     );
   }
 }

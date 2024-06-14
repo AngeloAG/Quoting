@@ -22,8 +22,18 @@ class LocalDataSource
 
   @override
   TaskEither<Failure, List<AuthorModel>> getAllAuthors() {
-    // TODO: implement getAllAuthors
-    throw UnimplementedError();
+    return TaskEither.tryCatch(
+      () => db.query('authors'),
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to get authors from DB with error: ${error.toString()}'),
+    ).flatMap((authors) => Either.tryCatch(
+          () => authors
+              .map((authorMap) => AuthorModel.fromMap(authorMap))
+              .toList(),
+          (o, s) => Failure(
+              message: 'Failed to parse authors with error ${o.toString()}'),
+        ).toTaskEither());
   }
 
   @override
@@ -45,14 +55,35 @@ class LocalDataSource
 
   @override
   TaskEither<Failure, List<SourceModel>> getAllSources() {
-    // TODO: implement getAllSources
-    throw UnimplementedError();
+    return TaskEither.tryCatch(
+      () => db.query('sources'),
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to get sources from DB with error ${error.toString()}'),
+    ).flatMap((sources) => Either.tryCatch(
+          () => sources
+              .map((sourceMap) => SourceModel.fromMap(sourceMap))
+              .toList(),
+          (o, s) => Failure(
+              message: 'Failed to parse sources with error ${o.toString()}'),
+        ).toTaskEither());
   }
 
   @override
   TaskEither<Failure, Unit> removeAuthorById(String id) {
-    // TODO: implement removeAuthorById
-    throw UnimplementedError();
+    return Either.tryCatch(
+      () => int.parse(id),
+      (o, s) => Failure(
+          message: 'The id is not a valid int with error ${o.toString()}'),
+    ).toTaskEither().flatMap((idAsInt) => TaskEither.tryCatch(
+          () async {
+            await db.delete('authors', where: 'id = ?', whereArgs: [idAsInt]);
+            return unit;
+          },
+          (error, stackTrace) => Failure(
+              message:
+                  'Failed to delete from DB with error ${error.toString()}'),
+        ));
   }
 
   @override
@@ -80,14 +111,32 @@ class LocalDataSource
 
   @override
   TaskEither<Failure, Unit> removeSourceById(String id) {
-    // TODO: implement removeSourceById
-    throw UnimplementedError();
+    return Either.tryCatch(
+      () => int.parse(id),
+      (o, s) => Failure(
+          message: 'The id is not a valid int with error ${o.toString()}'),
+    ).toTaskEither().flatMap((idAsInt) => TaskEither.tryCatch(
+          () async {
+            await db.delete('sources', where: 'id = ?', whereArgs: [idAsInt]);
+            return unit;
+          },
+          (error, stackTrace) => Failure(
+              message:
+                  'Failed to delete from DB with error ${error.toString()}'),
+        ));
   }
 
   @override
   TaskEither<Failure, Unit> uploadAuthor(String author) {
-    // TODO: implement uploadAuthor
-    throw UnimplementedError();
+    return TaskEither.tryCatch(
+      () async {
+        await db.insert('authors', {'author': author});
+        return unit;
+      },
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to insert author in DB with error ${error.toString()}'),
+    );
   }
 
   @override
@@ -97,7 +146,9 @@ class LocalDataSource
         await db.insert('label', {'label': label});
         return unit;
       },
-      (error, stackTrace) => Failure(message: 'Failed to insert label in DB'),
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to insert label in DB with error ${error.toString()}'),
     );
   }
 
@@ -110,7 +161,14 @@ class LocalDataSource
 
   @override
   TaskEither<Failure, Unit> uploadSource(String source) {
-    // TODO: implement uploadSource
-    throw UnimplementedError();
+    return TaskEither.tryCatch(
+      () async {
+        await db.insert('sources', {'source': source});
+        return unit;
+      },
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to insert source in DB with error ${error.toString()}'),
+    );
   }
 }

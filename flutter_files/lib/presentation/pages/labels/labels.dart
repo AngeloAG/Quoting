@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_files/presentation/blocs/label/label_bloc.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';
+import 'package:flutter_files/presentation/shared/utilities.dart';
 
 class LabelsPage extends StatefulWidget {
   const LabelsPage({super.key});
@@ -62,35 +63,10 @@ class _LabelsPageState extends State<LabelsPage> {
             Expanded(
                 child: BlocConsumer<LabelBloc, LabelState>(
               listener: (context, state) {
-                if (state is LabelLoadFailure) {
-                  ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(
-                      SnackBar(
-                        content: Text(state.error),
-                      ),
-                    );
+                if (state is LabelFailure) {
+                  showSnackBar(state.error, context);
                 }
-                if (state is LabelUploadFailure) {
-                  ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(
-                      SnackBar(
-                        content: Text(state.error),
-                      ),
-                    );
-                }
-                if (state is LabelRemoveFailure) {
-                  ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(
-                      SnackBar(
-                        content: Text(state.error),
-                      ),
-                    );
-                }
-                if (state is LabelUploadSuccess ||
-                    state is LabelRemoveSuccess) {
+                if (state is LabelSuccess) {
                   context.read<LabelBloc>().add(LabelLoadEvent());
                 }
               },
@@ -150,10 +126,12 @@ class _LabelsPageState extends State<LabelsPage> {
                 Builder(builder: (context) {
                   return IconButton(
                     onPressed: () {
-                      context.read<LabelBloc>().add(LabelUploadEvent(
-                          labelContent: newLabelController.text));
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      newLabelController.clear();
+                      if (newLabelController.text.isNotEmpty) {
+                        context.read<LabelBloc>().add(LabelUploadEvent(
+                            labelContent: newLabelController.text));
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        newLabelController.clear();
+                      }
                     },
                     icon: const Icon(Icons.add),
                   );
