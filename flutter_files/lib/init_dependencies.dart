@@ -1,5 +1,6 @@
 import 'package:flutter_files/application/init_dependencies.dart';
 import 'package:flutter_files/infrastructure/init_dependencies.dart';
+import 'package:flutter_files/presentation/blocs/author/author_bloc.dart';
 import 'package:flutter_files/presentation/blocs/label/label_bloc.dart';
 import 'package:get_it/get_it.dart';
 
@@ -11,4 +12,7 @@ Future<void> initDependencies() async {
 
   serviceLocator
       .registerLazySingleton(() => LabelBloc(mediator: serviceLocator()));
+
+  serviceLocator
+      .registerLazySingleton(() => AuthorBloc(mediator: serviceLocator()));
 }
