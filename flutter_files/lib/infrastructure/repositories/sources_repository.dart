@@ -20,14 +20,12 @@ class SourceRepository implements ISourcesRepository {
   }
 
   @override
-  TaskEither<Failure, dynamic> removeSourceById(String sourceId) {
+  TaskEither<Failure, Unit> removeSourceById(String sourceId) {
     return iSourcesDataSource.removeSourceById(sourceId);
   }
 
   @override
-  TaskEither<Failure, Source> uploadSource(CreateSourceWork createSourceWork) {
-    return iSourcesDataSource.uploadSource(createSourceWork.source).map(
-        (sourceModel) =>
-            Source(id: sourceModel.id, source: sourceModel.source));
+  TaskEither<Failure, Unit> uploadSource(CreateSourceWork createSourceWork) {
+    return iSourcesDataSource.uploadSource(createSourceWork.source);
   }
 }

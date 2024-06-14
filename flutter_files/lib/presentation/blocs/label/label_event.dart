@@ -10,3 +10,9 @@ final class LabelUploadEvent extends LabelEvent {
 }
 
 final class LabelLoadEvent extends LabelEvent {}
+
+final class LabelRemoveEvent extends LabelEvent {
+  final String labelId;
+
+  LabelRemoveEvent({required this.labelId});
+}

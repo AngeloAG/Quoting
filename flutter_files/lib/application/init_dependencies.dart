@@ -22,37 +22,37 @@ import 'package:mediatr/mediatr.dart';
 Future<void> initApplicationDependencies(GetIt serviceLocator) async {
   final mediator = Mediator(Pipeline());
 
-  mediator.registerHandler<UploadLabelRequest, Either<Failure, Label>,
+  mediator.registerHandler<UploadLabelRequest, Either<Failure, Unit>,
       UploadLabelHandler>(() => UploadLabelHandler(serviceLocator()));
 
-  mediator.registerHandler<RemoveLabelRequest, Either<Failure, dynamic>,
+  mediator.registerHandler<RemoveLabelRequest, Either<Failure, Unit>,
       RemoveLabelHandler>(() => RemoveLabelHandler(serviceLocator()));
 
   mediator.registerHandler<GetAllLabelsRequest, Either<Failure, List<Label>>,
       GetAllLabelsHandler>(() => GetAllLabelsHandler(serviceLocator()));
 
-  mediator.registerHandler<UploadAuthorRequest, Either<Failure, Author>,
+  mediator.registerHandler<UploadAuthorRequest, Either<Failure, Unit>,
       UploadAuthorHandler>(() => UploadAuthorHandler(serviceLocator()));
 
-  mediator.registerHandler<RemoveAuthorRequest, Either<Failure, dynamic>,
+  mediator.registerHandler<RemoveAuthorRequest, Either<Failure, Unit>,
       RemoveAuthorHandler>(() => RemoveAuthorHandler(serviceLocator()));
 
   mediator.registerHandler<GetAllAuthorsRequest, Either<Failure, List<Author>>,
       GetAllAuthorsHandler>(() => GetAllAuthorsHandler(serviceLocator()));
 
-  mediator.registerHandler<UploadSourceRequest, Either<Failure, Source>,
+  mediator.registerHandler<UploadSourceRequest, Either<Failure, Unit>,
       UploadSourceHandler>(() => UploadSourceHandler(serviceLocator()));
 
-  mediator.registerHandler<RemoveSourceRequest, Either<Failure, dynamic>,
+  mediator.registerHandler<RemoveSourceRequest, Either<Failure, Unit>,
       RemoveSourceHandler>(() => RemoveSourceHandler(serviceLocator()));
 
   mediator.registerHandler<GetAllSourcesRequest, Either<Failure, List<Source>>,
       GetAllSourcesHandler>(() => GetAllSourcesHandler(serviceLocator()));
 
-  mediator.registerHandler<UploadQuoteRequest, Either<Failure, Quote>,
+  mediator.registerHandler<UploadQuoteRequest, Either<Failure, Unit>,
       UploadQuoteHandler>(() => UploadQuoteHandler(serviceLocator()));
 
-  mediator.registerHandler<RemoveQuoteRequest, Either<Failure, dynamic>,
+  mediator.registerHandler<RemoveQuoteRequest, Either<Failure, Unit>,
       RemoveQuoteHandler>(() => RemoveQuoteHandler(serviceLocator()));
 
   mediator.registerHandler<GetAllQuotesRequest, Either<Failure, List<Quote>>,

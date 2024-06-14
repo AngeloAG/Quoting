@@ -3,19 +3,19 @@ import 'package:flutter_files/domain/models/failure.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mediatr/mediatr.dart';
 
-class RemoveQuoteRequest extends IRequest<Either<Failure, dynamic>> {
+class RemoveQuoteRequest extends IRequest<Either<Failure, Unit>> {
   final String quoteId;
   RemoveQuoteRequest(this.quoteId);
 }
 
 class RemoveQuoteHandler
-    extends IRequestHandler<RemoveQuoteRequest, Either<Failure, dynamic>> {
+    extends IRequestHandler<RemoveQuoteRequest, Either<Failure, Unit>> {
   final IQuotesRepository iQuotesRepository;
 
   RemoveQuoteHandler(this.iQuotesRepository);
 
   @override
-  Future<Either<Failure, dynamic>> call(RemoveQuoteRequest request) {
+  Future<Either<Failure, Unit>> call(RemoveQuoteRequest request) {
     return iQuotesRepository.removeQuoteById(request.quoteId).run();
   }
 }

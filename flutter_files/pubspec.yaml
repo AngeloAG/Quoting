@@ -40,8 +40,9 @@ dependencies:
   bloc: ^8.1.4
   mediatr: ^0.2.1
   get_it: ^7.6.7
-  flutter_bloc: ^8.1.5
+  flutter_bloc: ^8.1.6
   sqflite: ^2.3.2
+  path: ^1.8.3
 
 dev_dependencies:
   flutter_test:
