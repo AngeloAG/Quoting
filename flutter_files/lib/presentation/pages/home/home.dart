@@ -32,15 +32,12 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
-        children: [
-          const QuotesPage(),
-          const AuthorsPage(),
-          const NewQuotePage(),
-          BlocProvider(
-            create: (_) => serviceLocator<LabelBloc>(),
-            child: const LabelsPage(),
-          ),
-          const SourcesPage()
+        children: const [
+          QuotesPage(),
+          AuthorsPage(),
+          NewQuotePage(),
+          LabelsPage(),
+          SourcesPage()
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
