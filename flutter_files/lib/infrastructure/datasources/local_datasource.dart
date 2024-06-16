@@ -127,16 +127,30 @@ class LocalDataSource
   }
 
   @override
-  TaskEither<Failure, Unit> uploadAuthor(String author) {
+  TaskEither<Failure, AuthorModel> uploadAuthor(String author) {
     return TaskEither.tryCatch(
       () async {
-        await db.insert('authors', {'author': author});
-        return unit;
+        return await db.insert('authors', {'author': author});
       },
       (error, stackTrace) => Failure(
           message:
               'Failed to insert author in DB with error ${error.toString()}'),
-    );
+    )
+        .flatMap(
+          (authorId) => TaskEither.tryCatch(() async {
+            return await db
+                .query('authors', where: 'id = ?', whereArgs: [authorId]);
+          },
+              (error, stackTrace) => Failure(
+                  message:
+                      'Failed to retrieve author from DB with error ${error.toString()}')),
+        )
+        .flatMap(
+          (authorsMaps) => Either.tryCatch(
+            () => AuthorModel.fromMap(authorsMaps.first),
+            (o, s) => Failure(message: "Failed to parse author from database"),
+          ).toTaskEither(),
+        );
   }
 
   @override
@@ -167,22 +181,36 @@ class LocalDataSource
   }
 
   @override
-  TaskEither<Failure, Unit> uploadQuote(String authorId, String labelId,
+  TaskEither<Failure, QuoteModel> uploadQuote(String authorId, String labelId,
       String sourceId, String details, String content) {
     // TODO: implement uploadQuote
     throw UnimplementedError();
   }
 
   @override
-  TaskEither<Failure, Unit> uploadSource(String source) {
+  TaskEither<Failure, SourceModel> uploadSource(String source) {
     return TaskEither.tryCatch(
       () async {
-        await db.insert('sources', {'source': source});
-        return unit;
+        return await db.insert('sources', {'source': source});
       },
       (error, stackTrace) => Failure(
           message:
               'Failed to insert source in DB with error ${error.toString()}'),
-    );
+    )
+        .flatMap(
+          (sourceId) => TaskEither.tryCatch(() async {
+            return await db
+                .query('sources', where: 'id = ?', whereArgs: [sourceId]);
+          },
+              (error, stackTrace) => Failure(
+                  message:
+                      'Failed to retrieve source from DB with error ${error.toString()}')),
+        )
+        .flatMap(
+          (sourcesMaps) => Either.tryCatch(
+            () => SourceModel.fromMap(sourcesMaps.first),
+            (o, s) => Failure(message: "Failed to parse source from database"),
+          ).toTaskEither(),
+        );
   }
 }

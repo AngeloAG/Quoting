@@ -1,8 +1,5 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_files/init_dependencies.dart';
-import 'package:flutter_files/presentation/blocs/label/label_bloc.dart';
 import 'package:flutter_files/presentation/pages/authors/authors.dart';
 import 'package:flutter_files/presentation/pages/labels/labels.dart';
 import 'package:flutter_files/presentation/pages/new_quote/new_quote.dart';

@@ -6,7 +6,7 @@ import 'package:fpdart/fpdart.dart';
 abstract interface class IAuthorsRepository {
   TaskEither<Failure, Unit> removeAuthorById(String authorId);
 
-  TaskEither<Failure, Unit> uploadAuthor(CreateAuthorWork createAuthorWork);
+  TaskEither<Failure, Author> uploadAuthor(CreateAuthorWork createAuthorWork);
 
   TaskEither<Failure, List<Author>> getAllAuthors();
 }

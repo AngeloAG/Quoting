@@ -31,7 +31,7 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
   mediator.registerHandler<GetAllLabelsRequest, Either<Failure, List<Label>>,
       GetAllLabelsHandler>(() => GetAllLabelsHandler(serviceLocator()));
 
-  mediator.registerHandler<UploadAuthorRequest, Either<Failure, Unit>,
+  mediator.registerHandler<UploadAuthorRequest, Either<Failure, Author>,
       UploadAuthorHandler>(() => UploadAuthorHandler(serviceLocator()));
 
   mediator.registerHandler<RemoveAuthorRequest, Either<Failure, Unit>,
@@ -40,7 +40,7 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
   mediator.registerHandler<GetAllAuthorsRequest, Either<Failure, List<Author>>,
       GetAllAuthorsHandler>(() => GetAllAuthorsHandler(serviceLocator()));
 
-  mediator.registerHandler<UploadSourceRequest, Either<Failure, Unit>,
+  mediator.registerHandler<UploadSourceRequest, Either<Failure, Source>,
       UploadSourceHandler>(() => UploadSourceHandler(serviceLocator()));
 
   mediator.registerHandler<RemoveSourceRequest, Either<Failure, Unit>,

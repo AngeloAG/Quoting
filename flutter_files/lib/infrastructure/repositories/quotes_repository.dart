@@ -42,11 +42,6 @@ class QuotesRepository implements IQuotesRepository {
 
   @override
   TaskEither<Failure, Unit> uploadQuote(CreateQuoteWork createQuoteWork) {
-    return iQuotesDataSource.uploadQuote(
-        createQuoteWork.authorId,
-        createQuoteWork.labelId,
-        createQuoteWork.sourceId,
-        createQuoteWork.details,
-        createQuoteWork.content);
+    throw UnimplementedError();
   }
 }
