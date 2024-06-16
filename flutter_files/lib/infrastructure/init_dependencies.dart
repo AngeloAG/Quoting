@@ -60,41 +60,26 @@ Future<Database> _initDatabase() async {
   final path = join(dbPath, 'quoting_db.db');
   return await openDatabase(
     path,
-    version: 2,
-    onUpgrade: (db, oldVersion, newVersion) async {
+    version: 1,
+    onCreate: (db, version) {
       db.execute('''
-          drop table if exists labels;
-
-          drop table if exists authors;
-
-          drop table if exists sources;
-
-          drop table if exists quotes;
-          ''');
-    },
-    onCreate: (db, version) async {
-      db.execute('''
-          drop table if exists labels;
-          create table if not exists labels (
-            id int not null primary key,
-            label text,
+          CREATE TABLE labels (
+            id INTEGER PRIMARY KEY,
+            label text
           );
 
-          drop table if exists authors;
-          create table if not exists authors (
-            id int not null primary key,
-            author text not null,
+          CREATE TABLE authors (
+            id INTEGER PRIMARY KEY,
+            author text not null
           );
 
-          drop table if exists sources;
-          create table if not exists sources (
-            id int not null primary key,
-            source text not null,
+          CREATE TABLE sources (
+            id INTEGER PRIMARY KEY,
+            source text not null
           );
 
-          drop table if exists quotes;
-          create table if not exists quotes (
-            id int not null primary key,
+          CREATE TABLE quotes (
+            id INTEGER PRIMARY KEY,
             content text not null,
             details text,
             author_id int,
@@ -107,4 +92,36 @@ Future<Database> _initDatabase() async {
           ''');
     },
   );
+}
+
+_onConfigure(Database db) async {
+  // Add support for cascade delete
+  await db.execute('''
+          CREATE TABLE labels (
+            id INTEGER PRIMARY KEY,
+            label text
+          );
+
+          CREATE TABLE authors (
+            id INTEGER PRIMARY KEY,
+            author text not null
+          );
+
+          CREATE TABLE sources (
+            id INTEGER PRIMARY KEY,
+            source text not null
+          );
+
+          CREATE TABLE quotes (
+            id INTEGER PRIMARY KEY,
+            content text not null,
+            details text,
+            author_id int,
+            label_id int,
+            source_id int,
+            foreign key (author_id) references authors(id),
+            foreign key (label_id) references labels(id),
+            foreign key (source_id) references sources(id)
+          );
+          ''');
 }

@@ -22,7 +22,7 @@ import 'package:mediatr/mediatr.dart';
 Future<void> initApplicationDependencies(GetIt serviceLocator) async {
   final mediator = Mediator(Pipeline());
 
-  mediator.registerHandler<UploadLabelRequest, Either<Failure, Unit>,
+  mediator.registerHandler<UploadLabelRequest, Either<Failure, Label>,
       UploadLabelHandler>(() => UploadLabelHandler(serviceLocator()));
 
   mediator.registerHandler<RemoveLabelRequest, Either<Failure, Unit>,

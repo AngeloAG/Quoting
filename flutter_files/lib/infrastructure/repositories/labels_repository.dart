@@ -23,7 +23,9 @@ class LabelsRepository implements ILabelsRepository {
   }
 
   @override
-  TaskEither<Failure, Unit> uploadLabel(CreateLabelWork createLabelWork) {
-    return iLabelsDataSource.uploadLabel(createLabelWork.label);
+  TaskEither<Failure, Label> uploadLabel(CreateLabelWork createLabelWork) {
+    return iLabelsDataSource
+        .uploadLabel(createLabelWork.label)
+        .map((labelModel) => Label(id: labelModel.id, label: labelModel.label));
   }
 }

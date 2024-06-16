@@ -31,15 +31,21 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
     final createLabelWork = CreateLabelWork(label: event.labelContent);
 
     final response =
-        await _mediator.send<UploadLabelRequest, Either<Failure, Unit>>(
+        await _mediator.send<UploadLabelRequest, Either<Failure, Label>>(
             UploadLabelRequest(createLabelWork: createLabelWork));
 
     response.fold(
       (failure) => emit(state.copyWith(
           status: () => LabelStatus.failure,
           failureMessage: () => failure.message)),
-      (uploadedLabel) => emit(state.copyWith(
-          status: () => LabelStatus.success, failureMessage: () => '')),
+      (uploadedLabel) {
+        final newLabels = state.labels;
+        newLabels.add(uploadedLabel);
+        emit(state.copyWith(
+            status: () => LabelStatus.success,
+            failureMessage: () => '',
+            labels: () => newLabels));
+      },
     );
   }
 
@@ -68,8 +74,14 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
       (failure) => emit(state.copyWith(
           status: () => LabelStatus.failure,
           failureMessage: () => failure.message)),
-      (unit) => emit(state.copyWith(
-          status: () => LabelStatus.success, failureMessage: () => '')),
+      (unit) {
+        final newLabels = state.labels;
+        newLabels.remove(event.label);
+        emit(state.copyWith(
+            status: () => LabelStatus.success,
+            labels: () => newLabels,
+            failureMessage: () => ''));
+      },
     );
   }
 }

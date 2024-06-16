@@ -39,7 +39,7 @@ class LocalDataSource
   @override
   TaskEither<Failure, List<LabelModel>> getAllLabels() {
     return TaskEither.tryCatch(
-      () => db.query('label'),
+      () => db.query('labels'),
       (error, stackTrace) => Failure(message: 'Failed to get labels from DB'),
     ).flatMap((labels) => Either.tryCatch(
           () => labels.map((labelMap) => LabelModel.fromMap(labelMap)).toList(),
@@ -94,7 +94,7 @@ class LocalDataSource
           message: "The id is not a valid int with error ${o.toString()}"),
     ).toTaskEither().flatMap((idAsInt) => TaskEither.tryCatch(
           () async {
-            await db.delete('label', where: 'id = ?', whereArgs: [idAsInt]);
+            await db.delete('labels', where: 'id = ?', whereArgs: [idAsInt]);
             return unit;
           },
           (error, stackTrace) => Failure(
@@ -140,16 +140,30 @@ class LocalDataSource
   }
 
   @override
-  TaskEither<Failure, Unit> uploadLabel(String label) {
+  TaskEither<Failure, LabelModel> uploadLabel(String label) {
     return TaskEither.tryCatch(
       () async {
-        await db.insert('label', {'label': label});
-        return unit;
+        return await db.insert('labels', {'label': label});
       },
       (error, stackTrace) => Failure(
           message:
               'Failed to insert label in DB with error ${error.toString()}'),
-    );
+    )
+        .flatMap(
+          (labelId) => TaskEither.tryCatch(() async {
+            return await db
+                .query('labels', where: 'id = ?', whereArgs: [labelId]);
+          },
+              (error, stackTrace) => Failure(
+                  message:
+                      'Failed to retrieve label from DB with error ${error.toString()}')),
+        )
+        .flatMap(
+          (labelsMaps) => Either.tryCatch(
+            () => LabelModel.fromMap(labelsMaps.first),
+            (o, s) => Failure(message: "Failed to parse labels from database"),
+          ).toTaskEither(),
+        );
   }
 
   @override
