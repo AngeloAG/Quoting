@@ -63,18 +63,18 @@ class _LabelsPageState extends State<LabelsPage> {
             Expanded(
                 child: BlocConsumer<LabelBloc, LabelState>(
               listener: (context, state) {
-                if (state is LabelFailure) {
-                  showSnackBar(state.error, context);
+                if (state.status == LabelStatus.failure) {
+                  showSnackBar(state.failureMessage, context);
                 }
-                if (state is LabelSuccess) {
+                if (state.status == LabelStatus.success) {
                   context.read<LabelBloc>().add(LabelLoadEvent());
                 }
               },
               builder: (context, state) {
-                if (state is LabelLoading) {
+                if (state.status == LabelStatus.loading) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (state is LabelLoadSuccess) {
+                if (state.status == LabelStatus.loaded) {
                   return ListView.builder(
                     itemCount: state.labels.length,
                     itemBuilder: (context, index) {
@@ -96,7 +96,7 @@ class _LabelsPageState extends State<LabelsPage> {
                                 onPressed: () {
                                   context.read<LabelBloc>().add(
                                       LabelRemoveEvent(
-                                          labelId: state.labels[index].id));
+                                          label: state.labels[index]));
                                 },
                               ),
                             ]),

@@ -1,7 +1,12 @@
 part of 'label_bloc.dart';
 
 @immutable
-sealed class LabelEvent {}
+sealed class LabelEvent extends Equatable {
+  @override
+  List<Object> get props => [];
+}
+
+final class LabelLoadEvent extends LabelEvent {}
 
 final class LabelUploadEvent extends LabelEvent {
   final String labelContent;
@@ -9,10 +14,8 @@ final class LabelUploadEvent extends LabelEvent {
   LabelUploadEvent({required this.labelContent});
 }
 
-final class LabelLoadEvent extends LabelEvent {}
-
 final class LabelRemoveEvent extends LabelEvent {
-  final String labelId;
+  final Label label;
 
-  LabelRemoveEvent({required this.labelId});
+  LabelRemoveEvent({required this.label});
 }
