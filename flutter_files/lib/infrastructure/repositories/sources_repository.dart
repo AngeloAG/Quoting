@@ -25,7 +25,9 @@ class SourceRepository implements ISourcesRepository {
   }
 
   @override
-  TaskEither<Failure, Unit> uploadSource(CreateSourceWork createSourceWork) {
-    return iSourcesDataSource.uploadSource(createSourceWork.source);
+  TaskEither<Failure, Source> uploadSource(CreateSourceWork createSourceWork) {
+    return iSourcesDataSource.uploadSource(createSourceWork.source).map(
+        (sourceModel) =>
+            Source(id: sourceModel.id, source: sourceModel.source));
   }
 }

@@ -6,7 +6,7 @@ import 'package:fpdart/fpdart.dart';
 abstract interface class ISourcesRepository {
   TaskEither<Failure, Unit> removeSourceById(String sourceId);
 
-  TaskEither<Failure, Unit> uploadSource(CreateSourceWork createSourceWork);
+  TaskEither<Failure, Source> uploadSource(CreateSourceWork createSourceWork);
 
   TaskEither<Failure, List<Source>> getAllSources();
 }

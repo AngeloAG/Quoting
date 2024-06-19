@@ -3,7 +3,7 @@ import 'package:flutter_files/infrastructure/common/models/quote_model.dart';
 import 'package:fpdart/fpdart.dart';
 
 abstract interface class IQuotesDataSource {
-  TaskEither<Failure, Unit> uploadQuote(String authorId, String labelId,
+  TaskEither<Failure, QuoteModel> uploadQuote(String authorId, String labelId,
       String sourceId, String details, String content);
 
   TaskEither<Failure, Unit> removeQuoteById(String id);

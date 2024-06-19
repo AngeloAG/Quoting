@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_files/application/labels/commands/remove_label_handler.dart';
 import 'package:flutter_files/application/labels/commands/upload_label_handler.dart';
@@ -18,8 +19,9 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
   LabelBloc({
     required Mediator mediator,
   })  : _mediator = mediator,
-        super(LabelInitial()) {
-    on<LabelEvent>((event, emit) => emit(LabelLoading()));
+        super(const LabelState()) {
+    on<LabelEvent>((event, emit) =>
+        emit(state.copyWith(status: () => LabelStatus.loading)));
     on<LabelUploadEvent>(_onLabelUpload);
     on<LabelLoadEvent>(_onLabelLoad);
     on<LabelRemoveEvent>(_onLabelRemove);
@@ -29,12 +31,21 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
     final createLabelWork = CreateLabelWork(label: event.labelContent);
 
     final response =
-        await _mediator.send<UploadLabelRequest, Either<Failure, Unit>>(
+        await _mediator.send<UploadLabelRequest, Either<Failure, Label>>(
             UploadLabelRequest(createLabelWork: createLabelWork));
 
     response.fold(
-      (failure) => emit(LabelFailure(failure.message)),
-      (uploadedLabel) => emit(LabelSuccess()),
+      (failure) => emit(state.copyWith(
+          status: () => LabelStatus.failure,
+          failureMessage: () => failure.message)),
+      (uploadedLabel) {
+        final newLabels = state.labels;
+        newLabels.add(uploadedLabel);
+        emit(state.copyWith(
+            status: () => LabelStatus.success,
+            failureMessage: () => '',
+            labels: () => newLabels));
+      },
     );
   }
 
@@ -44,19 +55,33 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
             GetAllLabelsRequest());
 
     response.fold(
-      (failure) => emit(LabelFailure(failure.message)),
-      (labels) => emit(LabelLoadSuccess(labels)),
+      (failure) => emit(state.copyWith(
+          status: () => LabelStatus.failure,
+          failureMessage: () => failure.message)),
+      (labels) => emit(state.copyWith(
+          status: () => LabelStatus.loaded,
+          failureMessage: () => '',
+          labels: () => labels)),
     );
   }
 
   void _onLabelRemove(LabelRemoveEvent event, Emitter emit) async {
     final response =
         await _mediator.send<RemoveLabelRequest, Either<Failure, Unit>>(
-            RemoveLabelRequest(labelId: event.labelId));
+            RemoveLabelRequest(labelId: event.label.id));
 
     response.fold(
-      (failure) => emit(LabelFailure(failure.message)),
-      (unit) => emit(LabelSuccess()),
+      (failure) => emit(state.copyWith(
+          status: () => LabelStatus.failure,
+          failureMessage: () => failure.message)),
+      (unit) {
+        final newLabels = state.labels;
+        newLabels.remove(event.label);
+        emit(state.copyWith(
+            status: () => LabelStatus.success,
+            labels: () => newLabels,
+            failureMessage: () => ''));
+      },
     );
   }
 }

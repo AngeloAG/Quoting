@@ -6,7 +6,7 @@ import 'package:fpdart/fpdart.dart';
 abstract interface class ILabelsRepository {
   TaskEither<Failure, Unit> removeLabelById(String labelId);
 
-  TaskEither<Failure, Unit> uploadLabel(CreateLabelWork createLabelWork);
+  TaskEither<Failure, Label> uploadLabel(CreateLabelWork createLabelWork);
 
   TaskEither<Failure, List<Label>> getAllLabels();
 }

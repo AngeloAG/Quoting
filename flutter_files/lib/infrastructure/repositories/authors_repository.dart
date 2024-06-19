@@ -25,7 +25,8 @@ class AuthorsRepository implements IAuthorsRepository {
   }
 
   @override
-  TaskEither<Failure, Unit> uploadAuthor(CreateAuthorWork createAuthorWork) {
-    return iAuthorsDataSource.uploadAuthor(createAuthorWork.name);
+  TaskEither<Failure, Author> uploadAuthor(CreateAuthorWork createAuthorWork) {
+    return iAuthorsDataSource.uploadAuthor(createAuthorWork.name).map(
+        (authorModel) => Author(id: authorModel.id, name: authorModel.author));
   }
 }
