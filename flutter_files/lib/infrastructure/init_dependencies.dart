@@ -17,11 +17,8 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 Future<void> initInfrastructureDependencies(GetIt serviceLocator) async {
-  var db = await _initDatabase();
-
   var driftDb = DriftDB();
 
-  serviceLocator.registerLazySingleton<Database>(() => db);
   serviceLocator.registerLazySingleton<DriftDB>(() => driftDb);
 
   _initDataSources(serviceLocator);

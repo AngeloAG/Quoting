@@ -83,9 +83,7 @@ class _LabelsPageState extends State<LabelsPage> {
                   if (state.status == LabelStatus.loading && labels.isEmpty) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  if (state.status == LabelStatus.loaded ||
-                      state.status == LabelStatus.success ||
-                      labels.isNotEmpty) {
+                  if (labels.isNotEmpty) {
                     return ListView.builder(
                       itemCount: labels.length,
                       itemBuilder: (context, index) {
