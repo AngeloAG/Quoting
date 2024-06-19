@@ -5,6 +5,7 @@ import 'package:flutter_files/presentation/pages/labels/labels.dart';
 import 'package:flutter_files/presentation/pages/new_quote/new_quote.dart';
 import 'package:flutter_files/presentation/pages/quotes/quotes.dart';
 import 'package:flutter_files/presentation/pages/sources/sources.dart';
+import 'package:flutter_lazy_indexed_stack/flutter_lazy_indexed_stack.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key, required this.initialIndex});
@@ -27,7 +28,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
+      body: LazyIndexedStack(
         index: _currentIndex,
         children: const [
           QuotesPage(),
