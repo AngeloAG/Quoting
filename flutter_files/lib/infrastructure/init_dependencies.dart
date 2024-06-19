@@ -11,6 +11,7 @@ import 'package:flutter_files/infrastructure/repositories/authors_repository.dar
 import 'package:flutter_files/infrastructure/repositories/labels_repository.dart';
 import 'package:flutter_files/infrastructure/repositories/quotes_repository.dart';
 import 'package:flutter_files/infrastructure/repositories/sources_repository.dart';
+import 'package:flutter_files/infrastructure/settings/drift/drift_db.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -18,7 +19,11 @@ import 'package:sqflite/sqflite.dart';
 Future<void> initInfrastructureDependencies(GetIt serviceLocator) async {
   var db = await _initDatabase();
 
+  var driftDb = DriftDB();
+
   serviceLocator.registerLazySingleton<Database>(() => db);
+  serviceLocator.registerLazySingleton<DriftDB>(() => driftDb);
+
   _initDataSources(serviceLocator);
   _initRepos(serviceLocator);
 }
