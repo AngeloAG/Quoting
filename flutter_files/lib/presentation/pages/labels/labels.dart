@@ -74,10 +74,8 @@ class _LabelsPageState extends State<LabelsPage> {
                   if (state.status == LabelStatus.failure) {
                     showSnackBar(state.failureMessage, context);
                   }
-                  if (state.status == LabelStatus.success) {
-                    context.read<LabelBloc>().add(LabelLoadEvent());
-                  }
-                  if (state.status == LabelStatus.loaded) {
+                  if (state.status == LabelStatus.success ||
+                      state.status == LabelStatus.loaded) {
                     labels = state.labels;
                   }
                 },
@@ -85,7 +83,9 @@ class _LabelsPageState extends State<LabelsPage> {
                   if (state.status == LabelStatus.loading && labels.isEmpty) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  if (state.status == LabelStatus.loaded || labels.isNotEmpty) {
+                  if (state.status == LabelStatus.loaded ||
+                      state.status == LabelStatus.success ||
+                      labels.isNotEmpty) {
                     return ListView.builder(
                       itemCount: labels.length,
                       itemBuilder: (context, index) {
