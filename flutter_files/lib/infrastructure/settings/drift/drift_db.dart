@@ -9,12 +9,12 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 part 'drift_db.g.dart';
 
-@DriftDatabase(tables: [Labels])
+@DriftDatabase(tables: [Labels, Authors, Sources])
 class DriftDB extends _$DriftDB {
   DriftDB() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 }
 
 LazyDatabase _openConnection() {

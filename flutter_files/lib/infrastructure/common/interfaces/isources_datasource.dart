@@ -8,4 +8,6 @@ abstract interface class ISourcesDataSource {
   TaskEither<Failure, Unit> removeSourceById(String id);
 
   TaskEither<Failure, List<SourceModel>> getAllSources();
+
+  TaskEither<Failure, Unit> updateSource(SourceModel source);
 }
