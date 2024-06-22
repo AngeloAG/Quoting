@@ -19,3 +19,9 @@ final class LabelRemoveEvent extends LabelEvent {
 
   LabelRemoveEvent({required this.label});
 }
+
+final class LabelUpdateEvent extends LabelEvent {
+  final Label label;
+
+  LabelUpdateEvent({required this.label});
+}

@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_files/domain/models/failure.dart';
+import 'package:flutter_files/domain/works/update_label_work.dart';
 import 'package:flutter_files/infrastructure/common/interfaces/iauthors_datasource.dart';
 import 'package:flutter_files/infrastructure/common/interfaces/ilabels_datasource.dart';
 import 'package:flutter_files/infrastructure/common/interfaces/iquotes_datasource.dart';
@@ -63,9 +64,9 @@ class LocalDataSource
           message: "The id is not a valid int with error ${o.toString()}"),
     ).toTaskEither().flatMap((idAsInt) => TaskEither.tryCatch(
           () async {
-            driftDB
-                .delete(driftDB.labels)
-                .where((tbl) => tbl.id.equals(int.parse(id)));
+            (driftDB.delete(driftDB.labels)
+                  ..where((tbl) => tbl.id.equals(int.parse(id))))
+                .go();
             return unit;
           },
           (error, stackTrace) => Failure(
@@ -94,7 +95,7 @@ class LocalDataSource
   TaskEither<Failure, LabelModel> uploadLabel(String label) {
     return TaskEither.tryCatch(
       () async {
-        return await driftDB
+        return driftDB
             .into(driftDB.labels)
             .insert(LabelsCompanion(content: Value(label)));
       },
@@ -131,5 +132,20 @@ class LocalDataSource
   @override
   TaskEither<Failure, SourceModel> uploadSource(String source) {
     throw UnimplementedError();
+  }
+
+  @override
+  TaskEither<Failure, Unit> updateLabel(UpdateLabelWork updateLabelWork) {
+    return TaskEither.tryCatch(
+      () async {
+        driftDB.update(driftDB.labels).replace(LabelsCompanion(
+            id: Value(int.parse(updateLabelWork.id)),
+            content: Value(updateLabelWork.label)));
+        return unit;
+      },
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to update label in DB with error: ${error.toString()}'),
+    );
   }
 }
