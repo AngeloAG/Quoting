@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_files/domain/models/label.dart';
 import 'package:flutter_files/init_dependencies.dart';
 import 'package:flutter_files/presentation/blocs/label/label_bloc.dart';
+import 'package:flutter_files/presentation/pages/labels/edit_label.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';
 import 'package:flutter_files/presentation/shared/utilities.dart';
 
@@ -74,10 +75,8 @@ class _LabelsPageState extends State<LabelsPage> {
                   if (state.status == LabelStatus.failure) {
                     showSnackBar(state.failureMessage, context);
                   }
-                  if (state.status == LabelStatus.success) {
-                    context.read<LabelBloc>().add(LabelLoadEvent());
-                  }
-                  if (state.status == LabelStatus.loaded) {
+                  if (state.status == LabelStatus.success ||
+                      state.status == LabelStatus.loaded) {
                     labels = state.labels;
                   }
                 },
@@ -85,7 +84,7 @@ class _LabelsPageState extends State<LabelsPage> {
                   if (state.status == LabelStatus.loading && labels.isEmpty) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  if (state.status == LabelStatus.loaded || labels.isNotEmpty) {
+                  if (labels.isNotEmpty) {
                     return ListView.builder(
                       itemCount: labels.length,
                       itemBuilder: (context, index) {
@@ -98,7 +97,21 @@ class _LabelsPageState extends State<LabelsPage> {
                                   children: [
                                     IconButton(
                                       icon: const Icon(Icons.edit_note_rounded),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext _) {
+                                              return EditLabelDialog(
+                                                  onSubmit: (Label
+                                                          labelUpdate) =>
+                                                      context
+                                                          .read<LabelBloc>()
+                                                          .add(LabelUpdateEvent(
+                                                              label:
+                                                                  labelUpdate)),
+                                                  originalLabel: labels[index]);
+                                            });
+                                      },
                                     ),
                                     const SizedBox(
                                       width: 15.0,
@@ -140,7 +153,7 @@ class _LabelsPageState extends State<LabelsPage> {
                       onPressed: () {
                         if (newLabelController.text.isNotEmpty) {
                           context.read<LabelBloc>().add(LabelUploadEvent(
-                              labelContent: newLabelController.text));
+                              labelContent: newLabelController.text.trim()));
                           FocusManager.instance.primaryFocus?.unfocus();
                           newLabelController.clear();
                         }

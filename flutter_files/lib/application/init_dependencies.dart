@@ -2,6 +2,7 @@ import 'package:flutter_files/application/authors/commands/remove_author_handler
 import 'package:flutter_files/application/authors/commands/upload_author_handler.dart';
 import 'package:flutter_files/application/authors/queries/get_all_authors_handler.dart';
 import 'package:flutter_files/application/labels/commands/remove_label_handler.dart';
+import 'package:flutter_files/application/labels/commands/update_label_handler.dart';
 import 'package:flutter_files/application/labels/commands/upload_label_handler.dart';
 import 'package:flutter_files/application/labels/queries/get_all_labels_handler.dart';
 import 'package:flutter_files/application/quotes/commands/remove_quote_handler.dart';
@@ -30,6 +31,9 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
 
   mediator.registerHandler<GetAllLabelsRequest, Either<Failure, List<Label>>,
       GetAllLabelsHandler>(() => GetAllLabelsHandler(serviceLocator()));
+
+  mediator.registerHandler<UpdateLabelRequest, Either<Failure, Unit>,
+      UpdateLabelHandler>(() => UpdateLabelHandler(serviceLocator()));
 
   mediator.registerHandler<UploadAuthorRequest, Either<Failure, Author>,
       UploadAuthorHandler>(() => UploadAuthorHandler(serviceLocator()));

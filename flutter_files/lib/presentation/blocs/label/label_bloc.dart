@@ -2,11 +2,13 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_files/application/labels/commands/remove_label_handler.dart';
+import 'package:flutter_files/application/labels/commands/update_label_handler.dart';
 import 'package:flutter_files/application/labels/commands/upload_label_handler.dart';
 import 'package:flutter_files/application/labels/queries/get_all_labels_handler.dart';
 import 'package:flutter_files/domain/models/failure.dart';
 import 'package:flutter_files/domain/models/label.dart';
 import 'package:flutter_files/domain/works/create_label_work.dart';
+import 'package:flutter_files/domain/works/update_label_work.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mediatr/mediatr.dart';
 
@@ -25,6 +27,7 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
     on<LabelUploadEvent>(_onLabelUpload);
     on<LabelLoadEvent>(_onLabelLoad);
     on<LabelRemoveEvent>(_onLabelRemove);
+    on<LabelUpdateEvent>(_onLabelUpdate);
   }
 
   void _onLabelUpload(LabelUploadEvent event, Emitter<LabelState> emit) async {
@@ -77,6 +80,30 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
       (unit) {
         final newLabels = state.labels;
         newLabels.remove(event.label);
+        emit(state.copyWith(
+            status: () => LabelStatus.success,
+            labels: () => newLabels,
+            failureMessage: () => ''));
+      },
+    );
+  }
+
+  void _onLabelUpdate(LabelUpdateEvent event, Emitter emit) async {
+    final labelUpdateWork =
+        UpdateLabelWork(id: event.label.id, label: event.label.label);
+
+    final response =
+        await _mediator.send<UpdateLabelRequest, Either<Failure, Unit>>(
+            UpdateLabelRequest(updateLabelWork: labelUpdateWork));
+
+    response.fold(
+      (failure) => emit(state.copyWith(
+          status: () => LabelStatus.failure,
+          failureMessage: () => failure.message)),
+      (unit) {
+        final newLabels = state.labels;
+        newLabels.removeWhere((element) => element.id == event.label.id);
+        newLabels.add(event.label);
         emit(state.copyWith(
             status: () => LabelStatus.success,
             labels: () => newLabels,
