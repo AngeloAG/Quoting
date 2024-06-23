@@ -3,6 +3,7 @@ import 'package:flutter_files/domain/models/author.dart';
 import 'package:flutter_files/domain/models/failure.dart';
 import 'package:flutter_files/domain/works/create_author_work.dart';
 import 'package:flutter_files/infrastructure/common/interfaces/iauthors_datasource.dart';
+import 'package:flutter_files/infrastructure/common/models/author_model.dart';
 import 'package:fpdart/fpdart.dart';
 
 class AuthorsRepository implements IAuthorsRepository {
@@ -28,5 +29,10 @@ class AuthorsRepository implements IAuthorsRepository {
   TaskEither<Failure, Author> uploadAuthor(CreateAuthorWork createAuthorWork) {
     return iAuthorsDataSource.uploadAuthor(createAuthorWork.name).map(
         (authorModel) => Author(id: authorModel.id, name: authorModel.author));
+  }
+
+  @override
+  TaskEither<Failure, Unit> updateAuthor(Author author) {
+    return iAuthorsDataSource.updateAuthor(AuthorModel(author.id, author.name));
   }
 }

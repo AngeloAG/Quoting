@@ -3,6 +3,7 @@ import 'package:flutter_files/domain/models/failure.dart';
 import 'package:flutter_files/domain/models/source.dart';
 import 'package:flutter_files/domain/works/create_source_work.dart';
 import 'package:flutter_files/infrastructure/common/interfaces/isources_datasource.dart';
+import 'package:flutter_files/infrastructure/common/models/source_model.dart';
 import 'package:fpdart/fpdart.dart';
 
 class SourceRepository implements ISourcesRepository {
@@ -29,5 +30,11 @@ class SourceRepository implements ISourcesRepository {
     return iSourcesDataSource.uploadSource(createSourceWork.source).map(
         (sourceModel) =>
             Source(id: sourceModel.id, source: sourceModel.source));
+  }
+
+  @override
+  TaskEither<Failure, Unit> updateSource(Source source) {
+    return iSourcesDataSource
+        .updateSource(SourceModel(source.id, source.source));
   }
 }

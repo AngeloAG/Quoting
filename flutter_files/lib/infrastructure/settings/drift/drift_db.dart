@@ -15,6 +15,18 @@ class DriftDB extends _$DriftDB {
 
   @override
   int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(onCreate: (Migrator m) async {
+      await m.createAll();
+    }, onUpgrade: (Migrator m, int from, int to) async {
+      if (from < 2) {
+        await m.createTable(authors);
+        await m.createTable(sources);
+      }
+    });
+  }
 }
 
 LazyDatabase _openConnection() {
