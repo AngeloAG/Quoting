@@ -1,5 +1,10 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_files/init_dependencies.dart';
+import 'package:flutter_files/presentation/blocs/author/author_bloc.dart';
+import 'package:flutter_files/presentation/blocs/label/label_bloc.dart';
+import 'package:flutter_files/presentation/blocs/source/source_bloc.dart';
 import 'package:flutter_files/presentation/pages/authors/authors.dart';
 import 'package:flutter_files/presentation/pages/labels/labels.dart';
 import 'package:flutter_files/presentation/pages/new_quote/new_quote.dart';
@@ -28,15 +33,22 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LazyIndexedStack(
-        index: _currentIndex,
-        children: const [
-          QuotesPage(),
-          AuthorsPage(),
-          NewQuotePage(),
-          LabelsPage(),
-          SourcesPage()
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider<LabelBloc>(create: (_) => serviceLocator<LabelBloc>()),
+          BlocProvider<AuthorBloc>(create: (_) => serviceLocator<AuthorBloc>()),
+          BlocProvider<SourceBloc>(create: (_) => serviceLocator<SourceBloc>()),
         ],
+        child: LazyIndexedStack(
+          index: _currentIndex,
+          children: const [
+            QuotesPage(),
+            AuthorsPage(),
+            NewQuotePage(),
+            LabelsPage(),
+            SourcesPage()
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.grey.shade700,
