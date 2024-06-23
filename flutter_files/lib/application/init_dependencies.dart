@@ -1,4 +1,5 @@
 import 'package:flutter_files/application/authors/commands/remove_author_handler.dart';
+import 'package:flutter_files/application/authors/commands/update_author_handler.dart';
 import 'package:flutter_files/application/authors/commands/upload_author_handler.dart';
 import 'package:flutter_files/application/authors/queries/get_all_authors_handler.dart';
 import 'package:flutter_files/application/labels/commands/remove_label_handler.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_files/application/quotes/commands/remove_quote_handler.d
 import 'package:flutter_files/application/quotes/commands/upload_quote_handler.dart';
 import 'package:flutter_files/application/quotes/queries/get_all_quotes_handler.dart';
 import 'package:flutter_files/application/sources/commands/remove_source_handler.dart';
+import 'package:flutter_files/application/sources/commands/update_source_handler.dart';
 import 'package:flutter_files/application/sources/commands/upload_source_handler.dart';
 import 'package:flutter_files/application/sources/queries/get_all_sources_handler.dart';
 import 'package:flutter_files/domain/models/author.dart';
@@ -47,11 +49,17 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
   mediator.registerHandler<UploadSourceRequest, Either<Failure, Source>,
       UploadSourceHandler>(() => UploadSourceHandler(serviceLocator()));
 
+  mediator.registerHandler<UpdateAuthorRequest, Either<Failure, Unit>,
+      UpdateAuthorHandler>(() => UpdateAuthorHandler(serviceLocator()));
+
   mediator.registerHandler<RemoveSourceRequest, Either<Failure, Unit>,
       RemoveSourceHandler>(() => RemoveSourceHandler(serviceLocator()));
 
   mediator.registerHandler<GetAllSourcesRequest, Either<Failure, List<Source>>,
       GetAllSourcesHandler>(() => GetAllSourcesHandler(serviceLocator()));
+
+  mediator.registerHandler<UpdateSourceRequest, Either<Failure, Unit>,
+      UpdateSourceHandler>(() => UpdateSourceHandler(serviceLocator()));
 
   mediator.registerHandler<UploadQuoteRequest, Either<Failure, Unit>,
       UploadQuoteHandler>(() => UploadQuoteHandler(serviceLocator()));

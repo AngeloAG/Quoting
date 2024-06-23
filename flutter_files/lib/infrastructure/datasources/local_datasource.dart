@@ -24,19 +24,34 @@ class LocalDataSource
 
   @override
   TaskEither<Failure, List<AuthorModel>> getAllAuthors() {
-    throw UnimplementedError();
+    return TaskEither.tryCatch(
+      () async => driftDB.select(driftDB.authors).get(),
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to get authors from DB with error: ${error.toString()}'),
+    ).flatMap((authors) => Either.tryCatch(
+          () => authors
+              .map((author) => AuthorModel(author.id.toString(), author.name))
+              .toList(),
+          (o, s) => Failure(
+              message: 'Failed to parse authors with error: ${o.toString()}'),
+        ).toTaskEither());
   }
 
   @override
   TaskEither<Failure, List<LabelModel>> getAllLabels() {
     return TaskEither.tryCatch(
       () async => driftDB.select(driftDB.labels).get(),
-      (error, stackTrace) => Failure(message: 'Failed to get labels from DB'),
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to get labels from DB, with error: ${error.toString()}'),
     ).flatMap((labels) => Either.tryCatch(
           () => labels
               .map((label) => LabelModel(label.id.toString(), label.content))
               .toList(),
-          (o, s) => Failure(message: "Failed to parse labels from database"),
+          (o, s) => Failure(
+              message:
+                  'Failed to parse labels from database with error: ${o.toString()}'),
         ).toTaskEither());
   }
 
@@ -48,12 +63,39 @@ class LocalDataSource
 
   @override
   TaskEither<Failure, List<SourceModel>> getAllSources() {
-    throw UnimplementedError();
+    return TaskEither.tryCatch(
+      () async => driftDB.select(driftDB.sources).get(),
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to get sources from DB, with error: ${error.toString()}'),
+    ).flatMap((sources) => Either.tryCatch(
+          () => sources
+              .map(
+                  (source) => SourceModel(source.id.toString(), source.content))
+              .toList(),
+          (o, s) => Failure(
+              message:
+                  'Failed to parse sources from database with error: ${o.toString()}'),
+        ).toTaskEither());
   }
 
   @override
   TaskEither<Failure, Unit> removeAuthorById(String id) {
-    throw UnimplementedError();
+    return Either.tryCatch(
+      () => int.parse(id),
+      (error, stackTrace) => Failure(
+          message: 'The id is not a valid int with error: ${error.toString()}'),
+    ).toTaskEither().flatMap((idAsInt) => TaskEither.tryCatch(
+          () async {
+            (driftDB.delete(driftDB.authors)
+                  ..where((tbl) => tbl.id.equals(idAsInt)))
+                .go();
+            return unit;
+          },
+          (error, stackTrace) => Failure(
+              message:
+                  'Failed to delete from DB with error: ${error.toString()}'),
+        ));
   }
 
   @override
@@ -61,17 +103,17 @@ class LocalDataSource
     return Either.tryCatch(
       () => int.parse(id),
       (o, s) => Failure(
-          message: "The id is not a valid int with error ${o.toString()}"),
+          message: 'The id is not a valid int with error: ${o.toString()}'),
     ).toTaskEither().flatMap((idAsInt) => TaskEither.tryCatch(
           () async {
             (driftDB.delete(driftDB.labels)
-                  ..where((tbl) => tbl.id.equals(int.parse(id))))
+                  ..where((tbl) => tbl.id.equals(idAsInt)))
                 .go();
             return unit;
           },
           (error, stackTrace) => Failure(
               message:
-                  'Failed to delete from DB with error ${error.toString()}'),
+                  'Failed to delete from DB with error: ${error.toString()}'),
         ));
   }
 
@@ -83,12 +125,51 @@ class LocalDataSource
 
   @override
   TaskEither<Failure, Unit> removeSourceById(String id) {
-    throw UnimplementedError();
+    return Either.tryCatch(
+      () => int.parse(id),
+      (error, stackTrace) => Failure(
+          message: 'The id is not a valid int with error: ${error.toString()}'),
+    ).toTaskEither().flatMap((idAsInt) => TaskEither.tryCatch(
+          () async {
+            (driftDB.delete(driftDB.sources)
+                  ..where((tbl) => tbl.id.equals(idAsInt)))
+                .go();
+            return unit;
+          },
+          (error, stackTrace) => Failure(
+              message:
+                  'Failed to delete from DB with error: ${error.toString()}'),
+        ));
   }
 
   @override
   TaskEither<Failure, AuthorModel> uploadAuthor(String author) {
-    throw UnimplementedError();
+    return TaskEither.tryCatch(
+      () async => driftDB
+          .into(driftDB.authors)
+          .insert(AuthorsCompanion(name: Value(author))),
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to insert author in DB with error: ${error.toString()}'),
+    )
+        .flatMap((authorId) => TaskEither.tryCatch(
+              () async {
+                return (driftDB.select(driftDB.authors)
+                      ..where((tbl) => tbl.id.equals(authorId)))
+                    .get();
+              },
+              (error, stackTrace) => Failure(
+                  message:
+                      'Failed to retrieve author from DB with error: ${error.toString()}'),
+            ))
+        .flatMap(
+          (authors) => Either.tryCatch(
+            () => AuthorModel(authors.first.id.toString(), authors.first.name),
+            (o, s) => Failure(
+                message:
+                    'Failed to parse authors from DB with error: ${o.toString()}'),
+          ).toTaskEither(),
+        );
   }
 
   @override
@@ -117,7 +198,7 @@ class LocalDataSource
           (labelsMaps) => Either.tryCatch(
             () => LabelModel(
                 labelsMaps.first.id.toString(), labelsMaps.first.content),
-            (o, s) => Failure(message: "Failed to parse labels from database"),
+            (o, s) => Failure(message: 'Failed to parse labels from database'),
           ).toTaskEither(),
         );
   }
@@ -131,7 +212,33 @@ class LocalDataSource
 
   @override
   TaskEither<Failure, SourceModel> uploadSource(String source) {
-    throw UnimplementedError();
+    return TaskEither.tryCatch(
+      () async => driftDB
+          .into(driftDB.sources)
+          .insert(SourcesCompanion(content: Value(source))),
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to insert source in DB with error: ${error.toString()}'),
+    )
+        .flatMap((sourceId) => TaskEither.tryCatch(
+              () async {
+                return (driftDB.select(driftDB.sources)
+                      ..where((tbl) => tbl.id.equals(sourceId)))
+                    .get();
+              },
+              (error, stackTrace) => Failure(
+                  message:
+                      'Failed to retrieve source from DB with error: ${error.toString()}'),
+            ))
+        .flatMap(
+          (sources) => Either.tryCatch(
+            () =>
+                SourceModel(sources.first.id.toString(), sources.first.content),
+            (o, s) => Failure(
+                message:
+                    'Failed to parse source from DB with error: ${o.toString()}'),
+          ).toTaskEither(),
+        );
   }
 
   @override
@@ -146,6 +253,34 @@ class LocalDataSource
       (error, stackTrace) => Failure(
           message:
               'Failed to update label in DB with error: ${error.toString()}'),
+    );
+  }
+
+  @override
+  TaskEither<Failure, Unit> updateAuthor(AuthorModel author) {
+    return TaskEither.tryCatch(
+      () async {
+        driftDB.update(driftDB.authors).replace(AuthorsCompanion(
+            id: Value(int.parse(author.id)), name: Value(author.author)));
+        return unit;
+      },
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to update label in DB with error: ${error.toString()}'),
+    );
+  }
+
+  @override
+  TaskEither<Failure, Unit> updateSource(SourceModel source) {
+    return TaskEither.tryCatch(
+      () async {
+        driftDB.update(driftDB.sources).replace(SourcesCompanion(
+            id: Value(int.parse(source.id)), content: Value(source.source)));
+        return unit;
+      },
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to update source in DB with error: ${error.toString()}'),
     );
   }
 }
