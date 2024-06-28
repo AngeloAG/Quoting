@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_files/domain/models/author.dart';
-import 'package:flutter_files/init_dependencies.dart';
 import 'package:flutter_files/presentation/blocs/author/author_bloc.dart';
 import 'package:flutter_files/presentation/pages/authors/edit_author.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_files/domain/models/source.dart';
-import 'package:flutter_files/init_dependencies.dart';
 import 'package:flutter_files/presentation/blocs/source/source_bloc.dart';
 import 'package:flutter_files/presentation/pages/sources/edit_source.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';
