@@ -137,18 +137,18 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
   }
 
   void _onQuoteLoad(QuoteLoadEvent event, Emitter<QuoteState> emit) async {
-    final response =
-        await _mediator.send<GetAllQuotesRequest, Either<Failure, List<Quote>>>(
-            GetAllQuotesRequest());
+    final response = await _mediator.send<GetAllQuotesRequest,
+        Either<Failure, Stream<List<Quote>>>>(GetAllQuotesRequest());
 
-    response.fold(
-      (failure) => emit(state.copyWith(
-          status: () => QuoteStatus.failure,
-          failureMessage: () => failure.message)),
-      (quotes) => emit(state.copyWith(
-          status: () => QuoteStatus.loaded,
-          failureMessage: () => '',
-          quotes: () => quotes)),
-    );
+    await response.fold(
+        (failure) async => emit(state.copyWith(
+            status: () => QuoteStatus.failure,
+            failureMessage: () => failure.message)),
+        (quotesStream) async => emit.forEach<List<Quote>>(quotesStream,
+            onData: (quotes) => state.copyWith(
+                status: () => QuoteStatus.loaded, quotes: () => quotes),
+            onError: (_, __) => state.copyWith(
+                status: () => QuoteStatus.failure,
+                failureMessage: () => 'Failed to fetch the quotes')));
   }
 }

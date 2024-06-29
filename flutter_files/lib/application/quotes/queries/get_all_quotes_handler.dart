@@ -4,16 +4,18 @@ import 'package:flutter_files/domain/models/quote.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mediatr/mediatr.dart';
 
-class GetAllQuotesRequest extends IRequest<Either<Failure, List<Quote>>> {}
+class GetAllQuotesRequest
+    extends IRequest<Either<Failure, Stream<List<Quote>>>> {}
 
-class GetAllQuotesHandler
-    extends IRequestHandler<GetAllQuotesRequest, Either<Failure, List<Quote>>> {
+class GetAllQuotesHandler extends IRequestHandler<GetAllQuotesRequest,
+    Either<Failure, Stream<List<Quote>>>> {
   final IQuotesRepository iQuotesRepository;
 
   GetAllQuotesHandler(this.iQuotesRepository);
 
   @override
-  Future<Either<Failure, List<Quote>>> call(GetAllQuotesRequest request) {
+  Future<Either<Failure, Stream<List<Quote>>>> call(
+      GetAllQuotesRequest request) {
     return iQuotesRepository.getAllQuotes().run();
   }
 }

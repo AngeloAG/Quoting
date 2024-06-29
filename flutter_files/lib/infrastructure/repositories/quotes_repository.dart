@@ -14,25 +14,27 @@ class QuotesRepository implements IQuotesRepository {
   QuotesRepository(this.iQuotesDataSource);
 
   @override
-  TaskEither<Failure, List<Quote>> getAllQuotes() {
+  TaskEither<Failure, Stream<List<Quote>>> getAllQuotes() {
     return iQuotesDataSource
         .getAllQuotes()
-        .map((quotesModels) => quotesModels.map((quoteModel) {
-              var author =
-                  Author(id: quoteModel.authorId, name: quoteModel.author);
-              var label =
-                  Label(id: quoteModel.labelId, label: quoteModel.label);
-              var source =
-                  Source(id: quoteModel.sourceId, source: quoteModel.source);
+        .map((quotesModelsStream) => quotesModelsStream.map((quoteModels) {
+              return quoteModels.map((quoteModel) {
+                var author =
+                    Author(id: quoteModel.authorId, name: quoteModel.author);
+                var label =
+                    Label(id: quoteModel.labelId, label: quoteModel.label);
+                var source =
+                    Source(id: quoteModel.sourceId, source: quoteModel.source);
 
-              return Quote(
-                  id: quoteModel.id,
-                  author: author,
-                  label: label,
-                  source: source,
-                  content: quoteModel.content,
-                  details: quoteModel.details);
-            }).toList());
+                return Quote(
+                    id: quoteModel.id,
+                    author: author,
+                    label: label,
+                    source: source,
+                    content: quoteModel.content,
+                    details: quoteModel.details);
+              }).toList();
+            }));
   }
 
   @override

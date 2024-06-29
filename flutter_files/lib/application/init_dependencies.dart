@@ -67,7 +67,9 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
   mediator.registerHandler<RemoveQuoteRequest, Either<Failure, Unit>,
       RemoveQuoteHandler>(() => RemoveQuoteHandler(serviceLocator()));
 
-  mediator.registerHandler<GetAllQuotesRequest, Either<Failure, List<Quote>>,
+  mediator.registerHandler<
+      GetAllQuotesRequest,
+      Either<Failure, Stream<List<Quote>>>,
       GetAllQuotesHandler>(() => GetAllQuotesHandler(serviceLocator()));
 
   serviceLocator.registerLazySingleton(() => mediator);

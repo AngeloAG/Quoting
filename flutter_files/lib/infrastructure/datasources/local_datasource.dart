@@ -56,7 +56,7 @@ class LocalDataSource
   }
 
   @override
-  TaskEither<Failure, List<QuoteModel>> getAllQuotes() {
+  TaskEither<Failure, Stream<List<QuoteModel>>> getAllQuotes() {
     // TODO: implement getAllQuotes
     throw UnimplementedError();
   }
