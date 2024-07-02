@@ -2,12 +2,12 @@ import 'dart:convert';
 
 class QuoteModel {
   final String id;
-  final String author;
-  final String authorId;
-  final String label;
-  final String labelId;
-  final String source;
-  final String sourceId;
+  final String? author;
+  final String? authorId;
+  final String? label;
+  final String? labelId;
+  final String? source;
+  final String? sourceId;
   final String details;
   final String content;
 
