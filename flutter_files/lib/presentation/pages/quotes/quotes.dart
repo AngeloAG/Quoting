@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_files/domain/models/quote.dart';
 import 'package:flutter_files/presentation/blocs/quotes/quote_bloc.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';
 import 'package:flutter_files/presentation/shared/utilities.dart';
@@ -13,8 +12,6 @@ class QuotesPage extends StatefulWidget {
 }
 
 class _QuotesPageState extends State<QuotesPage> {
-  List<Quote> quotes = [];
-
   @override
   void initState() {
     context.read<QuoteBloc>().add(QuoteLoadEvent());
@@ -61,23 +58,20 @@ class _QuotesPageState extends State<QuotesPage> {
                   if (state.status == QuoteStatus.failure) {
                     showSnackBar(state.failureMessage, context);
                   }
-                  if (state.status == QuoteStatus.success ||
-                      state.status == QuoteStatus.loaded) {
-                    quotes = state.quotes;
-                  }
                 },
                 builder: (context, state) {
-                  if (state.status == QuoteStatus.loading && quotes.isEmpty) {
+                  if (state.status == QuoteStatus.loading &&
+                      state.quotes.isEmpty) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  if (quotes.isNotEmpty) {
+                  if (state.quotes.isNotEmpty) {
                     return ListView.builder(
-                      itemCount: quotes.length,
+                      itemCount: state.quotes.length,
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
                             ListTile(
-                              title: Text(quotes[index].content),
+                              title: Text(state.quotes[index].content),
                               trailing: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
