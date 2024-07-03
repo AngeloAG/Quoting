@@ -98,17 +98,17 @@ class LocalDataSource
   }
 
   @override
-  TaskEither<Failure, List<SourceModel>> getAllSources() {
+  TaskEither<Failure, Stream<List<SourceModel>>> getAllSources() {
     return TaskEither.tryCatch(
-      () async => driftDB.select(driftDB.sources).get(),
+      () async => driftDB.select(driftDB.sources).watch(),
       (error, stackTrace) => Failure(
           message:
               'Failed to get sources from DB, with error: ${error.toString()}'),
-    ).flatMap((sources) => Either.tryCatch(
-          () => sources
+    ).flatMap((sourcesStream) => Either.tryCatch(
+          () => sourcesStream.map((sources) => sources
               .map(
                   (source) => SourceModel(source.id.toString(), source.content))
-              .toList(),
+              .toList()),
           (o, s) => Failure(
               message:
                   'Failed to parse sources from database with error: ${o.toString()}'),

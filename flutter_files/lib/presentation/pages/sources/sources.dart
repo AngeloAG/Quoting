@@ -15,7 +15,6 @@ class SourcesPage extends StatefulWidget {
 
 class _SourcesPageState extends State<SourcesPage> {
   final newSourceController = TextEditingController();
-  List<Source> sources = [];
 
   @override
   void dispose() {
@@ -69,23 +68,20 @@ class _SourcesPageState extends State<SourcesPage> {
                 if (state.status == SourceStatus.failure) {
                   showSnackBar(state.failureMessage, context);
                 }
-                if (state.status == SourceStatus.success ||
-                    state.status == SourceStatus.loaded) {
-                  sources = state.sources;
-                }
               },
               builder: (context, state) {
-                if (state.status == SourceStatus.loading && sources.isEmpty) {
+                if (state.status == SourceStatus.loading &&
+                    state.sources.isEmpty) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (sources.isNotEmpty) {
+                if (state.sources.isNotEmpty) {
                   return ListView.builder(
-                    itemCount: sources.length,
+                    itemCount: state.sources.length,
                     itemBuilder: (context, index) {
                       return Column(
                         children: [
                           ListTile(
-                            title: Text(sources[index].source),
+                            title: Text(state.sources[index].source),
                             trailing:
                                 Row(mainAxisSize: MainAxisSize.min, children: [
                               IconButton(
@@ -99,7 +95,8 @@ class _SourcesPageState extends State<SourcesPage> {
                                                 context.read<SourceBloc>().add(
                                                     SourceUpdateEvent(
                                                         source: sourceUpdate)),
-                                            originalSource: sources[index]);
+                                            originalSource:
+                                                state.sources[index]);
                                       });
                                 },
                               ),
@@ -111,7 +108,7 @@ class _SourcesPageState extends State<SourcesPage> {
                                 onPressed: () {
                                   context.read<SourceBloc>().add(
                                       SourceRemoveEvent(
-                                          source: sources[index]));
+                                          source: state.sources[index]));
                                 },
                               ),
                             ]),

@@ -8,7 +8,7 @@ abstract interface class ISourcesRepository {
 
   TaskEither<Failure, Source> uploadSource(CreateSourceWork createSourceWork);
 
-  TaskEither<Failure, List<Source>> getAllSources();
+  TaskEither<Failure, Stream<List<Source>>> getAllSources();
 
   TaskEither<Failure, Unit> updateSource(Source source);
 }

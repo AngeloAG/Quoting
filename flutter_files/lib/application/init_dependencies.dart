@@ -59,7 +59,9 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
   mediator.registerHandler<RemoveSourceRequest, Either<Failure, Unit>,
       RemoveSourceHandler>(() => RemoveSourceHandler(serviceLocator()));
 
-  mediator.registerHandler<GetAllSourcesRequest, Either<Failure, List<Source>>,
+  mediator.registerHandler<
+      GetAllSourcesRequest,
+      Either<Failure, Stream<List<Source>>>,
       GetAllSourcesHandler>(() => GetAllSourcesHandler(serviceLocator()));
 
   mediator.registerHandler<UpdateSourceRequest, Either<Failure, Unit>,

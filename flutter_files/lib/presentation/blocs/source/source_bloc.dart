@@ -50,17 +50,21 @@ class SourceBloc extends Bloc<SourceEvent, SourceState> {
 
   void _onSourceLoad(SourceLoadEvent event, Emitter<SourceState> emit) async {
     final response = await _mediator.send<GetAllSourcesRequest,
-        Either<Failure, List<Source>>>(GetAllSourcesRequest());
+        Either<Failure, Stream<List<Source>>>>(GetAllSourcesRequest());
 
-    response.fold(
-      (failure) => emit(state.copyWith(
+    await response.fold(
+      (failure) async => emit(state.copyWith(
         status: () => SourceStatus.failure,
         failureMessage: () => failure.message,
       )),
-      (sources) => emit(state.copyWith(
-          status: () => SourceStatus.success,
-          sources: () => sources,
-          failureMessage: () => '')),
+      (sourcesStream) async => emit.forEach<List<Source>>(sourcesStream,
+          onData: (sources) => state.copyWith(
+              status: () => SourceStatus.success,
+              sources: () => sources,
+              failureMessage: () => ''),
+          onError: (_, __) => state.copyWith(
+              status: () => SourceStatus.failure,
+              failureMessage: () => 'Failed to fetch the sources')),
     );
   }
 
