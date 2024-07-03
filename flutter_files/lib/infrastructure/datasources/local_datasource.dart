@@ -40,16 +40,16 @@ class LocalDataSource
   }
 
   @override
-  TaskEither<Failure, List<LabelModel>> getAllLabels() {
+  TaskEither<Failure, Stream<List<LabelModel>>> getAllLabels() {
     return TaskEither.tryCatch(
-      () async => driftDB.select(driftDB.labels).get(),
+      () async => driftDB.select(driftDB.labels).watch(),
       (error, stackTrace) => Failure(
           message:
               'Failed to get labels from DB, with error: ${error.toString()}'),
-    ).flatMap((labels) => Either.tryCatch(
-          () => labels
+    ).flatMap((labelsStream) => Either.tryCatch(
+          () => labelsStream.map((labels) => labels
               .map((label) => LabelModel(label.id.toString(), label.content))
-              .toList(),
+              .toList()),
           (o, s) => Failure(
               message:
                   'Failed to parse labels from database with error: ${o.toString()}'),

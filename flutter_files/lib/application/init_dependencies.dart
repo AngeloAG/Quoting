@@ -31,7 +31,9 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
   mediator.registerHandler<RemoveLabelRequest, Either<Failure, Unit>,
       RemoveLabelHandler>(() => RemoveLabelHandler(serviceLocator()));
 
-  mediator.registerHandler<GetAllLabelsRequest, Either<Failure, List<Label>>,
+  mediator.registerHandler<
+      GetAllLabelsRequest,
+      Either<Failure, Stream<List<Label>>>,
       GetAllLabelsHandler>(() => GetAllLabelsHandler(serviceLocator()));
 
   mediator.registerHandler<UpdateLabelRequest, Either<Failure, Unit>,

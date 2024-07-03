@@ -8,7 +8,7 @@ abstract interface class ILabelsDataSource {
 
   TaskEither<Failure, Unit> removeLabelById(String id);
 
-  TaskEither<Failure, List<LabelModel>> getAllLabels();
+  TaskEither<Failure, Stream<List<LabelModel>>> getAllLabels();
 
   TaskEither<Failure, Unit> updateLabel(UpdateLabelWork updateLabelWork);
 }
