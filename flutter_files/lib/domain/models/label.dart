@@ -11,4 +11,7 @@ class Label extends Equatable {
 
   @override
   List<Object> get props => [id, label];
+
+  @override
+  String toString() => label;
 }

@@ -9,7 +9,7 @@ abstract interface class ILabelsRepository {
 
   TaskEither<Failure, Label> uploadLabel(CreateLabelWork createLabelWork);
 
-  TaskEither<Failure, List<Label>> getAllLabels();
+  TaskEither<Failure, Stream<List<Label>>> getAllLabels();
 
   TaskEither<Failure, Unit> updateLabel(UpdateLabelWork updateLabelWork);
 }

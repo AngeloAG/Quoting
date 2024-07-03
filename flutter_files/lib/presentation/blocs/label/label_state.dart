@@ -19,10 +19,11 @@ final class LabelState extends Equatable {
     String Function()? failureMessage,
   }) {
     return LabelState(
-        status: status != null ? status() : this.status,
-        labels: labels != null ? labels() : this.labels,
-        failureMessage:
-            failureMessage != null ? failureMessage() : this.failureMessage);
+      status: status != null ? status() : this.status,
+      labels: labels != null ? labels() : this.labels,
+      failureMessage:
+          failureMessage != null ? failureMessage() : this.failureMessage,
+    );
   }
 
   @override

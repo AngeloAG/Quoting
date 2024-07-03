@@ -31,7 +31,9 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
   mediator.registerHandler<RemoveLabelRequest, Either<Failure, Unit>,
       RemoveLabelHandler>(() => RemoveLabelHandler(serviceLocator()));
 
-  mediator.registerHandler<GetAllLabelsRequest, Either<Failure, List<Label>>,
+  mediator.registerHandler<
+      GetAllLabelsRequest,
+      Either<Failure, Stream<List<Label>>>,
       GetAllLabelsHandler>(() => GetAllLabelsHandler(serviceLocator()));
 
   mediator.registerHandler<UpdateLabelRequest, Either<Failure, Unit>,
@@ -43,7 +45,9 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
   mediator.registerHandler<RemoveAuthorRequest, Either<Failure, Unit>,
       RemoveAuthorHandler>(() => RemoveAuthorHandler(serviceLocator()));
 
-  mediator.registerHandler<GetAllAuthorsRequest, Either<Failure, List<Author>>,
+  mediator.registerHandler<
+      GetAllAuthorsRequest,
+      Either<Failure, Stream<List<Author>>>,
       GetAllAuthorsHandler>(() => GetAllAuthorsHandler(serviceLocator()));
 
   mediator.registerHandler<UploadSourceRequest, Either<Failure, Source>,
@@ -55,7 +59,9 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
   mediator.registerHandler<RemoveSourceRequest, Either<Failure, Unit>,
       RemoveSourceHandler>(() => RemoveSourceHandler(serviceLocator()));
 
-  mediator.registerHandler<GetAllSourcesRequest, Either<Failure, List<Source>>,
+  mediator.registerHandler<
+      GetAllSourcesRequest,
+      Either<Failure, Stream<List<Source>>>,
       GetAllSourcesHandler>(() => GetAllSourcesHandler(serviceLocator()));
 
   mediator.registerHandler<UpdateSourceRequest, Either<Failure, Unit>,
@@ -67,7 +73,9 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
   mediator.registerHandler<RemoveQuoteRequest, Either<Failure, Unit>,
       RemoveQuoteHandler>(() => RemoveQuoteHandler(serviceLocator()));
 
-  mediator.registerHandler<GetAllQuotesRequest, Either<Failure, List<Quote>>,
+  mediator.registerHandler<
+      GetAllQuotesRequest,
+      Either<Failure, Stream<List<Quote>>>,
       GetAllQuotesHandler>(() => GetAllQuotesHandler(serviceLocator()));
 
   serviceLocator.registerLazySingleton(() => mediator);

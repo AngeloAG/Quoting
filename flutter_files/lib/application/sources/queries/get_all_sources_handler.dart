@@ -4,16 +4,18 @@ import 'package:flutter_files/domain/models/source.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mediatr/mediatr.dart';
 
-class GetAllSourcesRequest extends IRequest<Either<Failure, List<Source>>> {}
+class GetAllSourcesRequest
+    extends IRequest<Either<Failure, Stream<List<Source>>>> {}
 
 class GetAllSourcesHandler extends IRequestHandler<GetAllSourcesRequest,
-    Either<Failure, List<Source>>> {
+    Either<Failure, Stream<List<Source>>>> {
   final ISourcesRepository iSourcesRepository;
 
   GetAllSourcesHandler(this.iSourcesRepository);
 
   @override
-  Future<Either<Failure, List<Source>>> call(GetAllSourcesRequest request) {
+  Future<Either<Failure, Stream<List<Source>>>> call(
+      GetAllSourcesRequest request) {
     return iSourcesRepository.getAllSources().run();
   }
 }

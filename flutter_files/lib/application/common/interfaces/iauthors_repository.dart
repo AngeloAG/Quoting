@@ -8,7 +8,7 @@ abstract interface class IAuthorsRepository {
 
   TaskEither<Failure, Author> uploadAuthor(CreateAuthorWork createAuthorWork);
 
-  TaskEither<Failure, List<Author>> getAllAuthors();
+  TaskEither<Failure, Stream<List<Author>>> getAllAuthors();
 
   TaskEither<Failure, Unit> updateAuthor(Author author);
 }

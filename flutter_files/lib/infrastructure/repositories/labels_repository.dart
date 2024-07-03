@@ -12,10 +12,12 @@ class LabelsRepository implements ILabelsRepository {
   LabelsRepository(this.iLabelsDataSource);
 
   @override
-  TaskEither<Failure, List<Label>> getAllLabels() {
-    return iLabelsDataSource.getAllLabels().map((labelsModels) => labelsModels
-        .map((labelModel) => Label(id: labelModel.id, label: labelModel.label))
-        .toList());
+  TaskEither<Failure, Stream<List<Label>>> getAllLabels() {
+    return iLabelsDataSource.getAllLabels().map((labelsStream) =>
+        labelsStream.map((labelModels) => labelModels
+            .map((labelModel) =>
+                Label(id: labelModel.id, label: labelModel.label))
+            .toList()));
   }
 
   @override

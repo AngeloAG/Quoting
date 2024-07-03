@@ -1,7 +1,9 @@
+import 'package:fpdart/fpdart.dart';
+
 class CreateQuoteWork {
-  final String authorId;
-  final String labelId;
-  final String sourceId;
+  final Option<String> authorId;
+  final Option<String> labelId;
+  final Option<String> sourceId;
   final String details;
   final String content;
 

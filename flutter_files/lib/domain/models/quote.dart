@@ -1,12 +1,13 @@
 import 'package:flutter_files/domain/models/author.dart';
 import 'package:flutter_files/domain/models/label.dart';
 import 'package:flutter_files/domain/models/source.dart';
+import 'package:fpdart/fpdart.dart';
 
 class Quote {
   final String id;
-  final Author author;
-  final Label label;
-  final Source source;
+  final Option<Author> author;
+  final Option<Label> label;
+  final Option<Source> source;
   final String details;
   final String content;
 

@@ -53,19 +53,22 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
   }
 
   void _onLabelLoad(LabelLoadEvent event, Emitter<LabelState> emit) async {
-    final response =
-        await _mediator.send<GetAllLabelsRequest, Either<Failure, List<Label>>>(
-            GetAllLabelsRequest());
+    final response = await _mediator.send<GetAllLabelsRequest,
+        Either<Failure, Stream<List<Label>>>>(GetAllLabelsRequest());
 
-    response.fold(
-      (failure) => emit(state.copyWith(
-          status: () => LabelStatus.failure,
-          failureMessage: () => failure.message)),
-      (labels) => emit(state.copyWith(
-          status: () => LabelStatus.loaded,
-          failureMessage: () => '',
-          labels: () => labels)),
-    );
+    await response.fold(
+        (failure) async => emit(state.copyWith(
+            status: () => LabelStatus.failure,
+            failureMessage: () => failure.message)),
+        (labelsStream) async => emit.forEach<List<Label>>(labelsStream,
+            onData: (labels) => state.copyWith(
+                status: () => LabelStatus.loaded,
+                failureMessage: () => '',
+                labels: () => labels),
+            onError: (_, __) => state.copyWith(
+                  status: () => LabelStatus.failure,
+                  failureMessage: () => 'Failed to fetch the labels',
+                )));
   }
 
   void _onLabelRemove(LabelRemoveEvent event, Emitter emit) async {

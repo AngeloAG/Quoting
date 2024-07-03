@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_files/domain/models/failure.dart';
+import 'package:flutter_files/domain/works/create_quote_work.dart';
 import 'package:flutter_files/domain/works/update_label_work.dart';
 import 'package:flutter_files/infrastructure/common/interfaces/iauthors_datasource.dart';
 import 'package:flutter_files/infrastructure/common/interfaces/ilabels_datasource.dart';
@@ -23,32 +24,32 @@ class LocalDataSource
   LocalDataSource(this.driftDB);
 
   @override
-  TaskEither<Failure, List<AuthorModel>> getAllAuthors() {
+  TaskEither<Failure, Stream<List<AuthorModel>>> getAllAuthors() {
     return TaskEither.tryCatch(
-      () async => driftDB.select(driftDB.authors).get(),
+      () async => driftDB.select(driftDB.authors).watch(),
       (error, stackTrace) => Failure(
           message:
               'Failed to get authors from DB with error: ${error.toString()}'),
-    ).flatMap((authors) => Either.tryCatch(
-          () => authors
+    ).flatMap((authorsStream) => Either.tryCatch(
+          () => authorsStream.map((authors) => authors
               .map((author) => AuthorModel(author.id.toString(), author.name))
-              .toList(),
+              .toList()),
           (o, s) => Failure(
               message: 'Failed to parse authors with error: ${o.toString()}'),
         ).toTaskEither());
   }
 
   @override
-  TaskEither<Failure, List<LabelModel>> getAllLabels() {
+  TaskEither<Failure, Stream<List<LabelModel>>> getAllLabels() {
     return TaskEither.tryCatch(
-      () async => driftDB.select(driftDB.labels).get(),
+      () async => driftDB.select(driftDB.labels).watch(),
       (error, stackTrace) => Failure(
           message:
               'Failed to get labels from DB, with error: ${error.toString()}'),
-    ).flatMap((labels) => Either.tryCatch(
-          () => labels
+    ).flatMap((labelsStream) => Either.tryCatch(
+          () => labelsStream.map((labels) => labels
               .map((label) => LabelModel(label.id.toString(), label.content))
-              .toList(),
+              .toList()),
           (o, s) => Failure(
               message:
                   'Failed to parse labels from database with error: ${o.toString()}'),
@@ -56,23 +57,58 @@ class LocalDataSource
   }
 
   @override
-  TaskEither<Failure, List<QuoteModel>> getAllQuotes() {
-    // TODO: implement getAllQuotes
-    throw UnimplementedError();
+  TaskEither<Failure, Stream<List<QuoteModel>>> getAllQuotes() {
+    return TaskEither.tryCatch(
+      () async {
+        return driftDB
+            .select(driftDB.quotes)
+            .join([
+              leftOuterJoin(driftDB.authors,
+                  driftDB.authors.id.equalsExp(driftDB.quotes.authorId)),
+              leftOuterJoin(driftDB.labels,
+                  driftDB.labels.id.equalsExp(driftDB.quotes.labelId)),
+              leftOuterJoin(driftDB.sources,
+                  driftDB.sources.id.equalsExp(driftDB.quotes.sourceId)),
+            ])
+            .watch()
+            .map((rows) {
+              return rows.map((row) {
+                final Quote quote = row.readTable(driftDB.quotes);
+                final Author? author = row.readTableOrNull(driftDB.authors);
+                final Label? label = row.readTableOrNull(driftDB.labels);
+                final Source? source = row.readTableOrNull(driftDB.sources);
+
+                return QuoteModel(
+                    quote.id.toString(),
+                    author?.id.toString(),
+                    author?.name,
+                    label?.id.toString(),
+                    label?.content,
+                    source?.content,
+                    source?.id.toString(),
+                    quote.details,
+                    quote.content);
+              }).toList();
+            });
+      },
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to retrieve quotes from the DB with error: ${error.toString()}'),
+    );
   }
 
   @override
-  TaskEither<Failure, List<SourceModel>> getAllSources() {
+  TaskEither<Failure, Stream<List<SourceModel>>> getAllSources() {
     return TaskEither.tryCatch(
-      () async => driftDB.select(driftDB.sources).get(),
+      () async => driftDB.select(driftDB.sources).watch(),
       (error, stackTrace) => Failure(
           message:
               'Failed to get sources from DB, with error: ${error.toString()}'),
-    ).flatMap((sources) => Either.tryCatch(
-          () => sources
+    ).flatMap((sourcesStream) => Either.tryCatch(
+          () => sourcesStream.map((sources) => sources
               .map(
                   (source) => SourceModel(source.id.toString(), source.content))
-              .toList(),
+              .toList()),
           (o, s) => Failure(
               message:
                   'Failed to parse sources from database with error: ${o.toString()}'),
@@ -119,8 +155,21 @@ class LocalDataSource
 
   @override
   TaskEither<Failure, Unit> removeQuoteById(String id) {
-    // TODO: implement removeQuoteById
-    throw UnimplementedError();
+    return Either.tryCatch(
+      () => int.parse(id),
+      (o, s) => Failure(
+          message: 'The id is not a valid int with error: ${o.toString()}'),
+    ).toTaskEither().flatMap((idAsInt) => TaskEither.tryCatch(
+          () async {
+            (driftDB.delete(driftDB.quotes)
+                  ..where((tbl) => tbl.id.equals(idAsInt)))
+                .go();
+            return unit;
+          },
+          (error, stackTrace) => Failure(
+              message:
+                  'Failed to delete from DB with error: ${error.toString()}'),
+        ));
   }
 
   @override
@@ -204,10 +253,36 @@ class LocalDataSource
   }
 
   @override
-  TaskEither<Failure, QuoteModel> uploadQuote(String authorId, String labelId,
-      String sourceId, String details, String content) {
-    // TODO: implement uploadQuote
-    throw UnimplementedError();
+  TaskEither<Failure, Unit> uploadQuote(CreateQuoteWork createQuoteWork) {
+    return TaskEither.tryCatch(
+      () async {
+        int? authorId;
+        if (createQuoteWork.authorId.isSome()) {
+          authorId = int.parse(createQuoteWork.authorId.toNullable()!);
+        }
+
+        int? labelId;
+        if (createQuoteWork.labelId.isSome()) {
+          labelId = int.parse(createQuoteWork.labelId.toNullable()!);
+        }
+
+        int? sourceId;
+        if (createQuoteWork.sourceId.isSome()) {
+          sourceId = int.parse(createQuoteWork.sourceId.toNullable()!);
+        }
+
+        driftDB.into(driftDB.quotes).insert(QuotesCompanion(
+            authorId: Value(authorId),
+            labelId: Value(labelId),
+            sourceId: Value(sourceId),
+            details: Value(createQuoteWork.details),
+            content: Value(createQuoteWork.content)));
+        return unit;
+      },
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to insert quote in DB with error: ${error.toString()}'),
+    );
   }
 
   @override

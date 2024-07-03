@@ -12,12 +12,12 @@ class SourceRepository implements ISourcesRepository {
   SourceRepository(this.iSourcesDataSource);
 
   @override
-  TaskEither<Failure, List<Source>> getAllSources() {
-    return iSourcesDataSource.getAllSources().map((sourcesModels) =>
-        sourcesModels
+  TaskEither<Failure, Stream<List<Source>>> getAllSources() {
+    return iSourcesDataSource.getAllSources().map((sourcesStream) =>
+        sourcesStream.map((sourceModels) => sourceModels
             .map((sourceModel) =>
                 Source(id: sourceModel.id, source: sourceModel.source))
-            .toList());
+            .toList()));
   }
 
   @override

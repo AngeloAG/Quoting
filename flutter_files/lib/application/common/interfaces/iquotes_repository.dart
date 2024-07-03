@@ -8,5 +8,5 @@ abstract interface class IQuotesRepository {
 
   TaskEither<Failure, Unit> uploadQuote(CreateQuoteWork createQuoteWork);
 
-  TaskEither<Failure, List<Quote>> getAllQuotes();
+  TaskEither<Failure, Stream<List<Quote>>> getAllQuotes();
 }

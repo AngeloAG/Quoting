@@ -6,4 +6,7 @@ class Source {
     required this.id,
     required this.source,
   });
+
+  @override
+  String toString() => source;
 }
