@@ -15,7 +15,6 @@ class AuthorsPage extends StatefulWidget {
 
 class _AuthorsPageState extends State<AuthorsPage> {
   final newAuthorController = TextEditingController();
-  List<Author> authors = [];
 
   @override
   void dispose() {
@@ -69,23 +68,20 @@ class _AuthorsPageState extends State<AuthorsPage> {
                 if (state.status == AuthorStatus.failure) {
                   showSnackBar(state.failureMessage, context);
                 }
-                if (state.status == AuthorStatus.success ||
-                    state.status == AuthorStatus.loaded) {
-                  authors = state.authors;
-                }
               },
               builder: (context, state) {
-                if (state.status == AuthorStatus.loading && authors.isEmpty) {
+                if (state.status == AuthorStatus.loading &&
+                    state.authors.isEmpty) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (authors.isNotEmpty) {
+                if (state.authors.isNotEmpty) {
                   return ListView.builder(
-                    itemCount: authors.length,
+                    itemCount: state.authors.length,
                     itemBuilder: (context, index) {
                       return Column(
                         children: [
                           ListTile(
-                            title: Text(authors[index].name),
+                            title: Text(state.authors[index].name),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -102,7 +98,8 @@ class _AuthorsPageState extends State<AuthorsPage> {
                                                       .add(AuthorUpdateEvent(
                                                           author:
                                                               authorUpdate)),
-                                              originalAuthor: authors[index]);
+                                              originalAuthor:
+                                                  state.authors[index]);
                                         });
                                   },
                                 ),
@@ -114,7 +111,7 @@ class _AuthorsPageState extends State<AuthorsPage> {
                                   onPressed: () {
                                     context.read<AuthorBloc>().add(
                                         AuthorRemoveEvent(
-                                            author: authors[index]));
+                                            author: state.authors[index]));
                                   },
                                 ),
                               ],

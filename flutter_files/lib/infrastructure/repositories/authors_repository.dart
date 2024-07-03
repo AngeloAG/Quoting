@@ -12,12 +12,12 @@ class AuthorsRepository implements IAuthorsRepository {
   AuthorsRepository(this.iAuthorsDataSource);
 
   @override
-  TaskEither<Failure, List<Author>> getAllAuthors() {
-    return iAuthorsDataSource.getAllAuthors().map((authorsModels) =>
-        authorsModels
+  TaskEither<Failure, Stream<List<Author>>> getAllAuthors() {
+    return iAuthorsDataSource.getAllAuthors().map((authorsStream) =>
+        authorsStream.map((authorModels) => authorModels
             .map((authorModel) =>
                 Author(id: authorModel.id, name: authorModel.author))
-            .toList());
+            .toList()));
   }
 
   @override

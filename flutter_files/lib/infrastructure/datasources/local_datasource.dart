@@ -24,16 +24,16 @@ class LocalDataSource
   LocalDataSource(this.driftDB);
 
   @override
-  TaskEither<Failure, List<AuthorModel>> getAllAuthors() {
+  TaskEither<Failure, Stream<List<AuthorModel>>> getAllAuthors() {
     return TaskEither.tryCatch(
-      () async => driftDB.select(driftDB.authors).get(),
+      () async => driftDB.select(driftDB.authors).watch(),
       (error, stackTrace) => Failure(
           message:
               'Failed to get authors from DB with error: ${error.toString()}'),
-    ).flatMap((authors) => Either.tryCatch(
-          () => authors
+    ).flatMap((authorsStream) => Either.tryCatch(
+          () => authorsStream.map((authors) => authors
               .map((author) => AuthorModel(author.id.toString(), author.name))
-              .toList(),
+              .toList()),
           (o, s) => Failure(
               message: 'Failed to parse authors with error: ${o.toString()}'),
         ).toTaskEither());

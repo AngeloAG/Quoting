@@ -50,16 +50,22 @@ class AuthorBloc extends Bloc<AuthorEvent, AuthorState> {
 
   void _onAuthorLoad(AuthorLoadEvent event, Emitter<AuthorState> emit) async {
     final response = await _mediator.send<GetAllAuthorsRequest,
-        Either<Failure, List<Author>>>(GetAllAuthorsRequest());
+        Either<Failure, Stream<List<Author>>>>(GetAllAuthorsRequest());
 
-    response.fold(
-      (failure) => emit(state.copyWith(
+    await response.fold(
+      (failure) async => emit(state.copyWith(
           status: () => AuthorStatus.failure,
           failureMessage: () => failure.message)),
-      (authors) => emit(state.copyWith(
-          status: () => AuthorStatus.loaded,
-          authors: () => authors,
-          failureMessage: () => '')),
+      (authorsStream) async => emit.forEach<List<Author>>(
+        authorsStream,
+        onData: (authors) => state.copyWith(
+            status: () => AuthorStatus.loaded,
+            authors: () => authors,
+            failureMessage: () => ''),
+        onError: (_, __) => state.copyWith(
+            status: () => AuthorStatus.failure,
+            failureMessage: () => 'Failed to fetch the authors'),
+      ),
     );
   }
 

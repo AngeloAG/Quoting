@@ -7,7 +7,7 @@ abstract interface class IAuthorsDataSource {
 
   TaskEither<Failure, Unit> removeAuthorById(String id);
 
-  TaskEither<Failure, List<AuthorModel>> getAllAuthors();
+  TaskEither<Failure, Stream<List<AuthorModel>>> getAllAuthors();
 
   TaskEither<Failure, Unit> updateAuthor(AuthorModel author);
 }
