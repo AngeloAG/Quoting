@@ -14,7 +14,7 @@ class DriftDB extends _$DriftDB {
   DriftDB() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration {

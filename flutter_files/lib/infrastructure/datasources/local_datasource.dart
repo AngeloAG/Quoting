@@ -256,10 +256,25 @@ class LocalDataSource
   TaskEither<Failure, Unit> uploadQuote(CreateQuoteWork createQuoteWork) {
     return TaskEither.tryCatch(
       () async {
+        int? authorId;
+        if (createQuoteWork.authorId.isSome()) {
+          authorId = int.parse(createQuoteWork.authorId.toNullable()!);
+        }
+
+        int? labelId;
+        if (createQuoteWork.labelId.isSome()) {
+          labelId = int.parse(createQuoteWork.labelId.toNullable()!);
+        }
+
+        int? sourceId;
+        if (createQuoteWork.sourceId.isSome()) {
+          sourceId = int.parse(createQuoteWork.sourceId.toNullable()!);
+        }
+
         driftDB.into(driftDB.quotes).insert(QuotesCompanion(
-            authorId: Value(int.parse(createQuoteWork.authorId)),
-            labelId: Value(int.parse(createQuoteWork.labelId)),
-            sourceId: Value(int.parse(createQuoteWork.sourceId)),
+            authorId: Value(authorId),
+            labelId: Value(labelId),
+            sourceId: Value(sourceId),
             details: Value(createQuoteWork.details),
             content: Value(createQuoteWork.content)));
         return unit;

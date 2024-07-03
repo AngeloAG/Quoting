@@ -35,91 +35,66 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
   }
 
   void _onQuoteUpload(QuoteUploadEvent event, Emitter<QuoteState> emit) async {
-    if (event.author == null && event.authorText == null ||
-        event.author != null && event.authorText != null) {
-      emit(state.copyWith(
-          status: () => QuoteStatus.failure,
-          failureMessage: () =>
-              'Failed to process new quote both the author and author text cannot be both empty or populated at the same time'));
-    }
-
-    if (event.label == null && event.labelText == null ||
-        event.label != null && event.labelText != null) {
-      emit(state.copyWith(
-          status: () => QuoteStatus.failure,
-          failureMessage: () =>
-              'Failed to process new quote both the label and label text cannot be both empty or populated at the same time'));
-    }
-
-    if (event.source == null && event.sourceText == null ||
-        event.source != null && event.sourceText != null) {
-      emit(state.copyWith(
-          status: () => QuoteStatus.failure,
-          failureMessage: () =>
-              'Failed to process new quote both the source and source text cannot be both empty or populated at the same time'));
-    }
-
-    Author author = Author(id: '', name: '');
+    Author? author;
     if (event.author != null) {
       author = event.author as Author;
     } else {
-      final response =
-          await _mediator.send<UploadAuthorRequest, Either<Failure, Author>>(
-              UploadAuthorRequest(
-                  createAuthorWork:
-                      CreateAuthorWork(name: event.authorText as String)));
+      if (event.authorText.isNotEmpty) {
+        final response =
+            await _mediator.send<UploadAuthorRequest, Either<Failure, Author>>(
+                UploadAuthorRequest(
+                    createAuthorWork:
+                        CreateAuthorWork(name: event.authorText)));
 
-      response.fold(
-          (failure) => emit(state.copyWith(
-              status: () => QuoteStatus.failure,
-              failureMessage: () => failure.message)),
-          (uploadedAuthor) => author = uploadedAuthor);
+        response.fold(
+            (failure) => emit(state.copyWith(
+                status: () => QuoteStatus.failure,
+                failureMessage: () => failure.message)),
+            (uploadedAuthor) => author = uploadedAuthor);
+      }
     }
 
-    Label label = const Label(id: '', label: '');
+    Label? label;
     if (event.label != null) {
       label = event.label as Label;
     } else {
-      final response = await _mediator
-          .send<UploadLabelRequest, Either<Failure, Label>>(UploadLabelRequest(
-              createLabelWork:
-                  CreateLabelWork(label: event.labelText as String)));
+      if (event.labelText.isNotEmpty) {
+        final response =
+            await _mediator.send<UploadLabelRequest, Either<Failure, Label>>(
+                UploadLabelRequest(
+                    createLabelWork: CreateLabelWork(label: event.labelText)));
 
-      response.fold(
-          (failure) => emit(state.copyWith(
-              status: () => QuoteStatus.failure,
-              failureMessage: () => failure.message)),
-          (uploadedLabel) => label = uploadedLabel);
+        response.fold(
+            (failure) => emit(state.copyWith(
+                status: () => QuoteStatus.failure,
+                failureMessage: () => failure.message)),
+            (uploadedLabel) => label = uploadedLabel);
+      }
     }
 
-    Source source = Source(id: '', source: '');
+    Source? source;
     if (event.source != null) {
       source = event.source as Source;
     } else {
-      final response =
-          await _mediator.send<UploadSourceRequest, Either<Failure, Source>>(
-              UploadSourceRequest(
-                  createSourceWork:
-                      CreateSourceWork(source: event.sourceText as String)));
+      if (event.sourceText.isNotEmpty) {
+        final response =
+            await _mediator.send<UploadSourceRequest, Either<Failure, Source>>(
+                UploadSourceRequest(
+                    createSourceWork:
+                        CreateSourceWork(source: event.sourceText)));
 
-      response.fold(
-          (failure) => emit(state.copyWith(
-              status: () => QuoteStatus.failure,
-              failureMessage: () => failure.message)),
-          (uploadedSource) => source = uploadedSource);
-    }
-
-    if (author.id.isEmpty || label.id.isEmpty || source.id.isEmpty) {
-      emit(state.copyWith(
-          status: () => QuoteStatus.failure,
-          failureMessage: () =>
-              'An unexpected error happened when uploading the quote, please try again later.'));
+        response.fold(
+            (failure) => emit(state.copyWith(
+                status: () => QuoteStatus.failure,
+                failureMessage: () => failure.message)),
+            (uploadedSource) => source = uploadedSource);
+      }
     }
 
     final createQuoteWork = CreateQuoteWork(
-      authorId: author.id,
-      labelId: label.id,
-      sourceId: source.id,
+      authorId: Option.fromNullable(author?.id),
+      labelId: Option.fromNullable(label?.id),
+      sourceId: Option.fromNullable(source?.id),
       details: event.detailsText,
       content: event.quoteText,
     );

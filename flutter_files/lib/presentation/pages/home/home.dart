@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_files/init_dependencies.dart';
 import 'package:flutter_files/presentation/blocs/author/author_bloc.dart';
 import 'package:flutter_files/presentation/blocs/label/label_bloc.dart';
+import 'package:flutter_files/presentation/blocs/quotes/quote_bloc.dart';
 import 'package:flutter_files/presentation/blocs/source/source_bloc.dart';
 import 'package:flutter_files/presentation/pages/authors/authors.dart';
 import 'package:flutter_files/presentation/pages/labels/labels.dart';
@@ -38,6 +39,7 @@ class _HomeState extends State<Home> {
           BlocProvider<LabelBloc>(create: (_) => serviceLocator<LabelBloc>()),
           BlocProvider<AuthorBloc>(create: (_) => serviceLocator<AuthorBloc>()),
           BlocProvider<SourceBloc>(create: (_) => serviceLocator<SourceBloc>()),
+          BlocProvider<QuoteBloc>(create: (_) => serviceLocator<QuoteBloc>()),
         ],
         child: LazyIndexedStack(
           index: _currentIndex,

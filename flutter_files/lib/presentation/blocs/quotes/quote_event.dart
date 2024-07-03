@@ -8,11 +8,11 @@ sealed class QuoteEvent extends Equatable {
 
 final class QuoteUploadEvent extends QuoteEvent {
   final Author? author;
-  final String? authorText;
+  final String authorText;
   final Label? label;
-  final String? labelText;
+  final String labelText;
   final Source? source;
-  final String? sourceText;
+  final String sourceText;
   final String quoteText;
   final String detailsText;
 

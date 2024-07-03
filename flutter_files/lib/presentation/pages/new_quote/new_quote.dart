@@ -5,6 +5,7 @@ import 'package:flutter_files/domain/models/label.dart';
 import 'package:flutter_files/domain/models/source.dart';
 import 'package:flutter_files/presentation/blocs/author/author_bloc.dart';
 import 'package:flutter_files/presentation/blocs/label/label_bloc.dart';
+import 'package:flutter_files/presentation/blocs/quotes/quote_bloc.dart';
 import 'package:flutter_files/presentation/blocs/source/source_bloc.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';
 import 'package:flutter_files/presentation/shared/utilities.dart';
@@ -70,8 +71,9 @@ class _NewQuotePageState extends State<NewQuotePage> {
           key: _formKey,
           child: ListView(
             children: [
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                controller: _quoteContentController,
+                decoration: const InputDecoration(
                   label: Text('Quote text'),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(
@@ -310,7 +312,17 @@ class _NewQuotePageState extends State<NewQuotePage> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.read<QuoteBloc>().add(QuoteUploadEvent(
+                      author: _author,
+                      authorText: _authorTextController.text,
+                      label: _label,
+                      labelText: _labelTextController.text,
+                      source: _source,
+                      sourceText: _sourceTextController.text,
+                      quoteText: _quoteContentController.text,
+                      detailsText: _detailsTextController.text));
+                },
                 child: const Text('Save'),
               )
             ],
