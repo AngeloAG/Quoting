@@ -66,7 +66,7 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
                 failureMessage: () => '',
                 labels: () => labels),
             onError: (_, __) => state.copyWith(
-                  status: () => LabelStatus.loaded,
+                  status: () => LabelStatus.failure,
                   failureMessage: () => 'Failed to fetch the labels',
                 )));
   }
