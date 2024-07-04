@@ -8,5 +8,5 @@ abstract interface class IQuotesDataSource {
 
   TaskEither<Failure, Unit> removeQuoteById(String id);
 
-  TaskEither<Failure, Stream<List<QuoteModel>>> getAllQuotes();
+  TaskEither<Failure, List<QuoteModel>> getAllQuotes();
 }
