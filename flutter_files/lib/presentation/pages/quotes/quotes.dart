@@ -70,23 +70,36 @@ class _QuotesPageState extends State<QuotesPage> {
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
-                            ListTile(
-                              title: Text(state.quotes[index].content),
-                              trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.edit_note_rounded),
-                                      onPressed: () {},
-                                    ),
-                                    const SizedBox(
-                                      width: 15.0,
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete_sharp),
-                                      onPressed: () {},
-                                    ),
-                                  ]),
+                            Container(
+                              constraints:
+                                  const BoxConstraints(maxHeight: 300.0),
+                              width: double.infinity,
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: Text(state.quotes[index].content),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Text(
+                                        state.quotes[index].author.fold(
+                                            () => '', (author) => author.name),
+                                      ),
+                                      Text(
+                                        state.quotes[index].source.fold(
+                                            () => '',
+                                            (source) => source.source),
+                                      ),
+                                      Text(
+                                        state.quotes[index].label.fold(
+                                            () => '', (label) => label.label),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                             const Divider(
                               height: 5.0,

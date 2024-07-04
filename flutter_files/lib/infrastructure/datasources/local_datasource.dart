@@ -80,10 +80,10 @@ class LocalDataSource
 
                 return QuoteModel(
                     quote.id.toString(),
-                    author?.id.toString(),
                     author?.name,
-                    label?.id.toString(),
+                    author?.id.toString(),
                     label?.content,
+                    label?.id.toString(),
                     source?.content,
                     source?.id.toString(),
                     quote.details,

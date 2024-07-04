@@ -30,7 +30,8 @@ class QuotesRepository implements IQuotesRepository {
 
             Source? source;
             if (quoteModel.sourceId != null && quoteModel.source != null) {
-              Source(id: quoteModel.sourceId!, source: quoteModel.source!);
+              source =
+                  Source(id: quoteModel.sourceId!, source: quoteModel.source!);
             }
 
             return Quote(
