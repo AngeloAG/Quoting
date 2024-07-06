@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_files/application/authors/commands/upload_author_handler.dart';
 import 'package:flutter_files/application/labels/commands/upload_label_handler.dart';
 import 'package:flutter_files/application/quotes/commands/upload_quote_handler.dart';
-import 'package:flutter_files/application/quotes/queries/get_all_quotes_handler.dart';
 import 'package:flutter_files/application/quotes/queries/get_paginated_quotes_handler.dart';
 import 'package:flutter_files/application/sources/commands/upload_source_handler.dart';
 import 'package:flutter_files/domain/models/author.dart';
@@ -38,7 +37,6 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
         emit(state.copyWith(status: () => QuoteStatus.loading)));
     on<QuoteUploadEvent>(_onQuoteUpload);
     on<QuoteLoadEvent>(_onQuoteLoad);
-    on<QuoteCheckIfNeedMoreDataEvent>(_onCheckIfNeedMoreData);
   }
 
   void _onQuoteUpload(QuoteUploadEvent event, Emitter<QuoteState> emit) async {
@@ -143,12 +141,5 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
             failureMessage: () => ''));
       },
     );
-  }
-
-  void _onCheckIfNeedMoreData(
-      QuoteCheckIfNeedMoreDataEvent event, Emitter<QuoteState> emit) {
-    if (event.index == state.quotes.length - nextPageTrigger && !isLastPage) {
-      add(QuoteLoadEvent());
-    }
   }
 }
