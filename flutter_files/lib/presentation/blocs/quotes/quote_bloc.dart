@@ -122,9 +122,6 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
   }
 
   void _onQuoteLoad(QuoteLoadEvent event, Emitter<QuoteState> emit) async {
-    // final response =
-    //     await _mediator.send<GetAllQuotesRequest, Either<Failure, List<Quote>>>(
-    //         GetAllQuotesRequest());
     final response = await _mediator
         .send<GetPaginatedQuotesRequest, Either<Failure, List<Quote>>>(
             GetPaginatedQuotesRequest(quotesPerPage, currentPage));
