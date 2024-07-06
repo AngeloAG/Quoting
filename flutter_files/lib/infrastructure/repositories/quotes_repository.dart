@@ -5,6 +5,7 @@ import 'package:flutter_files/domain/models/label.dart';
 import 'package:flutter_files/domain/models/quote.dart';
 import 'package:flutter_files/domain/models/source.dart';
 import 'package:flutter_files/domain/works/create_quote_work.dart';
+import 'package:flutter_files/domain/works/update_quote_work.dart';
 import 'package:flutter_files/infrastructure/common/interfaces/iquotes_datasource.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -83,5 +84,10 @@ class QuotesRepository implements IQuotesRepository {
                   content: quoteModel.content,
                   details: quoteModel.details);
             }).toList());
+  }
+
+  @override
+  TaskEither<Failure, Unit> updateQuote(UpdateQuoteWork updateQuoteWork) {
+    return iQuotesDataSource.updateQuote(updateQuoteWork);
   }
 }

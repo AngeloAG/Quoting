@@ -1,3 +1,4 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_files/presentation/blocs/quotes/quote_bloc.dart';
@@ -96,9 +97,16 @@ class _QuotesPageState extends State<QuotesPage> {
                                     width: double.infinity,
                                     child: Column(
                                       children: [
-                                        Expanded(
-                                          child:
-                                              Text(state.quotes[index].content),
+                                        GestureDetector(
+                                          onTap: () {
+                                            context.beamToNamed(
+                                                '/quotes/${state.quotes[index].id}/edit',
+                                                data: state.quotes[index]);
+                                          },
+                                          child: Expanded(
+                                            child: Text(
+                                                state.quotes[index].content),
+                                          ),
                                         ),
                                         Row(
                                           mainAxisAlignment:
