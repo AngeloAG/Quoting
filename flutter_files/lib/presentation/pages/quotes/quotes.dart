@@ -12,10 +12,26 @@ class QuotesPage extends StatefulWidget {
 }
 
 class _QuotesPageState extends State<QuotesPage> {
+  final _scrollController = ScrollController();
+
   @override
   void initState() {
+    _scrollController.addListener(() {
+      if (_scrollController.position.maxScrollExtent ==
+              _scrollController.position.pixels &&
+          !context.read<QuoteBloc>().isLastPage) {
+        context.read<QuoteBloc>().add(QuoteLoadEvent());
+      }
+    });
+
     context.read<QuoteBloc>().add(QuoteLoadEvent());
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -65,49 +81,70 @@ class _QuotesPageState extends State<QuotesPage> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (state.quotes.isNotEmpty) {
-                    return ListView.builder(
-                      itemCount: state.quotes.length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            Container(
-                              constraints:
-                                  const BoxConstraints(maxHeight: 300.0),
-                              width: double.infinity,
-                              child: Column(
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                            controller: _scrollController,
+                            itemCount: state.quotes.length,
+                            itemBuilder: (context, index) {
+                              return Column(
                                 children: [
-                                  Expanded(
-                                    child: Text(state.quotes[index].content),
+                                  Container(
+                                    constraints:
+                                        const BoxConstraints(maxHeight: 300.0),
+                                    width: double.infinity,
+                                    child: Column(
+                                      children: [
+                                        Expanded(
+                                          child:
+                                              Text(state.quotes[index].content),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Text(
+                                              state.quotes[index].author.fold(
+                                                  () => '',
+                                                  (author) => author.name),
+                                            ),
+                                            Text(
+                                              state.quotes[index].source.fold(
+                                                  () => '',
+                                                  (source) => source.source),
+                                            ),
+                                            Text(
+                                              state.quotes[index].label.fold(
+                                                  () => '',
+                                                  (label) => label.label),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Text(
-                                        state.quotes[index].author.fold(
-                                            () => '', (author) => author.name),
-                                      ),
-                                      Text(
-                                        state.quotes[index].source.fold(
-                                            () => '',
-                                            (source) => source.source),
-                                      ),
-                                      Text(
-                                        state.quotes[index].label.fold(
-                                            () => '', (label) => label.label),
-                                      ),
-                                    ],
+                                  const Divider(
+                                    height: 5.0,
+                                    color: Colors.black12,
                                   )
                                 ],
-                              ),
+                              );
+                            },
+                          ),
+                        ),
+                        Visibility(
+                          visible: state.status == QuoteStatus.loading &&
+                              state.quotes.isNotEmpty,
+                          child: const SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: Center(
+                              child: CircularProgressIndicator(),
                             ),
-                            const Divider(
-                              height: 5.0,
-                              color: Colors.black12,
-                            )
-                          ],
-                        );
-                      },
+                          ),
+                        )
+                      ],
                     );
                   }
                   return const SizedBox();

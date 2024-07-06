@@ -41,3 +41,9 @@ final class QuoteUpdateEvent extends QuoteEvent {
 
   QuoteUpdateEvent({required this.quote});
 }
+
+final class QuoteCheckIfNeedMoreDataEvent extends QuoteEvent {
+  final int index;
+
+  QuoteCheckIfNeedMoreDataEvent(this.index);
+}

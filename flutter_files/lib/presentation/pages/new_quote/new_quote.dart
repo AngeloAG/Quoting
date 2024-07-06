@@ -322,6 +322,7 @@ class _NewQuotePageState extends State<NewQuotePage> {
                       sourceText: _sourceTextController.text,
                       quoteText: _quoteContentController.text,
                       detailsText: _detailsTextController.text));
+                  context.read<QuoteBloc>().add(QuoteLoadEvent());
                 },
                 child: const Text('Save'),
               )

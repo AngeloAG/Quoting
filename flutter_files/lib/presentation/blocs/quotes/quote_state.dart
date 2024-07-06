@@ -15,12 +15,12 @@ final class QuoteState extends Equatable {
 
   QuoteState copyWith({
     QuoteStatus Function()? status,
-    List<Quote> Function()? quotes,
+    List<Quote> Function(List<Quote> currentQuotes)? quotes,
     String Function()? failureMessage,
   }) {
     return QuoteState(
       status: status != null ? status() : this.status,
-      quotes: quotes != null ? quotes() : this.quotes,
+      quotes: quotes != null ? quotes(this.quotes) : this.quotes,
       failureMessage:
           failureMessage != null ? failureMessage() : this.failureMessage,
     );

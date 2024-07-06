@@ -51,4 +51,37 @@ class QuotesRepository implements IQuotesRepository {
   TaskEither<Failure, Unit> uploadQuote(CreateQuoteWork createQuoteWork) {
     return iQuotesDataSource.uploadQuote(createQuoteWork);
   }
+
+  @override
+  TaskEither<Failure, List<Quote>> getPaginatedQuotes(
+      int amountOfQuotes, int offset) {
+    return iQuotesDataSource
+        .getPaginatedQuotes(amountOfQuotes, offset)
+        .map((quotesModels) => quotesModels.map((quoteModel) {
+              Author? author;
+              if (quoteModel.authorId != null && quoteModel.author != null) {
+                author =
+                    Author(id: quoteModel.authorId!, name: quoteModel.author!);
+              }
+              Label? label;
+              if (quoteModel.labelId != null && quoteModel.label != null) {
+                label =
+                    Label(id: quoteModel.labelId!, label: quoteModel.label!);
+              }
+
+              Source? source;
+              if (quoteModel.sourceId != null && quoteModel.source != null) {
+                source = Source(
+                    id: quoteModel.sourceId!, source: quoteModel.source!);
+              }
+
+              return Quote(
+                  id: quoteModel.id,
+                  author: Option.fromNullable(author),
+                  label: Option.fromNullable(label),
+                  source: Option.fromNullable(source),
+                  content: quoteModel.content,
+                  details: quoteModel.details);
+            }).toList());
+  }
 }
