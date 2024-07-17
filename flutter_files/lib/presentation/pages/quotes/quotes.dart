@@ -100,7 +100,7 @@ class _QuotesPageState extends State<QuotesPage> {
                                         GestureDetector(
                                           onTap: () {
                                             context.beamToNamed(
-                                                '/quotes/${state.quotes[index].id}/edit',
+                                                '/quotes/${state.quotes[index].id}',
                                                 data: state.quotes[index]);
                                           },
                                           child: Expanded(

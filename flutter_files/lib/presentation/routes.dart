@@ -4,6 +4,7 @@ import 'package:flutter_files/presentation/pages/edit_quote/edit_quote.dart';
 import 'package:flutter_files/presentation/pages/home/home.dart';
 import 'package:flutter_files/presentation/pages/login/login.dart';
 import 'package:flutter_files/presentation/pages/settings/settings.dart';
+import 'package:flutter_files/presentation/pages/view_quote/view_quote.dart';
 
 var routerDelegate = BeamerDelegate(
   locationBuilder: RoutesLocationBuilder(
@@ -21,6 +22,11 @@ var routerDelegate = BeamerDelegate(
           initialQuoteContent: quote.content,
           initialDetails: quote.details,
         );
+      },
+      'quotes/:quoteId': (context, state, data) {
+        final quote = (data as Quote);
+
+        return ViewQuote(quote: quote);
       },
       'login': (context, state, data) => const LoginPage(),
       'authors': (context, state, data) => const Home(initialIndex: 1),
