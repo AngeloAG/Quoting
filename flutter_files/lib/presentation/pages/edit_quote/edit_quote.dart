@@ -1,6 +1,6 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_files/domain/models/author.dart';
 import 'package:flutter_files/domain/models/label.dart';
 import 'package:flutter_files/domain/models/source.dart';
 import 'package:flutter_files/presentation/blocs/author/author_bloc.dart';
@@ -10,14 +10,29 @@ import 'package:flutter_files/presentation/blocs/source/source_bloc.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';
 import 'package:flutter_files/presentation/shared/utilities.dart';
 
-class NewQuotePage extends StatefulWidget {
-  const NewQuotePage({super.key});
+import '../../../domain/models/author.dart';
+
+class EditQuote extends StatefulWidget {
+  final String id;
+  final String initialQuoteContent;
+  final Author? initialAuthor;
+  final Label? initialLabel;
+  final Source? initialSource;
+  final String initialDetails;
+  const EditQuote(
+      {super.key,
+      required this.initialQuoteContent,
+      this.initialAuthor,
+      this.initialLabel,
+      this.initialSource,
+      required this.initialDetails,
+      required this.id});
 
   @override
-  State<NewQuotePage> createState() => _NewQuotePageState();
+  State<EditQuote> createState() => _EditQuoteState();
 }
 
-class _NewQuotePageState extends State<NewQuotePage> {
+class _EditQuoteState extends State<EditQuote> {
   final _formKey = GlobalKey<FormState>();
   final _quoteContentController = TextEditingController();
   final _authorTextController = TextEditingController();
@@ -42,6 +57,24 @@ class _NewQuotePageState extends State<NewQuotePage> {
     if (context.read<SourceBloc>().state.sources.isEmpty) {
       context.read<SourceBloc>().add(SourceLoadEvent());
     }
+
+    _quoteContentController.text = widget.initialQuoteContent;
+    if (widget.initialAuthor != null) {
+      _authorTextController.text = widget.initialAuthor!.name;
+    }
+    _author = widget.initialAuthor;
+
+    if (widget.initialLabel != null) {
+      _labelTextController.text = widget.initialLabel!.label;
+    }
+    _label = widget.initialLabel;
+
+    if (widget.initialSource != null) {
+      _sourceTextController.text = widget.initialSource!.source;
+    }
+    _source = widget.initialSource;
+
+    _detailsTextController.text = widget.initialDetails;
     super.initState();
   }
 
@@ -62,7 +95,7 @@ class _NewQuotePageState extends State<NewQuotePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Quote'),
+        title: const Text('Edit Quote'),
       ),
       endDrawer: const CustomDrawer(),
       body: Padding(
@@ -313,7 +346,8 @@ class _NewQuotePageState extends State<NewQuotePage> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  context.read<QuoteBloc>().add(QuoteUploadEvent(
+                  context.read<QuoteBloc>().add(QuoteUpdateEvent(
+                      id: widget.id,
                       author: _author,
                       authorText: _authorTextController.text,
                       label: _label,
@@ -322,9 +356,10 @@ class _NewQuotePageState extends State<NewQuotePage> {
                       sourceText: _sourceTextController.text,
                       quoteText: _quoteContentController.text,
                       detailsText: _detailsTextController.text));
-                  context.read<QuoteBloc>().add(QuoteLoadEvent());
+                  context.read<QuoteBloc>().add(QuoteReloadEvent());
+                  context.beamBack();
                 },
-                child: const Text('Save'),
+                child: const Text('Update'),
               )
             ],
           ),

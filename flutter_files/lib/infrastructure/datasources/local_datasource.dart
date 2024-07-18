@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter_files/domain/models/failure.dart';
 import 'package:flutter_files/domain/works/create_quote_work.dart';
 import 'package:flutter_files/domain/works/update_label_work.dart';
+import 'package:flutter_files/domain/works/update_quote_work.dart';
 import 'package:flutter_files/infrastructure/common/interfaces/iauthors_datasource.dart';
 import 'package:flutter_files/infrastructure/common/interfaces/ilabels_datasource.dart';
 import 'package:flutter_files/infrastructure/common/interfaces/iquotes_datasource.dart';
@@ -57,39 +58,33 @@ class LocalDataSource
   }
 
   @override
-  TaskEither<Failure, Stream<List<QuoteModel>>> getAllQuotes() {
+  TaskEither<Failure, List<QuoteModel>> getAllQuotes() {
     return TaskEither.tryCatch(
       () async {
-        return driftDB
-            .select(driftDB.quotes)
-            .join([
-              leftOuterJoin(driftDB.authors,
-                  driftDB.authors.id.equalsExp(driftDB.quotes.authorId)),
-              leftOuterJoin(driftDB.labels,
-                  driftDB.labels.id.equalsExp(driftDB.quotes.labelId)),
-              leftOuterJoin(driftDB.sources,
-                  driftDB.sources.id.equalsExp(driftDB.quotes.sourceId)),
-            ])
-            .watch()
-            .map((rows) {
-              return rows.map((row) {
-                final Quote quote = row.readTable(driftDB.quotes);
-                final Author? author = row.readTableOrNull(driftDB.authors);
-                final Label? label = row.readTableOrNull(driftDB.labels);
-                final Source? source = row.readTableOrNull(driftDB.sources);
+        return driftDB.select(driftDB.quotes).join([
+          leftOuterJoin(driftDB.authors,
+              driftDB.authors.id.equalsExp(driftDB.quotes.authorId)),
+          leftOuterJoin(driftDB.labels,
+              driftDB.labels.id.equalsExp(driftDB.quotes.labelId)),
+          leftOuterJoin(driftDB.sources,
+              driftDB.sources.id.equalsExp(driftDB.quotes.sourceId)),
+        ]).map((row) {
+          final Quote quote = row.readTable(driftDB.quotes);
+          final Author? author = row.readTableOrNull(driftDB.authors);
+          final Label? label = row.readTableOrNull(driftDB.labels);
+          final Source? source = row.readTableOrNull(driftDB.sources);
 
-                return QuoteModel(
-                    quote.id.toString(),
-                    author?.id.toString(),
-                    author?.name,
-                    label?.id.toString(),
-                    label?.content,
-                    source?.content,
-                    source?.id.toString(),
-                    quote.details,
-                    quote.content);
-              }).toList();
-            });
+          return QuoteModel(
+              quote.id.toString(),
+              author?.name,
+              author?.id.toString(),
+              label?.content,
+              label?.id.toString(),
+              source?.content,
+              source?.id.toString(),
+              quote.details,
+              quote.content);
+        }).get();
       },
       (error, stackTrace) => Failure(
           message:
@@ -356,6 +351,77 @@ class LocalDataSource
       (error, stackTrace) => Failure(
           message:
               'Failed to update source in DB with error: ${error.toString()}'),
+    );
+  }
+
+  @override
+  TaskEither<Failure, List<QuoteModel>> getPaginatedQuotes(
+      int amountOfQuotes, int offset) {
+    return TaskEither.tryCatch(
+      () async {
+        return (driftDB.select(driftDB.quotes)
+              ..limit(amountOfQuotes, offset: offset))
+            .join([
+          leftOuterJoin(driftDB.authors,
+              driftDB.authors.id.equalsExp(driftDB.quotes.authorId)),
+          leftOuterJoin(driftDB.labels,
+              driftDB.labels.id.equalsExp(driftDB.quotes.labelId)),
+          leftOuterJoin(driftDB.sources,
+              driftDB.sources.id.equalsExp(driftDB.quotes.sourceId)),
+        ]).map((row) {
+          final Quote quote = row.readTable(driftDB.quotes);
+          final Author? author = row.readTableOrNull(driftDB.authors);
+          final Label? label = row.readTableOrNull(driftDB.labels);
+          final Source? source = row.readTableOrNull(driftDB.sources);
+
+          return QuoteModel(
+              quote.id.toString(),
+              author?.name,
+              author?.id.toString(),
+              label?.content,
+              label?.id.toString(),
+              source?.content,
+              source?.id.toString(),
+              quote.details,
+              quote.content);
+        }).get();
+      },
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to retrieve quotes from the DB with error: ${error.toString()}'),
+    );
+  }
+
+  @override
+  TaskEither<Failure, Unit> updateQuote(UpdateQuoteWork updateQuoteWork) {
+    return TaskEither.tryCatch(
+      () async {
+        int? authorId;
+        if (updateQuoteWork.authorId.isSome()) {
+          authorId = int.tryParse(updateQuoteWork.authorId.toNullable()!);
+        }
+        int? labelId;
+        if (updateQuoteWork.labelId.isSome()) {
+          labelId = int.tryParse(updateQuoteWork.labelId.toNullable()!);
+        }
+
+        int? sourceId;
+        if (updateQuoteWork.sourceId.isSome()) {
+          sourceId = int.tryParse(updateQuoteWork.sourceId.toNullable()!);
+        }
+
+        driftDB.update(driftDB.quotes).replace(QuotesCompanion(
+            id: Value(int.parse(updateQuoteWork.id)),
+            authorId: Value(authorId),
+            labelId: Value(labelId),
+            sourceId: Value(sourceId),
+            content: Value(updateQuoteWork.content),
+            details: Value(updateQuoteWork.details)));
+
+        return unit;
+      },
+      (error, stackTrace) => Failure(
+          message: 'Failed to update quote with error: ${error.toString()}'),
     );
   }
 }
