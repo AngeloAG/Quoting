@@ -10,6 +10,7 @@ import 'package:flutter_files/application/quotes/commands/remove_quote_handler.d
 import 'package:flutter_files/application/quotes/commands/upload_quote_handler.dart';
 import 'package:flutter_files/application/quotes/queries/get_all_quotes_handler.dart';
 import 'package:flutter_files/application/quotes/queries/get_paginated_quotes_handler.dart';
+import 'package:flutter_files/application/quotes/queries/search_quote_handler.dart';
 import 'package:flutter_files/application/sources/commands/remove_source_handler.dart';
 import 'package:flutter_files/application/sources/commands/update_source_handler.dart';
 import 'package:flutter_files/application/sources/commands/upload_source_handler.dart';
@@ -80,6 +81,9 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
   mediator.registerHandler<GetPaginatedQuotesRequest,
           Either<Failure, List<Quote>>, GetPaginatedQuotesHandler>(
       () => GetPaginatedQuotesHandler(serviceLocator()));
+
+  mediator.registerHandler<SearchQuoteRequest, Either<Failure, List<Quote>>,
+      SearchQuoteHandler>(() => SearchQuoteHandler(serviceLocator()));
 
   serviceLocator.registerLazySingleton(() => mediator);
 }

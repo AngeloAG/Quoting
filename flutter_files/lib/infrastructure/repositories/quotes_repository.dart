@@ -90,4 +90,33 @@ class QuotesRepository implements IQuotesRepository {
   TaskEither<Failure, Unit> updateQuote(UpdateQuoteWork updateQuoteWork) {
     return iQuotesDataSource.updateQuote(updateQuoteWork);
   }
+
+  @override
+  TaskEither<Failure, List<Quote>> searchQuotes(String query) {
+    return iQuotesDataSource.searchQuotes(query).map((quotesModels) =>
+        quotesModels.map((quoteModel) {
+          Author? author;
+          if (quoteModel.authorId != null && quoteModel.author != null) {
+            author = Author(id: quoteModel.authorId!, name: quoteModel.author!);
+          }
+          Label? label;
+          if (quoteModel.labelId != null && quoteModel.label != null) {
+            label = Label(id: quoteModel.labelId!, label: quoteModel.label!);
+          }
+
+          Source? source;
+          if (quoteModel.sourceId != null && quoteModel.source != null) {
+            source =
+                Source(id: quoteModel.sourceId!, source: quoteModel.source!);
+          }
+
+          return Quote(
+              id: quoteModel.id,
+              author: Option.fromNullable(author),
+              label: Option.fromNullable(label),
+              source: Option.fromNullable(source),
+              content: quoteModel.content,
+              details: quoteModel.details);
+        }).toList());
+  }
 }

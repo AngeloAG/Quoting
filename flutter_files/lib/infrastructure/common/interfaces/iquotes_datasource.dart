@@ -15,4 +15,6 @@ abstract interface class IQuotesDataSource {
       int amountOfQuotes, int offset);
 
   TaskEither<Failure, Unit> updateQuote(UpdateQuoteWork updateQuoteWork);
+
+  TaskEither<Failure, List<QuoteModel>> searchQuotes(String query);
 }

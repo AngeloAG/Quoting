@@ -6,6 +6,7 @@ import 'package:flutter_files/application/labels/commands/upload_label_handler.d
 import 'package:flutter_files/application/quotes/commands/update_quote_handler.dart';
 import 'package:flutter_files/application/quotes/commands/upload_quote_handler.dart';
 import 'package:flutter_files/application/quotes/queries/get_paginated_quotes_handler.dart';
+import 'package:flutter_files/application/quotes/queries/search_quote_handler.dart';
 import 'package:flutter_files/application/sources/commands/upload_source_handler.dart';
 import 'package:flutter_files/domain/models/author.dart';
 import 'package:flutter_files/domain/models/failure.dart';
@@ -40,6 +41,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
     on<QuoteUploadEvent>(_onQuoteUpload);
     on<QuoteLoadEvent>(_onQuoteLoad);
     on<QuoteReloadEvent>(_onQuoteReload);
+    on<QuoteSearchEvent>(_onQuoteSearch);
   }
 
   void _onQuoteUpload(QuoteUploadEvent event, Emitter<QuoteState> emit) async {
@@ -232,5 +234,18 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
         failureMessage: () => '',
         quotes: (quotes) => []));
     add(QuoteLoadEvent());
+  }
+
+  void _onQuoteSearch(QuoteSearchEvent event, Emitter<QuoteState> emit) async {
+    final response =
+        await _mediator.send<SearchQuoteRequest, Either<Failure, List<Quote>>>(
+            SearchQuoteRequest(event.query));
+
+    Failure f;
+    List<Quote> s;
+    response.fold(
+      (l) => f = l,
+      (r) => s = r,
+    );
   }
 }

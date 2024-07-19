@@ -15,4 +15,6 @@ abstract interface class IQuotesRepository {
       int amountOfQuotes, int offset);
 
   TaskEither<Failure, Unit> updateQuote(UpdateQuoteWork updateQuoteWork);
+
+  TaskEither<Failure, List<Quote>> searchQuotes(String query);
 }
