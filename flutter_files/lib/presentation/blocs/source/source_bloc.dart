@@ -41,7 +41,6 @@ class SourceBloc extends Bloc<SourceEvent, SourceState> {
           status: () => SourceStatus.failure,
           failureMessage: () => failure.message)),
       (source) {
-        state.sources.add(source);
         emit(state.copyWith(
             status: () => SourceStatus.success, failureMessage: () => ''));
       },
@@ -79,7 +78,6 @@ class SourceBloc extends Bloc<SourceEvent, SourceState> {
           status: () => SourceStatus.failure,
           failureMessage: () => failure.message)),
       (unit) {
-        state.sources.removeWhere((element) => element.id == event.source.id);
         emit(state.copyWith(
           status: () => SourceStatus.success,
           failureMessage: () => '',
@@ -99,8 +97,6 @@ class SourceBloc extends Bloc<SourceEvent, SourceState> {
           status: () => SourceStatus.failure,
           failureMessage: () => failure.message)),
       (unit) {
-        state.sources.removeWhere((element) => element.id == event.source.id);
-        state.sources.add(event.source);
         emit(state.copyWith(
             status: () => SourceStatus.success, failureMessage: () => ''));
       },

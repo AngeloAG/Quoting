@@ -42,12 +42,8 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
           status: () => LabelStatus.failure,
           failureMessage: () => failure.message)),
       (uploadedLabel) {
-        final newLabels = state.labels;
-        newLabels.add(uploadedLabel);
         emit(state.copyWith(
-            status: () => LabelStatus.success,
-            failureMessage: () => '',
-            labels: () => newLabels));
+            status: () => LabelStatus.success, failureMessage: () => ''));
       },
     );
   }
@@ -81,12 +77,8 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
           status: () => LabelStatus.failure,
           failureMessage: () => failure.message)),
       (unit) {
-        final newLabels = state.labels;
-        newLabels.remove(event.label);
         emit(state.copyWith(
-            status: () => LabelStatus.success,
-            labels: () => newLabels,
-            failureMessage: () => ''));
+            status: () => LabelStatus.success, failureMessage: () => ''));
       },
     );
   }
@@ -104,13 +96,8 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
           status: () => LabelStatus.failure,
           failureMessage: () => failure.message)),
       (unit) {
-        final newLabels = state.labels;
-        newLabels.removeWhere((element) => element.id == event.label.id);
-        newLabels.add(event.label);
         emit(state.copyWith(
-            status: () => LabelStatus.success,
-            labels: () => newLabels,
-            failureMessage: () => ''));
+            status: () => LabelStatus.success, failureMessage: () => ''));
       },
     );
   }

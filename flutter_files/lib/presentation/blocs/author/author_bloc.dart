@@ -41,7 +41,6 @@ class AuthorBloc extends Bloc<AuthorEvent, AuthorState> {
           status: () => AuthorStatus.failure,
           failureMessage: () => failure.message)),
       (author) {
-        state.authors.add(author);
         emit(state.copyWith(
             status: () => AuthorStatus.success, failureMessage: () => ''));
       },
@@ -79,7 +78,6 @@ class AuthorBloc extends Bloc<AuthorEvent, AuthorState> {
       (failure) => emit(state.copyWith(
           status: () => AuthorStatus.failure, failureMessage: () => '')),
       (unit) {
-        state.authors.remove(event.author);
         emit(state.copyWith(
             status: () => AuthorStatus.success, failureMessage: () => ''));
       },
@@ -97,8 +95,6 @@ class AuthorBloc extends Bloc<AuthorEvent, AuthorState> {
           status: () => AuthorStatus.failure,
           failureMessage: () => failure.message)),
       (unit) {
-        state.authors.removeWhere((element) => element.id == event.author.id);
-        state.authors.add(event.author);
         emit(state.copyWith(
             status: () => AuthorStatus.success, failureMessage: () => ''));
       },
