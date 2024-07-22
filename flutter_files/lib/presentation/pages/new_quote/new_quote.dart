@@ -1,3 +1,4 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_files/domain/models/author.dart';
@@ -322,7 +323,8 @@ class _NewQuotePageState extends State<NewQuotePage> {
                       sourceText: _sourceTextController.text,
                       quoteText: _quoteContentController.text,
                       detailsText: _detailsTextController.text));
-                  context.read<QuoteBloc>().add(QuoteLoadEvent());
+                  context.read<QuoteBloc>().add(QuoteReloadEvent());
+                  context.beamToNamed('/quotes');
                 },
                 child: const Text('Save'),
               )

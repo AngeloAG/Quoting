@@ -3,174 +3,320 @@
 part of 'drift_db.dart';
 
 // ignore_for_file: type=lint
-class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
+class FtsQuotes extends Table
+    with TableInfo<FtsQuotes, FtsQuote>, VirtualTableInfo<FtsQuotes, FtsQuote> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $LabelsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  FtsQuotes(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _contentMeta =
       const VerificationMeta('content');
-  @override
   late final GeneratedColumn<String> content = GeneratedColumn<String>(
       'content', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 3, maxTextLength: 32),
       type: DriftSqlType.string,
-      requiredDuringInsert: true);
+      requiredDuringInsert: true,
+      $customConstraints: '');
+  static const VerificationMeta _detailsMeta =
+      const VerificationMeta('details');
+  late final GeneratedColumn<String> details = GeneratedColumn<String>(
+      'details', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: '');
+  static const VerificationMeta _authorNameMeta =
+      const VerificationMeta('authorName');
+  late final GeneratedColumn<String> authorName = GeneratedColumn<String>(
+      'author_name', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: '');
+  static const VerificationMeta _labelContentMeta =
+      const VerificationMeta('labelContent');
+  late final GeneratedColumn<String> labelContent = GeneratedColumn<String>(
+      'label_content', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: '');
+  static const VerificationMeta _sourceContentMeta =
+      const VerificationMeta('sourceContent');
+  late final GeneratedColumn<String> sourceContent = GeneratedColumn<String>(
+      'source_content', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: '');
   @override
-  List<GeneratedColumn> get $columns => [id, content];
+  List<GeneratedColumn> get $columns =>
+      [content, details, authorName, labelContent, sourceContent];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'labels';
+  static const String $name = 'fts_quotes';
   @override
-  VerificationContext validateIntegrity(Insertable<Label> instance,
+  VerificationContext validateIntegrity(Insertable<FtsQuote> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
     if (data.containsKey('content')) {
       context.handle(_contentMeta,
           content.isAcceptableOrUnknown(data['content']!, _contentMeta));
     } else if (isInserting) {
       context.missing(_contentMeta);
     }
+    if (data.containsKey('details')) {
+      context.handle(_detailsMeta,
+          details.isAcceptableOrUnknown(data['details']!, _detailsMeta));
+    } else if (isInserting) {
+      context.missing(_detailsMeta);
+    }
+    if (data.containsKey('author_name')) {
+      context.handle(
+          _authorNameMeta,
+          authorName.isAcceptableOrUnknown(
+              data['author_name']!, _authorNameMeta));
+    } else if (isInserting) {
+      context.missing(_authorNameMeta);
+    }
+    if (data.containsKey('label_content')) {
+      context.handle(
+          _labelContentMeta,
+          labelContent.isAcceptableOrUnknown(
+              data['label_content']!, _labelContentMeta));
+    } else if (isInserting) {
+      context.missing(_labelContentMeta);
+    }
+    if (data.containsKey('source_content')) {
+      context.handle(
+          _sourceContentMeta,
+          sourceContent.isAcceptableOrUnknown(
+              data['source_content']!, _sourceContentMeta));
+    } else if (isInserting) {
+      context.missing(_sourceContentMeta);
+    }
     return context;
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => const {};
   @override
-  Label map(Map<String, dynamic> data, {String? tablePrefix}) {
+  FtsQuote map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Label(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+    return FtsQuote(
       content: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
+      details: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}details'])!,
+      authorName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}author_name'])!,
+      labelContent: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}label_content'])!,
+      sourceContent: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}source_content'])!,
     );
   }
 
   @override
-  $LabelsTable createAlias(String alias) {
-    return $LabelsTable(attachedDatabase, alias);
+  FtsQuotes createAlias(String alias) {
+    return FtsQuotes(attachedDatabase, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
+  @override
+  String get moduleAndArgs =>
+      'fts5(content, details, author_name, label_content, source_content)';
 }
 
-class Label extends DataClass implements Insertable<Label> {
-  final int id;
+class FtsQuote extends DataClass implements Insertable<FtsQuote> {
   final String content;
-  const Label({required this.id, required this.content});
+  final String details;
+  final String authorName;
+  final String labelContent;
+  final String sourceContent;
+  const FtsQuote(
+      {required this.content,
+      required this.details,
+      required this.authorName,
+      required this.labelContent,
+      required this.sourceContent});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
     map['content'] = Variable<String>(content);
+    map['details'] = Variable<String>(details);
+    map['author_name'] = Variable<String>(authorName);
+    map['label_content'] = Variable<String>(labelContent);
+    map['source_content'] = Variable<String>(sourceContent);
     return map;
   }
 
-  LabelsCompanion toCompanion(bool nullToAbsent) {
-    return LabelsCompanion(
-      id: Value(id),
+  FtsQuotesCompanion toCompanion(bool nullToAbsent) {
+    return FtsQuotesCompanion(
       content: Value(content),
+      details: Value(details),
+      authorName: Value(authorName),
+      labelContent: Value(labelContent),
+      sourceContent: Value(sourceContent),
     );
   }
 
-  factory Label.fromJson(Map<String, dynamic> json,
+  factory FtsQuote.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Label(
-      id: serializer.fromJson<int>(json['id']),
+    return FtsQuote(
       content: serializer.fromJson<String>(json['content']),
+      details: serializer.fromJson<String>(json['details']),
+      authorName: serializer.fromJson<String>(json['author_name']),
+      labelContent: serializer.fromJson<String>(json['label_content']),
+      sourceContent: serializer.fromJson<String>(json['source_content']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
       'content': serializer.toJson<String>(content),
+      'details': serializer.toJson<String>(details),
+      'author_name': serializer.toJson<String>(authorName),
+      'label_content': serializer.toJson<String>(labelContent),
+      'source_content': serializer.toJson<String>(sourceContent),
     };
   }
 
-  Label copyWith({int? id, String? content}) => Label(
-        id: id ?? this.id,
+  FtsQuote copyWith(
+          {String? content,
+          String? details,
+          String? authorName,
+          String? labelContent,
+          String? sourceContent}) =>
+      FtsQuote(
         content: content ?? this.content,
+        details: details ?? this.details,
+        authorName: authorName ?? this.authorName,
+        labelContent: labelContent ?? this.labelContent,
+        sourceContent: sourceContent ?? this.sourceContent,
       );
   @override
   String toString() {
-    return (StringBuffer('Label(')
-          ..write('id: $id, ')
-          ..write('content: $content')
+    return (StringBuffer('FtsQuote(')
+          ..write('content: $content, ')
+          ..write('details: $details, ')
+          ..write('authorName: $authorName, ')
+          ..write('labelContent: $labelContent, ')
+          ..write('sourceContent: $sourceContent')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, content);
+  int get hashCode =>
+      Object.hash(content, details, authorName, labelContent, sourceContent);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Label && other.id == this.id && other.content == this.content);
+      (other is FtsQuote &&
+          other.content == this.content &&
+          other.details == this.details &&
+          other.authorName == this.authorName &&
+          other.labelContent == this.labelContent &&
+          other.sourceContent == this.sourceContent);
 }
 
-class LabelsCompanion extends UpdateCompanion<Label> {
-  final Value<int> id;
+class FtsQuotesCompanion extends UpdateCompanion<FtsQuote> {
   final Value<String> content;
-  const LabelsCompanion({
-    this.id = const Value.absent(),
+  final Value<String> details;
+  final Value<String> authorName;
+  final Value<String> labelContent;
+  final Value<String> sourceContent;
+  final Value<int> rowid;
+  const FtsQuotesCompanion({
     this.content = const Value.absent(),
+    this.details = const Value.absent(),
+    this.authorName = const Value.absent(),
+    this.labelContent = const Value.absent(),
+    this.sourceContent = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
-  LabelsCompanion.insert({
-    this.id = const Value.absent(),
+  FtsQuotesCompanion.insert({
     required String content,
-  }) : content = Value(content);
-  static Insertable<Label> custom({
-    Expression<int>? id,
+    required String details,
+    required String authorName,
+    required String labelContent,
+    required String sourceContent,
+    this.rowid = const Value.absent(),
+  })  : content = Value(content),
+        details = Value(details),
+        authorName = Value(authorName),
+        labelContent = Value(labelContent),
+        sourceContent = Value(sourceContent);
+  static Insertable<FtsQuote> custom({
     Expression<String>? content,
+    Expression<String>? details,
+    Expression<String>? authorName,
+    Expression<String>? labelContent,
+    Expression<String>? sourceContent,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
-      if (id != null) 'id': id,
       if (content != null) 'content': content,
+      if (details != null) 'details': details,
+      if (authorName != null) 'author_name': authorName,
+      if (labelContent != null) 'label_content': labelContent,
+      if (sourceContent != null) 'source_content': sourceContent,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
-  LabelsCompanion copyWith({Value<int>? id, Value<String>? content}) {
-    return LabelsCompanion(
-      id: id ?? this.id,
+  FtsQuotesCompanion copyWith(
+      {Value<String>? content,
+      Value<String>? details,
+      Value<String>? authorName,
+      Value<String>? labelContent,
+      Value<String>? sourceContent,
+      Value<int>? rowid}) {
+    return FtsQuotesCompanion(
       content: content ?? this.content,
+      details: details ?? this.details,
+      authorName: authorName ?? this.authorName,
+      labelContent: labelContent ?? this.labelContent,
+      sourceContent: sourceContent ?? this.sourceContent,
+      rowid: rowid ?? this.rowid,
     );
   }
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
     if (content.present) {
       map['content'] = Variable<String>(content.value);
+    }
+    if (details.present) {
+      map['details'] = Variable<String>(details.value);
+    }
+    if (authorName.present) {
+      map['author_name'] = Variable<String>(authorName.value);
+    }
+    if (labelContent.present) {
+      map['label_content'] = Variable<String>(labelContent.value);
+    }
+    if (sourceContent.present) {
+      map['source_content'] = Variable<String>(sourceContent.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
     }
     return map;
   }
 
   @override
   String toString() {
-    return (StringBuffer('LabelsCompanion(')
-          ..write('id: $id, ')
-          ..write('content: $content')
+    return (StringBuffer('FtsQuotesCompanion(')
+          ..write('content: $content, ')
+          ..write('details: $details, ')
+          ..write('authorName: $authorName, ')
+          ..write('labelContent: $labelContent, ')
+          ..write('sourceContent: $sourceContent, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -343,6 +489,179 @@ class AuthorsCompanion extends UpdateCompanion<Author> {
     return (StringBuffer('AuthorsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LabelsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _contentMeta =
+      const VerificationMeta('content');
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+      'content', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 3, maxTextLength: 32),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, content];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'labels';
+  @override
+  VerificationContext validateIntegrity(Insertable<Label> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('content')) {
+      context.handle(_contentMeta,
+          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Label map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Label(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      content: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
+    );
+  }
+
+  @override
+  $LabelsTable createAlias(String alias) {
+    return $LabelsTable(attachedDatabase, alias);
+  }
+}
+
+class Label extends DataClass implements Insertable<Label> {
+  final int id;
+  final String content;
+  const Label({required this.id, required this.content});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['content'] = Variable<String>(content);
+    return map;
+  }
+
+  LabelsCompanion toCompanion(bool nullToAbsent) {
+    return LabelsCompanion(
+      id: Value(id),
+      content: Value(content),
+    );
+  }
+
+  factory Label.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Label(
+      id: serializer.fromJson<int>(json['id']),
+      content: serializer.fromJson<String>(json['content']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'content': serializer.toJson<String>(content),
+    };
+  }
+
+  Label copyWith({int? id, String? content}) => Label(
+        id: id ?? this.id,
+        content: content ?? this.content,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Label(')
+          ..write('id: $id, ')
+          ..write('content: $content')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, content);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Label && other.id == this.id && other.content == this.content);
+}
+
+class LabelsCompanion extends UpdateCompanion<Label> {
+  final Value<int> id;
+  final Value<String> content;
+  const LabelsCompanion({
+    this.id = const Value.absent(),
+    this.content = const Value.absent(),
+  });
+  LabelsCompanion.insert({
+    this.id = const Value.absent(),
+    required String content,
+  }) : content = Value(content);
+  static Insertable<Label> custom({
+    Expression<int>? id,
+    Expression<String>? content,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (content != null) 'content': content,
+    });
+  }
+
+  LabelsCompanion copyWith({Value<int>? id, Value<String>? content}) {
+    return LabelsCompanion(
+      id: id ?? this.id,
+      content: content ?? this.content,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LabelsCompanion(')
+          ..write('id: $id, ')
+          ..write('content: $content')
           ..write(')'))
         .toString();
   }
@@ -863,14 +1182,91 @@ class QuotesCompanion extends UpdateCompanion<Quote> {
 
 abstract class _$DriftDB extends GeneratedDatabase {
   _$DriftDB(QueryExecutor e) : super(e);
-  late final $LabelsTable labels = $LabelsTable(this);
+  late final FtsQuotes ftsQuotes = FtsQuotes(this);
   late final $AuthorsTable authors = $AuthorsTable(this);
+  late final $LabelsTable labels = $LabelsTable(this);
   late final $SourcesTable sources = $SourcesTable(this);
   late final $QuotesTable quotes = $QuotesTable(this);
+  late final Trigger quotesInsert = Trigger(
+      'CREATE TRIGGER quotes_insert AFTER INSERT ON quotes BEGIN INSERT INTO fts_quotes ("rowid", content, details, author_name, label_content, source_content) SELECT new.id, new.content, new.details, (SELECT name FROM authors WHERE id = new.author_id), (SELECT content FROM labels WHERE id = new.label_id), (SELECT content FROM sources WHERE id = new.source_id);END',
+      'quotes_insert');
+  late final Trigger quotesUpdate = Trigger(
+      'CREATE TRIGGER quotes_update AFTER UPDATE ON quotes BEGIN UPDATE fts_quotes SET content = new.content, details = new.details, author_name = (SELECT name FROM authors WHERE id = new.author_id), label_content = (SELECT content FROM labels WHERE id = new.label_id), source_content = (SELECT content FROM sources WHERE id = new.source_id) WHERE "rowid" = old.id;END',
+      'quotes_update');
+  late final Trigger quotesDelete = Trigger(
+      'CREATE TRIGGER quotes_delete AFTER DELETE ON quotes BEGIN DELETE FROM fts_quotes WHERE "rowid" = old.id;END',
+      'quotes_delete');
+  late final Trigger authorsUpdate = Trigger(
+      'CREATE TRIGGER authors_update AFTER UPDATE ON authors BEGIN UPDATE fts_quotes SET author_name = new.name WHERE author_name = old.name;END',
+      'authors_update');
+  late final Trigger labelsUpdate = Trigger(
+      'CREATE TRIGGER labels_update AFTER UPDATE ON labels BEGIN UPDATE fts_quotes SET label_content = new.content WHERE label_content = old.content;END',
+      'labels_update');
+  late final Trigger sourcesUpdate = Trigger(
+      'CREATE TRIGGER sources_update AFTER UPDATE ON sources BEGIN UPDATE fts_quotes SET source_content = new.content WHERE source_content = old.content;END',
+      'sources_update');
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [labels, authors, sources, quotes];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        ftsQuotes,
+        authors,
+        labels,
+        sources,
+        quotes,
+        quotesInsert,
+        quotesUpdate,
+        quotesDelete,
+        authorsUpdate,
+        labelsUpdate,
+        sourcesUpdate
+      ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
+        [
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('quotes',
+                limitUpdateKind: UpdateKind.insert),
+            result: [
+              TableUpdate('fts_quotes', kind: UpdateKind.insert),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('quotes',
+                limitUpdateKind: UpdateKind.update),
+            result: [
+              TableUpdate('fts_quotes', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('quotes',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('fts_quotes', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('authors',
+                limitUpdateKind: UpdateKind.update),
+            result: [
+              TableUpdate('fts_quotes', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('labels',
+                limitUpdateKind: UpdateKind.update),
+            result: [
+              TableUpdate('fts_quotes', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('sources',
+                limitUpdateKind: UpdateKind.update),
+            result: [
+              TableUpdate('fts_quotes', kind: UpdateKind.update),
+            ],
+          ),
+        ],
+      );
 }

@@ -1,6 +1,9 @@
 import 'package:beamer/beamer.dart';
+import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_files/infrastructure/settings/drift/drift_db.dart';
+import 'package:flutter_files/init_dependencies.dart';
 import 'package:flutter_files/presentation/blocs/quotes/quote_bloc.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';
 import 'package:flutter_files/presentation/shared/utilities.dart';
@@ -40,6 +43,15 @@ class _QuotesPageState extends State<QuotesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quotes'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        DriftDbViewer(serviceLocator<DriftDB>())));
+              },
+              icon: const Icon(Icons.door_back_door))
+        ],
       ),
       endDrawer: const CustomDrawer(),
       body: Padding(
@@ -55,7 +67,7 @@ class _QuotesPageState extends State<QuotesPage> {
                   onTap: () {
                     controller.openView();
                   },
-                  onChanged: (_) {
+                  onChanged: (value) {
                     controller.openView();
                   },
                   leading: const Icon(Icons.search),
@@ -63,6 +75,7 @@ class _QuotesPageState extends State<QuotesPage> {
               },
               suggestionsBuilder:
                   (BuildContext context, SearchController controller) {
+                context.read<QuoteBloc>().add(QuoteSearchEvent(query: 'text'));
                 return List<ListTile>.empty();
               },
             ),

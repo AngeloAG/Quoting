@@ -442,17 +442,17 @@ class LocalDataSource
               l.content AS label_content, 
               s.content AS source_content 
             FROM 
-              fts_quotes fq 
+              fts_quotes 
             JOIN 
-              quotes q ON fq.rowid = q.id 
+              quotes AS q ON fts_quotes.rowid = q.id 
             LEFT JOIN 
-              authors a ON q.author_id = a.id 
+              authors AS a ON q.author_id = a.id 
             LEFT JOIN 
-              labels l ON q.label_id = l.id 
+              labels AS l ON q.label_id = l.id 
             LEFT JOIN 
-              sources s ON q.source_id = s.id 
+              sources AS s ON q.source_id = s.id 
             WHERE 
-              fq MATCH ?
+              fts_quotes MATCH ?
             ''',
           variables: [Variable.withString(query)],
         ).get();
