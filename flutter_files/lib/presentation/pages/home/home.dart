@@ -1,5 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_files/presentation/blocs/tabs/tabs_cubit.dart';
 import 'package:flutter_files/presentation/pages/authors/authors.dart';
 import 'package:flutter_files/presentation/pages/labels/labels.dart';
 import 'package:flutter_files/presentation/pages/new_quote/new_quote.dart';
@@ -29,7 +31,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: LazyIndexedStack(
-        index: _currentIndex,
+        index: context.select((TabsCubit c) => c.state.tabIndex),
         children: const [
           QuotesPage(),
           AuthorsPage(),
@@ -42,7 +44,7 @@ class _HomeState extends State<Home> {
         unselectedItemColor: Colors.grey.shade700,
         selectedItemColor: Colors.grey.shade700,
         backgroundColor: Colors.brown.shade50,
-        currentIndex: _currentIndex,
+        currentIndex: context.select((TabsCubit c) => c.state.tabIndex),
         items: const [
           BottomNavigationBarItem(
             activeIcon: Icon(Icons.home),
@@ -85,9 +87,10 @@ class _HomeState extends State<Home> {
                 ),
               ),
               rebuild: false);
-          setState(() {
-            _currentIndex = index;
-          });
+          context.read<TabsCubit>().setTabIndex(index);
+          // setState(() {
+          //   _currentIndex = index;
+          // });
         },
       ),
     );

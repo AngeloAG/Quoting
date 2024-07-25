@@ -116,10 +116,8 @@ class _QuotesPageState extends State<QuotesPage> {
                                                 '/quotes/${state.quotes[index].id}',
                                                 data: state.quotes[index]);
                                           },
-                                          child: Expanded(
-                                            child: Text(
-                                                state.quotes[index].content),
-                                          ),
+                                          child:
+                                              Text(state.quotes[index].content),
                                         ),
                                         Row(
                                           mainAxisAlignment:

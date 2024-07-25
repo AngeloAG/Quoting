@@ -42,6 +42,12 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
     on<QuoteLoadEvent>(_onQuoteLoad);
     on<QuoteReloadEvent>(_onQuoteReload);
     on<QuoteSearchEvent>(_onQuoteSearch);
+    on<QuoteUpdateEvent>(_onQuoteUpdate);
+    on<QuoteSelectEvent>(_onQuoteSelect);
+  }
+
+  void _onQuoteSelect(QuoteSelectEvent event, Emitter<QuoteState> emit) async {
+    emit(state.copyWith(currentQuoteIndex: () => event.index));
   }
 
   void _onQuoteUpload(QuoteUploadEvent event, Emitter<QuoteState> emit) async {
@@ -118,6 +124,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
           status: () => QuoteStatus.failure,
           failureMessage: () => failure.message)),
       (unit) {
+        isLastPage = false;
         emit(state.copyWith(
             status: () => QuoteStatus.success, failureMessage: () => ''));
       },
@@ -148,7 +155,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
     );
   }
 
-  void onQuoteUpdate(QuoteUpdateEvent event, Emitter<QuoteState> emit) async {
+  void _onQuoteUpdate(QuoteUpdateEvent event, Emitter<QuoteState> emit) async {
     Author? author;
     if (event.author != null && event.authorText == event.author?.name) {
       author = event.author as Author;
@@ -222,6 +229,18 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
           status: () => QuoteStatus.failure,
           failureMessage: () => failure.message)),
       (unit) {
+        final editedQuoteIndex =
+            state.quotes.indexWhere((quote) => quote.id == event.id);
+        if (editedQuoteIndex >= 0) {
+          state.quotes[editedQuoteIndex] = Quote(
+            id: event.id,
+            author: Option.fromNullable(author),
+            label: Option.fromNullable(label),
+            source: Option.fromNullable(source),
+            content: event.quoteText,
+            details: event.detailsText,
+          );
+        }
         emit(state.copyWith(
             status: () => QuoteStatus.success, failureMessage: () => ''));
       },
@@ -229,6 +248,8 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
   }
 
   void _onQuoteReload(QuoteReloadEvent event, Emitter<QuoteState> emit) {
+    currentPage = 0;
+    isLastPage = false;
     emit(state.copyWith(
         status: () => QuoteStatus.loading,
         failureMessage: () => '',

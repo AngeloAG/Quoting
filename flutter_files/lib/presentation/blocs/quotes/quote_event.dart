@@ -72,3 +72,9 @@ final class QuoteSearchEvent extends QuoteEvent {
 
   QuoteSearchEvent({required this.query});
 }
+
+final class QuoteSelectEvent extends QuoteEvent {
+  final int index;
+
+  QuoteSelectEvent({required this.index});
+}
