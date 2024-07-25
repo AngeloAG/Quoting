@@ -112,6 +112,8 @@ class _QuotesPageState extends State<QuotesPage> {
                                       children: [
                                         GestureDetector(
                                           onTap: () {
+                                            context.read<QuoteBloc>().add(
+                                                QuoteSelectEvent(index: index));
                                             context.beamToNamed(
                                                 '/quotes/${state.quotes[index].id}',
                                                 data: state.quotes[index]);

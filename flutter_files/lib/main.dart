@@ -38,11 +38,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         routeInformationParser: BeamerParser(),
         routerDelegate: routerDelegate,
-        backButtonDispatcher: BeamerBackButtonDispatcher(
-          fallbackToBeamBack: false,
-          alwaysBeamBack: true,
-          delegate: routerDelegate,
-        ),
         title: 'Quoting',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(

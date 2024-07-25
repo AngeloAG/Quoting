@@ -19,12 +19,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int _currentIndex = 0;
-
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex;
+    context.read<TabsCubit>().setTabIndex(widget.initialIndex);
   }
 
   @override
@@ -88,9 +86,6 @@ class _HomeState extends State<Home> {
               ),
               rebuild: false);
           context.read<TabsCubit>().setTabIndex(index);
-          // setState(() {
-          //   _currentIndex = index;
-          // });
         },
       ),
     );
