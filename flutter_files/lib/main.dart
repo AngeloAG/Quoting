@@ -6,6 +6,7 @@ import 'package:flutter_files/presentation/blocs/author/author_bloc.dart';
 import 'package:flutter_files/presentation/blocs/label/label_bloc.dart';
 import 'package:flutter_files/presentation/blocs/quotes/quote_bloc.dart';
 import 'package:flutter_files/presentation/blocs/source/source_bloc.dart';
+import 'package:flutter_files/presentation/blocs/tabs/tabs_cubit.dart';
 import 'package:flutter_files/presentation/routes.dart';
 
 void main() async {
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthorBloc>(create: (_) => serviceLocator<AuthorBloc>()),
         BlocProvider<SourceBloc>(create: (_) => serviceLocator<SourceBloc>()),
         BlocProvider<QuoteBloc>(create: (_) => serviceLocator<QuoteBloc>()),
+        BlocProvider<TabsCubit>(create: (_) => serviceLocator<TabsCubit>()),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
