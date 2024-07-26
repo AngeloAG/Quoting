@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:beamer/beamer.dart';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,8 @@ class QuotesPage extends StatefulWidget {
 
 class _QuotesPageState extends State<QuotesPage> {
   final _scrollController = ScrollController();
+  final SearchController _searchController = SearchController();
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -28,6 +32,17 @@ class _QuotesPageState extends State<QuotesPage> {
       }
     });
 
+    _searchController.addListener(() {
+      if (_searchController.text.isNotEmpty) {
+        if (_debounce?.isActive ?? false) _debounce?.cancel();
+        _debounce = Timer(const Duration(milliseconds: 500), () {
+          context
+              .read<QuoteBloc>()
+              .add(QuoteSearchEvent(query: _searchController.text));
+        });
+      }
+    });
+
     context.read<QuoteBloc>().add(QuoteLoadEvent());
     super.initState();
   }
@@ -35,6 +50,8 @@ class _QuotesPageState extends State<QuotesPage> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _searchController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
@@ -59,23 +76,34 @@ class _QuotesPageState extends State<QuotesPage> {
         child: Column(
           children: [
             SearchAnchor(
+              searchController: _searchController,
               builder: (BuildContext context, SearchController controller) {
                 return SearchBar(
-                  controller: controller,
                   padding: const MaterialStatePropertyAll<EdgeInsets>(
                       EdgeInsets.symmetric(horizontal: 16.0)),
                   onTap: () {
                     controller.openView();
                   },
-                  onChanged: (value) {
-                    controller.openView();
-                  },
                   leading: const Icon(Icons.search),
+                );
+              },
+              viewBuilder: (suggestions) {
+                return BlocBuilder<QuoteBloc, QuoteState>(
+                  builder: (context, state) {
+                    return ListView.builder(
+                      padding: const EdgeInsets.only(top: 0.0),
+                      itemCount: state.searchedQuotes.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(state.searchedQuotes[index].content),
+                        );
+                      },
+                    );
+                  },
                 );
               },
               suggestionsBuilder:
                   (BuildContext context, SearchController controller) {
-                context.read<QuoteBloc>().add(QuoteSearchEvent(query: 'text'));
                 return List<ListTile>.empty();
               },
             ),

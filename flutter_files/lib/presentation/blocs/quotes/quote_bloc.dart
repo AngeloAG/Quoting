@@ -262,11 +262,14 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
         await _mediator.send<SearchQuoteRequest, Either<Failure, List<Quote>>>(
             SearchQuoteRequest(event.query));
 
-    Failure f;
-    List<Quote> s;
     response.fold(
-      (l) => f = l,
-      (r) => s = r,
+      (failure) => emit(state.copyWith(
+          status: () => QuoteStatus.failure,
+          failureMessage: () => failure.message)),
+      (quotes) => emit(state.copyWith(
+          status: () => QuoteStatus.success,
+          searchedQuotes: () => quotes,
+          failureMessage: () => '')),
     );
   }
 }

@@ -454,18 +454,18 @@ class LocalDataSource
             WHERE 
               fts_quotes MATCH ?
             ''',
-          variables: [Variable.withString(query)],
+          variables: [Variable.withString('$query*')],
         ).get();
 
         return result.map((row) {
           return QuoteModel(
               row.read<String>('id'),
-              row.read<String>('author_name'),
-              row.read<String>('author_id'),
-              row.read<String>('label_content'),
-              row.read<String>('label_id'),
-              row.read<String>('source_content'),
-              row.read<String>('source_id'),
+              row.read<String?>('author_name'),
+              row.read<String?>('author_id'),
+              row.read<String?>('label_content'),
+              row.read<String?>('label_id'),
+              row.read<String?>('source_content'),
+              row.read<String?>('source_id'),
               row.read<String>('details'),
               row.read<String>('content'));
         }).toList();
