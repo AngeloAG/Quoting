@@ -98,60 +98,66 @@ class _QuotesPageState extends State<QuotesPage> {
                     return Column(
                       children: [
                         Expanded(
-                          child: ListView.builder(
-                            controller: _scrollController,
-                            itemCount: state.quotes.length,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  Container(
-                                    constraints:
-                                        const BoxConstraints(maxHeight: 300.0),
-                                    width: double.infinity,
-                                    child: Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            context.read<QuoteBloc>().add(
-                                                QuoteSelectEvent(index: index));
-                                            context.beamToNamed(
-                                                '/quotes/${state.quotes[index].id}',
-                                                data: state.quotes[index]);
-                                          },
-                                          child:
-                                              Text(state.quotes[index].content),
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Text(
-                                              state.quotes[index].author.fold(
-                                                  () => '',
-                                                  (author) => author.name),
-                                            ),
-                                            Text(
-                                              state.quotes[index].source.fold(
-                                                  () => '',
-                                                  (source) => source.source),
-                                            ),
-                                            Text(
-                                              state.quotes[index].label.fold(
-                                                  () => '',
-                                                  (label) => label.label),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  const Divider(
-                                    height: 5.0,
-                                    color: Colors.black12,
-                                  )
-                                ],
-                              );
+                          child: RefreshIndicator(
+                            onRefresh: () async {
+                              context.read<QuoteBloc>().add(QuoteReloadEvent());
                             },
+                            child: ListView.builder(
+                              controller: _scrollController,
+                              itemCount: state.quotes.length,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    Container(
+                                      constraints: const BoxConstraints(
+                                          maxHeight: 300.0),
+                                      width: double.infinity,
+                                      child: Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              context.read<QuoteBloc>().add(
+                                                  QuoteSelectEvent(
+                                                      index: index));
+                                              context.beamToNamed(
+                                                  '/quotes/${state.quotes[index].id}',
+                                                  data: state.quotes[index]);
+                                            },
+                                            child: Text(
+                                                state.quotes[index].content),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              Text(
+                                                state.quotes[index].author.fold(
+                                                    () => '',
+                                                    (author) => author.name),
+                                              ),
+                                              Text(
+                                                state.quotes[index].source.fold(
+                                                    () => '',
+                                                    (source) => source.source),
+                                              ),
+                                              Text(
+                                                state.quotes[index].label.fold(
+                                                    () => '',
+                                                    (label) => label.label),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    const Divider(
+                                      height: 5.0,
+                                      color: Colors.black12,
+                                    )
+                                  ],
+                                );
+                              },
+                            ),
                           ),
                         ),
                         Visibility(
