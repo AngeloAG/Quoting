@@ -26,6 +26,7 @@ class AuthorBloc extends Bloc<AuthorEvent, AuthorState> {
     on<AuthorLoadEvent>(_onAuthorLoad);
     on<AuthorRemoveEvent>(_onAuthorRemove);
     on<AuthorUpdateEvent>(_onAuthorUpdate);
+    on<AuthorSearchEvent>(_onAuthorSearch);
   }
 
   void _onAuthorUpload(
@@ -99,5 +100,14 @@ class AuthorBloc extends Bloc<AuthorEvent, AuthorState> {
             status: () => AuthorStatus.success, failureMessage: () => ''));
       },
     );
+  }
+
+  void _onAuthorSearch(AuthorSearchEvent event, Emitter<AuthorState> emit) {
+    emit(state.copyWith(
+        status: () => AuthorStatus.success,
+        searchedAuthors: (currentAuthors) => currentAuthors
+            .where((author) =>
+                author.name.toLowerCase().contains(event.query.toLowerCase()))
+            .toList()));
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_files/domain/models/author.dart';
@@ -15,15 +17,30 @@ class AuthorsPage extends StatefulWidget {
 
 class _AuthorsPageState extends State<AuthorsPage> {
   final newAuthorController = TextEditingController();
+  final _searchController = SearchController();
+  Timer? _debounce;
 
   @override
   void dispose() {
     newAuthorController.dispose();
+    _searchController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
   @override
   void initState() {
+    _searchController.addListener(() {
+      if (_searchController.text.isNotEmpty && _searchController.text != "") {
+        if (_debounce?.isActive ?? false) _debounce?.cancel();
+        _debounce = Timer(const Duration(milliseconds: 500), () {
+          context
+              .read<AuthorBloc>()
+              .add(AuthorSearchEvent(query: _searchController.text));
+        });
+      }
+    });
+
     context.read<AuthorBloc>().add(AuthorLoadEvent());
     super.initState();
   }
@@ -40,6 +57,7 @@ class _AuthorsPageState extends State<AuthorsPage> {
         child: Column(
           children: [
             SearchAnchor(
+              searchController: _searchController,
               builder: (BuildContext context, SearchController controller) {
                 return SearchBar(
                   controller: controller,
@@ -48,10 +66,22 @@ class _AuthorsPageState extends State<AuthorsPage> {
                   onTap: () {
                     controller.openView();
                   },
-                  onChanged: (_) {
-                    controller.openView();
-                  },
                   leading: const Icon(Icons.search),
+                );
+              },
+              viewBuilder: (suggestions) {
+                return BlocBuilder<AuthorBloc, AuthorState>(
+                  builder: (context, state) {
+                    return ListView.builder(
+                      padding: const EdgeInsets.only(top: 0.0),
+                      itemCount: state.searchedAuthors.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(state.searchedAuthors[index].name),
+                        );
+                      },
+                    );
+                  },
                 );
               },
               suggestionsBuilder:

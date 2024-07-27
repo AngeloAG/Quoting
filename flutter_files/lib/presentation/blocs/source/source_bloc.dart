@@ -26,6 +26,7 @@ class SourceBloc extends Bloc<SourceEvent, SourceState> {
     on<SourceLoadEvent>(_onSourceLoad);
     on<SourceRemoveEvent>(_onSourceRemove);
     on<SourceUpdateEvent>(_onSourceUpdate);
+    on<SourceSearchEvent>(_onSourceSeach);
   }
 
   void _onSourceUpload(
@@ -101,5 +102,15 @@ class SourceBloc extends Bloc<SourceEvent, SourceState> {
             status: () => SourceStatus.success, failureMessage: () => ''));
       },
     );
+  }
+
+  void _onSourceSeach(SourceSearchEvent event, Emitter<SourceState> emit) {
+    emit(state.copyWith(
+      status: () => SourceStatus.success,
+      searchedSources: (currentSources) => currentSources
+          .where((source) =>
+              source.source.toLowerCase().contains(event.query.toLowerCase()))
+          .toList(),
+    ));
   }
 }

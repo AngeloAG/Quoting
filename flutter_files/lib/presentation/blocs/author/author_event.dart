@@ -27,3 +27,9 @@ class AuthorUpdateEvent extends AuthorEvent {
 
   const AuthorUpdateEvent({required this.author});
 }
+
+class AuthorSearchEvent extends AuthorEvent {
+  final String query;
+
+  const AuthorSearchEvent({required this.query});
+}

@@ -25,3 +25,9 @@ final class LabelUpdateEvent extends LabelEvent {
 
   LabelUpdateEvent({required this.label});
 }
+
+final class LabelSearchEvent extends LabelEvent {
+  final String query;
+
+  LabelSearchEvent({required this.query});
+}
