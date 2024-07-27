@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:beamer/beamer.dart';
+import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_files/infrastructure/settings/drift/drift_db.dart';
+import 'package:flutter_files/init_dependencies.dart';
 import 'package:flutter_files/presentation/blocs/quotes/quote_bloc.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';
 import 'package:flutter_files/presentation/shared/utilities.dart';
@@ -14,6 +19,8 @@ class QuotesPage extends StatefulWidget {
 
 class _QuotesPageState extends State<QuotesPage> {
   final _scrollController = ScrollController();
+  final SearchController _searchController = SearchController();
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -25,6 +32,17 @@ class _QuotesPageState extends State<QuotesPage> {
       }
     });
 
+    _searchController.addListener(() {
+      if (_searchController.text.isNotEmpty) {
+        if (_debounce?.isActive ?? false) _debounce?.cancel();
+        _debounce = Timer(const Duration(milliseconds: 500), () {
+          context
+              .read<QuoteBloc>()
+              .add(QuoteSearchEvent(query: _searchController.text));
+        });
+      }
+    });
+
     context.read<QuoteBloc>().add(QuoteLoadEvent());
     super.initState();
   }
@@ -32,6 +50,8 @@ class _QuotesPageState extends State<QuotesPage> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _searchController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
@@ -40,6 +60,15 @@ class _QuotesPageState extends State<QuotesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quotes'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        DriftDbViewer(serviceLocator<DriftDB>())));
+              },
+              icon: const Icon(Icons.door_back_door))
+        ],
       ),
       endDrawer: const CustomDrawer(),
       body: Padding(
@@ -47,18 +76,30 @@ class _QuotesPageState extends State<QuotesPage> {
         child: Column(
           children: [
             SearchAnchor(
+              searchController: _searchController,
               builder: (BuildContext context, SearchController controller) {
                 return SearchBar(
-                  controller: controller,
                   padding: const MaterialStatePropertyAll<EdgeInsets>(
                       EdgeInsets.symmetric(horizontal: 16.0)),
                   onTap: () {
                     controller.openView();
                   },
-                  onChanged: (_) {
-                    controller.openView();
-                  },
                   leading: const Icon(Icons.search),
+                );
+              },
+              viewBuilder: (suggestions) {
+                return BlocBuilder<QuoteBloc, QuoteState>(
+                  builder: (context, state) {
+                    return ListView.builder(
+                      padding: const EdgeInsets.only(top: 0.0),
+                      itemCount: state.searchedQuotes.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(state.searchedQuotes[index].content),
+                        );
+                      },
+                    );
+                  },
                 );
               },
               suggestionsBuilder:
@@ -85,60 +126,66 @@ class _QuotesPageState extends State<QuotesPage> {
                     return Column(
                       children: [
                         Expanded(
-                          child: ListView.builder(
-                            controller: _scrollController,
-                            itemCount: state.quotes.length,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  Container(
-                                    constraints:
-                                        const BoxConstraints(maxHeight: 300.0),
-                                    width: double.infinity,
-                                    child: Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            context.beamToNamed(
-                                                '/quotes/${state.quotes[index].id}',
-                                                data: state.quotes[index]);
-                                          },
-                                          child: Expanded(
+                          child: RefreshIndicator(
+                            onRefresh: () async {
+                              context.read<QuoteBloc>().add(QuoteReloadEvent());
+                            },
+                            child: ListView.builder(
+                              controller: _scrollController,
+                              itemCount: state.quotes.length,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    Container(
+                                      constraints: const BoxConstraints(
+                                          maxHeight: 300.0),
+                                      width: double.infinity,
+                                      child: Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              context.read<QuoteBloc>().add(
+                                                  QuoteSelectEvent(
+                                                      index: index));
+                                              context.beamToNamed(
+                                                  '/quotes/${state.quotes[index].id}',
+                                                  data: state.quotes[index]);
+                                            },
                                             child: Text(
                                                 state.quotes[index].content),
                                           ),
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Text(
-                                              state.quotes[index].author.fold(
-                                                  () => '',
-                                                  (author) => author.name),
-                                            ),
-                                            Text(
-                                              state.quotes[index].source.fold(
-                                                  () => '',
-                                                  (source) => source.source),
-                                            ),
-                                            Text(
-                                              state.quotes[index].label.fold(
-                                                  () => '',
-                                                  (label) => label.label),
-                                            ),
-                                          ],
-                                        )
-                                      ],
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              Text(
+                                                state.quotes[index].author.fold(
+                                                    () => '',
+                                                    (author) => author.name),
+                                              ),
+                                              Text(
+                                                state.quotes[index].source.fold(
+                                                    () => '',
+                                                    (source) => source.source),
+                                              ),
+                                              Text(
+                                                state.quotes[index].label.fold(
+                                                    () => '',
+                                                    (label) => label.label),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  const Divider(
-                                    height: 5.0,
-                                    color: Colors.black12,
-                                  )
-                                ],
-                              );
-                            },
+                                    const Divider(
+                                      height: 5.0,
+                                      color: Colors.black12,
+                                    )
+                                  ],
+                                );
+                              },
+                            ),
                           ),
                         ),
                         Visibility(

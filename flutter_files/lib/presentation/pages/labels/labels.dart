@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_files/domain/models/label.dart';
@@ -15,16 +17,30 @@ class LabelsPage extends StatefulWidget {
 
 class _LabelsPageState extends State<LabelsPage> {
   final newLabelController = TextEditingController();
-  List<Label> labels = [];
+  final _searchController = SearchController();
+  Timer? _debounce;
 
   @override
   void dispose() {
     newLabelController.dispose();
+    _searchController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
   @override
   void initState() {
+    _searchController.addListener(() {
+      if (_searchController.text.isNotEmpty && _searchController.text != "") {
+        if (_debounce?.isActive ?? false) _debounce?.cancel();
+        _debounce = Timer(const Duration(milliseconds: 500), () {
+          context
+              .read<LabelBloc>()
+              .add(LabelSearchEvent(query: _searchController.text));
+        });
+      }
+    });
+
     context.read<LabelBloc>().add(LabelLoadEvent());
     super.initState();
   }
@@ -41,6 +57,7 @@ class _LabelsPageState extends State<LabelsPage> {
         child: Column(
           children: [
             SearchAnchor(
+              searchController: _searchController,
               builder: (BuildContext context, SearchController controller) {
                 return SearchBar(
                   controller: controller,
@@ -49,10 +66,22 @@ class _LabelsPageState extends State<LabelsPage> {
                   onTap: () {
                     controller.openView();
                   },
-                  onChanged: (_) {
-                    controller.openView();
-                  },
                   leading: const Icon(Icons.search),
+                );
+              },
+              viewBuilder: (suggestions) {
+                return BlocBuilder<LabelBloc, LabelState>(
+                  builder: (context, state) {
+                    return ListView.builder(
+                      padding: const EdgeInsets.only(top: 0.0),
+                      itemCount: state.searchedLabels.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(state.searchedLabels[index].label),
+                        );
+                      },
+                    );
+                  },
                 );
               },
               suggestionsBuilder:
@@ -69,23 +98,20 @@ class _LabelsPageState extends State<LabelsPage> {
                 if (state.status == LabelStatus.failure) {
                   showSnackBar(state.failureMessage, context);
                 }
-                if (state.status == LabelStatus.success ||
-                    state.status == LabelStatus.loaded) {
-                  labels = state.labels;
-                }
               },
               builder: (context, state) {
-                if (state.status == LabelStatus.loading && labels.isEmpty) {
+                if (state.status == LabelStatus.loading &&
+                    state.labels.isEmpty) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (labels.isNotEmpty) {
+                if (state.labels.isNotEmpty) {
                   return ListView.builder(
-                    itemCount: labels.length,
+                    itemCount: state.labels.length,
                     itemBuilder: (context, index) {
                       return Column(
                         children: [
                           ListTile(
-                            title: Text(labels[index].label),
+                            title: Text(state.labels[index].label),
                             trailing:
                                 Row(mainAxisSize: MainAxisSize.min, children: [
                               IconButton(
@@ -99,7 +125,7 @@ class _LabelsPageState extends State<LabelsPage> {
                                                 context.read<LabelBloc>().add(
                                                     LabelUpdateEvent(
                                                         label: labelUpdate)),
-                                            originalLabel: labels[index]);
+                                            originalLabel: state.labels[index]);
                                       });
                                 },
                               ),
@@ -110,7 +136,8 @@ class _LabelsPageState extends State<LabelsPage> {
                                 icon: const Icon(Icons.delete_sharp),
                                 onPressed: () {
                                   context.read<LabelBloc>().add(
-                                      LabelRemoveEvent(label: labels[index]));
+                                      LabelRemoveEvent(
+                                          label: state.labels[index]));
                                 },
                               ),
                             ]),

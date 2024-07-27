@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_files/domain/models/source.dart';
@@ -15,15 +17,30 @@ class SourcesPage extends StatefulWidget {
 
 class _SourcesPageState extends State<SourcesPage> {
   final newSourceController = TextEditingController();
+  final _searchController = SearchController();
+  Timer? _debounce;
 
   @override
   void dispose() {
     newSourceController.dispose();
+    _searchController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
   @override
   void initState() {
+    _searchController.addListener(() {
+      if (_searchController.text.isNotEmpty) {
+        if (_debounce?.isActive ?? false) _debounce?.cancel();
+        _debounce = Timer(const Duration(milliseconds: 500), () {
+          context
+              .read<SourceBloc>()
+              .add(SourceSearchEvent(query: _searchController.text));
+        });
+      }
+    });
+
     context.read<SourceBloc>().add(SourceLoadEvent());
     super.initState();
   }
@@ -40,18 +57,30 @@ class _SourcesPageState extends State<SourcesPage> {
         child: Column(
           children: [
             SearchAnchor(
+              searchController: _searchController,
               builder: (BuildContext context, SearchController controller) {
                 return SearchBar(
-                  controller: controller,
                   padding: const MaterialStatePropertyAll<EdgeInsets>(
                       EdgeInsets.symmetric(horizontal: 16.0)),
                   onTap: () {
                     controller.openView();
                   },
-                  onChanged: (_) {
-                    controller.openView();
-                  },
                   leading: const Icon(Icons.search),
+                );
+              },
+              viewBuilder: (suggestions) {
+                return BlocBuilder<SourceBloc, SourceState>(
+                  builder: (context, state) {
+                    return ListView.builder(
+                      padding: const EdgeInsets.only(top: 0.0),
+                      itemCount: state.searchedSources.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(state.searchedSources[index].source),
+                        );
+                      },
+                    );
+                  },
                 );
               },
               suggestionsBuilder:

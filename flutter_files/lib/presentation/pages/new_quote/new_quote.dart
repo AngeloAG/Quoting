@@ -1,3 +1,4 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_files/domain/models/author.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_files/presentation/blocs/author/author_bloc.dart';
 import 'package:flutter_files/presentation/blocs/label/label_bloc.dart';
 import 'package:flutter_files/presentation/blocs/quotes/quote_bloc.dart';
 import 'package:flutter_files/presentation/blocs/source/source_bloc.dart';
+import 'package:flutter_files/presentation/blocs/tabs/tabs_cubit.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';
 import 'package:flutter_files/presentation/shared/utilities.dart';
 
@@ -322,7 +324,16 @@ class _NewQuotePageState extends State<NewQuotePage> {
                       sourceText: _sourceTextController.text,
                       quoteText: _quoteContentController.text,
                       detailsText: _detailsTextController.text));
-                  context.read<QuoteBloc>().add(QuoteLoadEvent());
+                  //context.read<QuoteBloc>().add(QuoteReloadEvent());
+                  _authorTextController.clear();
+                  _labelTextController.clear();
+                  _sourceTextController.clear();
+                  _quoteContentController.clear();
+                  _detailsTextController.clear();
+                  _author = null;
+                  _label = null;
+                  _source = null;
+                  context.read<TabsCubit>().setTabIndex(0);
                 },
                 child: const Text('Save'),
               )

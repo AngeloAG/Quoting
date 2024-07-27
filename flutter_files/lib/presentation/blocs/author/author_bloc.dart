@@ -26,6 +26,7 @@ class AuthorBloc extends Bloc<AuthorEvent, AuthorState> {
     on<AuthorLoadEvent>(_onAuthorLoad);
     on<AuthorRemoveEvent>(_onAuthorRemove);
     on<AuthorUpdateEvent>(_onAuthorUpdate);
+    on<AuthorSearchEvent>(_onAuthorSearch);
   }
 
   void _onAuthorUpload(
@@ -41,7 +42,6 @@ class AuthorBloc extends Bloc<AuthorEvent, AuthorState> {
           status: () => AuthorStatus.failure,
           failureMessage: () => failure.message)),
       (author) {
-        state.authors.add(author);
         emit(state.copyWith(
             status: () => AuthorStatus.success, failureMessage: () => ''));
       },
@@ -79,7 +79,6 @@ class AuthorBloc extends Bloc<AuthorEvent, AuthorState> {
       (failure) => emit(state.copyWith(
           status: () => AuthorStatus.failure, failureMessage: () => '')),
       (unit) {
-        state.authors.remove(event.author);
         emit(state.copyWith(
             status: () => AuthorStatus.success, failureMessage: () => ''));
       },
@@ -97,11 +96,18 @@ class AuthorBloc extends Bloc<AuthorEvent, AuthorState> {
           status: () => AuthorStatus.failure,
           failureMessage: () => failure.message)),
       (unit) {
-        state.authors.removeWhere((element) => element.id == event.author.id);
-        state.authors.add(event.author);
         emit(state.copyWith(
             status: () => AuthorStatus.success, failureMessage: () => ''));
       },
     );
+  }
+
+  void _onAuthorSearch(AuthorSearchEvent event, Emitter<AuthorState> emit) {
+    emit(state.copyWith(
+        status: () => AuthorStatus.success,
+        searchedAuthors: (currentAuthors) => currentAuthors
+            .where((author) =>
+                author.name.toLowerCase().contains(event.query.toLowerCase()))
+            .toList()));
   }
 }

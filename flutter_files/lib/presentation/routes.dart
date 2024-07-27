@@ -23,11 +23,7 @@ var routerDelegate = BeamerDelegate(
           initialDetails: quote.details,
         );
       },
-      'quotes/:quoteId': (context, state, data) {
-        final quote = (data as Quote);
-
-        return ViewQuote(quote: quote);
-      },
+      'quotes/:quoteId': (context, state, data) => const ViewQuote(),
       'login': (context, state, data) => const LoginPage(),
       'authors': (context, state, data) => const Home(initialIndex: 1),
       'new_quote': (context, state, data) => const Home(initialIndex: 2),

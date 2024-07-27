@@ -25,3 +25,9 @@ final class SourceUpdateEvent extends SourceEvent {
 
   SourceUpdateEvent({required this.source});
 }
+
+final class SourceSearchEvent extends SourceEvent {
+  final String query;
+
+  SourceSearchEvent({required this.query});
+}

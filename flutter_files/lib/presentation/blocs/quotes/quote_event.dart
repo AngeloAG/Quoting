@@ -66,3 +66,15 @@ final class QuoteCheckIfNeedMoreDataEvent extends QuoteEvent {
 }
 
 final class QuoteReloadEvent extends QuoteEvent {}
+
+final class QuoteSearchEvent extends QuoteEvent {
+  final String query;
+
+  QuoteSearchEvent({required this.query});
+}
+
+final class QuoteSelectEvent extends QuoteEvent {
+  final int index;
+
+  QuoteSelectEvent({required this.index});
+}

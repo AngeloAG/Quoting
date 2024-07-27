@@ -1,12 +1,11 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_files/domain/models/quote.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_files/presentation/blocs/quotes/quote_bloc.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';
 
 class ViewQuote extends StatelessWidget {
-  final Quote quote;
-
-  const ViewQuote({super.key, required this.quote});
+  const ViewQuote({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,35 +19,49 @@ class ViewQuote extends StatelessWidget {
           title: const Text('View Quote'),
         ),
         endDrawer: const CustomDrawer(),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
+        body: BlocBuilder<QuoteBloc, QuoteState>(
+          builder: (context, state) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    IconButton(
-                        onPressed: () {
-                          context.beamToNamed('/quotes/${quote.id}/edit',
-                              data: quote);
-                        },
-                        icon: const Icon(Icons.edit))
+                    Row(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              context.beamToNamed(
+                                  '/quotes/${state.quotes[state.currentQuoteIndex].id}/edit',
+                                  data: state.quotes[state.currentQuoteIndex]);
+                            },
+                            icon: const Icon(Icons.edit))
+                      ],
+                    ),
+                    Text(state.quotes[state.currentQuoteIndex].content),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(state.quotes[state.currentQuoteIndex].author
+                                .toNullable()
+                                ?.name ??
+                            ''),
+                        Text(state.quotes[state.currentQuoteIndex].label
+                                .toNullable()
+                                ?.label ??
+                            ''),
+                      ],
+                    ),
+                    Text(state.quotes[state.currentQuoteIndex].source
+                            .toNullable()
+                            ?.source ??
+                        ''),
+                    Text(state.quotes[state.currentQuoteIndex].details),
                   ],
                 ),
-                Text(quote.content),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(quote.author.toNullable()?.name ?? ''),
-                    Text(quote.label.toNullable()?.label ?? ''),
-                  ],
-                ),
-                Text(quote.source.toNullable()?.source ?? ''),
-                Text(quote.details),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

@@ -356,7 +356,7 @@ class _EditQuoteState extends State<EditQuote> {
                       sourceText: _sourceTextController.text,
                       quoteText: _quoteContentController.text,
                       detailsText: _detailsTextController.text));
-                  context.read<QuoteBloc>().add(QuoteReloadEvent());
+                  //context.read<QuoteBloc>().add(QuoteReloadEvent());
                   context.beamBack();
                 },
                 child: const Text('Update'),

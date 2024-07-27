@@ -424,4 +424,55 @@ class LocalDataSource
           message: 'Failed to update quote with error: ${error.toString()}'),
     );
   }
+
+  @override
+  TaskEither<Failure, List<QuoteModel>> searchQuotes(String query) {
+    return TaskEither.tryCatch(
+      () async {
+        final result = await driftDB.customSelect(
+          '''
+            SELECT 
+              q.id, 
+              q.content, 
+              q.details, 
+              q.author_id, 
+              q.label_id, 
+              q.source_id, 
+              a.name AS author_name, 
+              l.content AS label_content, 
+              s.content AS source_content 
+            FROM 
+              fts_quotes 
+            JOIN 
+              quotes AS q ON fts_quotes.rowid = q.id 
+            LEFT JOIN 
+              authors AS a ON q.author_id = a.id 
+            LEFT JOIN 
+              labels AS l ON q.label_id = l.id 
+            LEFT JOIN 
+              sources AS s ON q.source_id = s.id 
+            WHERE 
+              fts_quotes MATCH ?
+            ''',
+          variables: [Variable.withString('$query*')],
+        ).get();
+
+        return result.map((row) {
+          return QuoteModel(
+              row.read<String>('id'),
+              row.read<String?>('author_name'),
+              row.read<String?>('author_id'),
+              row.read<String?>('label_content'),
+              row.read<String?>('label_id'),
+              row.read<String?>('source_content'),
+              row.read<String?>('source_id'),
+              row.read<String>('details'),
+              row.read<String>('content'));
+        }).toList();
+      },
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to search for quotes in DB with error: ${error.toString()}'),
+    );
+  }
 }

@@ -9,25 +9,20 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 part 'drift_db.g.dart';
 
-@DriftDatabase(tables: [Labels, Authors, Sources, Quotes])
+@DriftDatabase(
+  tables: [Labels, Authors, Sources, Quotes],
+  include: {'tables.drift'},
+)
 class DriftDB extends _$DriftDB {
   DriftDB() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(onCreate: (Migrator m) async {
       await m.createAll();
-    }, onUpgrade: (Migrator m, int from, int to) async {
-      if (from < 2) {
-        await m.createTable(authors);
-        await m.createTable(sources);
-      }
-      if (from < 3) {
-        await m.createTable(quotes);
-      }
     });
   }
 }

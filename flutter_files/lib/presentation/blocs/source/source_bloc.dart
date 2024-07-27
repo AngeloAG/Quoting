@@ -26,6 +26,7 @@ class SourceBloc extends Bloc<SourceEvent, SourceState> {
     on<SourceLoadEvent>(_onSourceLoad);
     on<SourceRemoveEvent>(_onSourceRemove);
     on<SourceUpdateEvent>(_onSourceUpdate);
+    on<SourceSearchEvent>(_onSourceSeach);
   }
 
   void _onSourceUpload(
@@ -41,7 +42,6 @@ class SourceBloc extends Bloc<SourceEvent, SourceState> {
           status: () => SourceStatus.failure,
           failureMessage: () => failure.message)),
       (source) {
-        state.sources.add(source);
         emit(state.copyWith(
             status: () => SourceStatus.success, failureMessage: () => ''));
       },
@@ -79,7 +79,6 @@ class SourceBloc extends Bloc<SourceEvent, SourceState> {
           status: () => SourceStatus.failure,
           failureMessage: () => failure.message)),
       (unit) {
-        state.sources.removeWhere((element) => element.id == event.source.id);
         emit(state.copyWith(
           status: () => SourceStatus.success,
           failureMessage: () => '',
@@ -99,11 +98,19 @@ class SourceBloc extends Bloc<SourceEvent, SourceState> {
           status: () => SourceStatus.failure,
           failureMessage: () => failure.message)),
       (unit) {
-        state.sources.removeWhere((element) => element.id == event.source.id);
-        state.sources.add(event.source);
         emit(state.copyWith(
             status: () => SourceStatus.success, failureMessage: () => ''));
       },
     );
+  }
+
+  void _onSourceSeach(SourceSearchEvent event, Emitter<SourceState> emit) {
+    emit(state.copyWith(
+      status: () => SourceStatus.success,
+      searchedSources: (currentSources) => currentSources
+          .where((source) =>
+              source.source.toLowerCase().contains(event.query.toLowerCase()))
+          .toList(),
+    ));
   }
 }
