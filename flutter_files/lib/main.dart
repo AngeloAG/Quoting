@@ -8,6 +8,7 @@ import 'package:flutter_files/presentation/blocs/quotes/quote_bloc.dart';
 import 'package:flutter_files/presentation/blocs/source/source_bloc.dart';
 import 'package:flutter_files/presentation/blocs/tabs/tabs_cubit.dart';
 import 'package:flutter_files/presentation/routes.dart';
+import 'package:flutter_files/presentation/theme/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,11 +40,7 @@ class MyApp extends StatelessWidget {
         routeInformationParser: BeamerParser(),
         routerDelegate: routerDelegate,
         title: 'Quoting',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color.fromARGB(255, 98, 183, 58)),
-          useMaterial3: true,
-        ),
+        theme: AppTheme.darkThemeMode,
       ),
     );
   }

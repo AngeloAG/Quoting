@@ -1,13 +1,11 @@
 import 'dart:async';
 
 import 'package:beamer/beamer.dart';
-import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_files/infrastructure/settings/drift/drift_db.dart';
-import 'package:flutter_files/init_dependencies.dart';
 import 'package:flutter_files/presentation/blocs/quotes/quote_bloc.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';
+import 'package:flutter_files/presentation/shared/quote_card.dart';
 import 'package:flutter_files/presentation/shared/utilities.dart';
 
 class QuotesPage extends StatefulWidget {
@@ -60,14 +58,14 @@ class _QuotesPageState extends State<QuotesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quotes'),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        DriftDbViewer(serviceLocator<DriftDB>())));
-              },
-              icon: const Icon(Icons.door_back_door))
+        actions: const [
+          // IconButton(
+          //     onPressed: () {
+          //       Navigator.of(context).push(MaterialPageRoute(
+          //           builder: (context) =>
+          //               DriftDbViewer(serviceLocator<DriftDB>())));
+          //     },
+          //     icon: const Icon(Icons.door_back_door))
         ],
       ),
       endDrawer: const CustomDrawer(),
@@ -91,11 +89,19 @@ class _QuotesPageState extends State<QuotesPage> {
                 return BlocBuilder<QuoteBloc, QuoteState>(
                   builder: (context, state) {
                     return ListView.builder(
-                      padding: const EdgeInsets.only(top: 0.0),
+                      padding: const EdgeInsets.only(
+                          top: 0.0, left: 8.0, right: 8.0),
                       itemCount: state.searchedQuotes.length,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(state.searchedQuotes[index].content),
+                        return GestureDetector(
+                          onTap: () {
+                            context
+                                .read<QuoteBloc>()
+                                .add(QuoteSelectEvent(index: index));
+                            context.beamToNamed(
+                                '/quotes/${state.quotes[index].id}');
+                          },
+                          child: QuoteCard(quote: state.searchedQuotes[index]),
                         );
                       },
                     );
@@ -134,55 +140,15 @@ class _QuotesPageState extends State<QuotesPage> {
                               controller: _scrollController,
                               itemCount: state.quotes.length,
                               itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    Container(
-                                      constraints: const BoxConstraints(
-                                          maxHeight: 300.0),
-                                      width: double.infinity,
-                                      child: Column(
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              context.read<QuoteBloc>().add(
-                                                  QuoteSelectEvent(
-                                                      index: index));
-                                              context.beamToNamed(
-                                                  '/quotes/${state.quotes[index].id}',
-                                                  data: state.quotes[index]);
-                                            },
-                                            child: Text(
-                                                state.quotes[index].content),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Text(
-                                                state.quotes[index].author.fold(
-                                                    () => '',
-                                                    (author) => author.name),
-                                              ),
-                                              Text(
-                                                state.quotes[index].source.fold(
-                                                    () => '',
-                                                    (source) => source.source),
-                                              ),
-                                              Text(
-                                                state.quotes[index].label.fold(
-                                                    () => '',
-                                                    (label) => label.label),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    const Divider(
-                                      height: 5.0,
-                                      color: Colors.black12,
-                                    )
-                                  ],
+                                return GestureDetector(
+                                  onTap: () {
+                                    context
+                                        .read<QuoteBloc>()
+                                        .add(QuoteSelectEvent(index: index));
+                                    context.beamToNamed(
+                                        '/quotes/${state.quotes[index].id}');
+                                  },
+                                  child: QuoteCard(quote: state.quotes[index]),
                                 );
                               },
                             ),

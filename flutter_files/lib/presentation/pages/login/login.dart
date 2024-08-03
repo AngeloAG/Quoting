@@ -1,5 +1,5 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_files/presentation/theme/pallete.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -43,7 +43,10 @@ class _LoginPageState extends State<LoginPage> {
                                       topLeft: Radius.circular(10.0),
                                       topRight: Radius.circular(10.0),
                                     ),
-                                    color: Colors.green.shade300,
+                                    color: AppPallete.backgroundColor,
+                                    border: Border.all(
+                                        width: 1.5,
+                                        color: AppPallete.borderColor),
                                   ),
                                   child: TextButton(
                                       onPressed: () {
@@ -51,7 +54,11 @@ class _LoginPageState extends State<LoginPage> {
                                           _loginTabActive = true;
                                         });
                                       },
-                                      child: const Text('Login')),
+                                      child: const Text(
+                                        'Login',
+                                        style: TextStyle(
+                                            color: AppPallete.gradient1),
+                                      )),
                                 ),
                               ),
                               const SizedBox(
@@ -64,7 +71,9 @@ class _LoginPageState extends State<LoginPage> {
                                       topLeft: Radius.circular(10.0),
                                       topRight: Radius.circular(10.0),
                                     ),
-                                    color: Colors.green.shade100,
+                                    color: AppPallete.backgroundColor,
+                                    border: Border.all(
+                                        color: AppPallete.borderColor),
                                   ),
                                   child: TextButton(
                                     onPressed: () {
@@ -95,9 +104,12 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text('Login'),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: const Text('Login'),
+                            ),
                           ),
                           const SizedBox(height: 20),
                           Row(
@@ -148,7 +160,9 @@ class _LoginPageState extends State<LoginPage> {
                                       topLeft: Radius.circular(10.0),
                                       topRight: Radius.circular(10.0),
                                     ),
-                                    color: Colors.green.shade100,
+                                    color: AppPallete.backgroundColor,
+                                    border: Border.all(
+                                        color: AppPallete.borderColor),
                                   ),
                                   child: TextButton(
                                     onPressed: () {
@@ -170,7 +184,10 @@ class _LoginPageState extends State<LoginPage> {
                                       topLeft: Radius.circular(10.0),
                                       topRight: Radius.circular(10.0),
                                     ),
-                                    color: Colors.green.shade300,
+                                    color: AppPallete.backgroundColor,
+                                    border: Border.all(
+                                        width: 1.5,
+                                        color: AppPallete.borderColor),
                                   ),
                                   child: TextButton(
                                     onPressed: () {
@@ -178,7 +195,9 @@ class _LoginPageState extends State<LoginPage> {
                                         _loginTabActive = false;
                                       });
                                     },
-                                    child: const Text('Sign up'),
+                                    child: const Text('Sign up',
+                                        style: TextStyle(
+                                            color: AppPallete.gradient1)),
                                   ),
                                 ),
                               )
@@ -209,9 +228,12 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text('Sign up'),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: const Text('Sign up'),
+                            ),
                           ),
                           const SizedBox(height: 20),
                           Row(

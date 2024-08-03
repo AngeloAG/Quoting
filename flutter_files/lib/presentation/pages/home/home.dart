@@ -39,9 +39,6 @@ class _HomeState extends State<Home> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        unselectedItemColor: Colors.grey.shade700,
-        selectedItemColor: Colors.grey.shade700,
-        backgroundColor: Colors.brown.shade50,
         currentIndex: context.select((TabsCubit c) => c.state.tabIndex),
         items: const [
           BottomNavigationBarItem(

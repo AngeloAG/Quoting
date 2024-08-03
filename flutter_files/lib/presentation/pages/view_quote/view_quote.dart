@@ -2,11 +2,16 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_files/presentation/blocs/quotes/quote_bloc.dart';
-import 'package:flutter_files/presentation/shared/drawer.dart';
+import 'package:flutter_files/presentation/shared/quote_card.dart';
 
-class ViewQuote extends StatelessWidget {
+class ViewQuote extends StatefulWidget {
   const ViewQuote({super.key});
 
+  @override
+  State<ViewQuote> createState() => _ViewQuoteState();
+}
+
+class _ViewQuoteState extends State<ViewQuote> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -14,55 +19,35 @@ class ViewQuote extends StatelessWidget {
       onPopInvoked: (didPop) {
         Beamer.of(context).beamBack();
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('View Quote'),
-        ),
-        endDrawer: const CustomDrawer(),
-        body: BlocBuilder<QuoteBloc, QuoteState>(
-          builder: (context, state) {
-            return Padding(
+      child: BlocBuilder<QuoteBloc, QuoteState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('View Quote'),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    context.beamToNamed(
+                        '/quotes/${state.quotes[state.currentQuoteIndex].id}/edit',
+                        data: state.quotes[state.currentQuoteIndex]);
+                  },
+                  icon: const Icon(Icons.edit),
+                ),
+              ],
+            ),
+            body: Padding(
               padding: const EdgeInsets.all(8.0),
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Row(
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              context.beamToNamed(
-                                  '/quotes/${state.quotes[state.currentQuoteIndex].id}/edit',
-                                  data: state.quotes[state.currentQuoteIndex]);
-                            },
-                            icon: const Icon(Icons.edit))
-                      ],
-                    ),
-                    Text(state.quotes[state.currentQuoteIndex].content),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(state.quotes[state.currentQuoteIndex].author
-                                .toNullable()
-                                ?.name ??
-                            ''),
-                        Text(state.quotes[state.currentQuoteIndex].label
-                                .toNullable()
-                                ?.label ??
-                            ''),
-                      ],
-                    ),
-                    Text(state.quotes[state.currentQuoteIndex].source
-                            .toNullable()
-                            ?.source ??
-                        ''),
-                    Text(state.quotes[state.currentQuoteIndex].details),
+                    QuoteCard(quote: state.quotes[state.currentQuoteIndex]),
                   ],
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
