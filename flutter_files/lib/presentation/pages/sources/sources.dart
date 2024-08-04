@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_files/domain/models/source.dart';
 import 'package:flutter_files/presentation/blocs/source/source_bloc.dart';
-import 'package:flutter_files/presentation/pages/sources/edit_source.dart';
+import 'package:flutter_files/presentation/pages/sources/source_small_card.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';
 import 'package:flutter_files/presentation/shared/utilities.dart';
 
@@ -75,8 +74,8 @@ class _SourcesPageState extends State<SourcesPage> {
                       padding: const EdgeInsets.only(top: 0.0),
                       itemCount: state.searchedSources.length,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(state.searchedSources[index].source),
+                        return SourceSmallCard(
+                          source: state.searchedSources[index],
                         );
                       },
                     );
@@ -107,46 +106,8 @@ class _SourcesPageState extends State<SourcesPage> {
                   return ListView.builder(
                     itemCount: state.sources.length,
                     itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            title: Text(state.sources[index].source),
-                            trailing:
-                                Row(mainAxisSize: MainAxisSize.min, children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit_note_rounded),
-                                onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext _) {
-                                        return EditSourceDialog(
-                                            onSubmit: (Source sourceUpdate) =>
-                                                context.read<SourceBloc>().add(
-                                                    SourceUpdateEvent(
-                                                        source: sourceUpdate)),
-                                            originalSource:
-                                                state.sources[index]);
-                                      });
-                                },
-                              ),
-                              const SizedBox(
-                                width: 15.0,
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete_sharp),
-                                onPressed: () {
-                                  context.read<SourceBloc>().add(
-                                      SourceRemoveEvent(
-                                          source: state.sources[index]));
-                                },
-                              ),
-                            ]),
-                          ),
-                          const Divider(
-                            height: 5.0,
-                            color: Colors.black12,
-                          )
-                        ],
+                      return SourceSmallCard(
+                        source: state.sources[index],
                       );
                     },
                   );
@@ -161,7 +122,7 @@ class _SourcesPageState extends State<SourcesPage> {
                   child: TextFormField(
                     controller: newSourceController,
                     decoration:
-                        const InputDecoration(hintText: 'Add new label'),
+                        const InputDecoration(hintText: 'Add new source'),
                   ),
                 ),
                 Builder(builder: (context) {

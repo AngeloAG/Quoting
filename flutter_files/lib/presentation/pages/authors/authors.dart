@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_files/domain/models/author.dart';
 import 'package:flutter_files/presentation/blocs/author/author_bloc.dart';
-import 'package:flutter_files/presentation/pages/authors/edit_author.dart';
+import 'package:flutter_files/presentation/pages/authors/author_small_card.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';
 import 'package:flutter_files/presentation/shared/utilities.dart';
 
@@ -60,7 +59,6 @@ class _AuthorsPageState extends State<AuthorsPage> {
               searchController: _searchController,
               builder: (BuildContext context, SearchController controller) {
                 return SearchBar(
-                  controller: controller,
                   padding: const MaterialStatePropertyAll<EdgeInsets>(
                       EdgeInsets.symmetric(horizontal: 16.0)),
                   onTap: () {
@@ -76,9 +74,8 @@ class _AuthorsPageState extends State<AuthorsPage> {
                       padding: const EdgeInsets.only(top: 0.0),
                       itemCount: state.searchedAuthors.length,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(state.searchedAuthors[index].name),
-                        );
+                        return AuthorSmallCard(
+                            author: state.searchedAuthors[index]);
                       },
                     );
                   },
@@ -108,51 +105,7 @@ class _AuthorsPageState extends State<AuthorsPage> {
                   return ListView.builder(
                     itemCount: state.authors.length,
                     itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            title: Text(state.authors[index].name),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.edit_note_rounded),
-                                  onPressed: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext _) {
-                                          return EditAuthorDialog(
-                                              onSubmit: (Author authorUpdate) =>
-                                                  context
-                                                      .read<AuthorBloc>()
-                                                      .add(AuthorUpdateEvent(
-                                                          author:
-                                                              authorUpdate)),
-                                              originalAuthor:
-                                                  state.authors[index]);
-                                        });
-                                  },
-                                ),
-                                const SizedBox(
-                                  width: 15.0,
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete_sharp),
-                                  onPressed: () {
-                                    context.read<AuthorBloc>().add(
-                                        AuthorRemoveEvent(
-                                            author: state.authors[index]));
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Divider(
-                            height: 5.0,
-                            color: Colors.black12,
-                          )
-                        ],
-                      );
+                      return AuthorSmallCard(author: state.authors[index]);
                     },
                   );
                 }

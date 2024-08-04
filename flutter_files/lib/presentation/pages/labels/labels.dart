@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_files/domain/models/label.dart';
 import 'package:flutter_files/presentation/blocs/label/label_bloc.dart';
-import 'package:flutter_files/presentation/pages/labels/edit_label.dart';
+import 'package:flutter_files/presentation/pages/labels/label_small_card.dart';
 import 'package:flutter_files/presentation/shared/drawer.dart';
 import 'package:flutter_files/presentation/shared/utilities.dart';
 
@@ -60,7 +59,6 @@ class _LabelsPageState extends State<LabelsPage> {
               searchController: _searchController,
               builder: (BuildContext context, SearchController controller) {
                 return SearchBar(
-                  controller: controller,
                   padding: const MaterialStatePropertyAll<EdgeInsets>(
                       EdgeInsets.symmetric(horizontal: 16.0)),
                   onTap: () {
@@ -76,8 +74,8 @@ class _LabelsPageState extends State<LabelsPage> {
                       padding: const EdgeInsets.only(top: 0.0),
                       itemCount: state.searchedLabels.length,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(state.searchedLabels[index].label),
+                        return LabelSmallCard(
+                          label: state.searchedLabels[index],
                         );
                       },
                     );
@@ -108,45 +106,8 @@ class _LabelsPageState extends State<LabelsPage> {
                   return ListView.builder(
                     itemCount: state.labels.length,
                     itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            title: Text(state.labels[index].label),
-                            trailing:
-                                Row(mainAxisSize: MainAxisSize.min, children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit_note_rounded),
-                                onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext _) {
-                                        return EditLabelDialog(
-                                            onSubmit: (Label labelUpdate) =>
-                                                context.read<LabelBloc>().add(
-                                                    LabelUpdateEvent(
-                                                        label: labelUpdate)),
-                                            originalLabel: state.labels[index]);
-                                      });
-                                },
-                              ),
-                              const SizedBox(
-                                width: 15.0,
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete_sharp),
-                                onPressed: () {
-                                  context.read<LabelBloc>().add(
-                                      LabelRemoveEvent(
-                                          label: state.labels[index]));
-                                },
-                              ),
-                            ]),
-                          ),
-                          const Divider(
-                            height: 5.0,
-                            color: Colors.black12,
-                          )
-                        ],
+                      return LabelSmallCard(
+                        label: state.labels[index],
                       );
                     },
                   );

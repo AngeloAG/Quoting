@@ -7,8 +7,8 @@ import 'package:flutter_files/presentation/blocs/author/author_bloc.dart';
 import 'package:flutter_files/presentation/blocs/label/label_bloc.dart';
 import 'package:flutter_files/presentation/blocs/quotes/quote_bloc.dart';
 import 'package:flutter_files/presentation/blocs/source/source_bloc.dart';
-import 'package:flutter_files/presentation/shared/drawer.dart';
 import 'package:flutter_files/presentation/shared/utilities.dart';
+import 'package:flutter_files/presentation/theme/pallete.dart';
 
 import '../../../domain/models/author.dart';
 
@@ -97,7 +97,6 @@ class _EditQuoteState extends State<EditQuote> {
       appBar: AppBar(
         title: const Text('Edit Quote'),
       ),
-      endDrawer: const CustomDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Form(
@@ -109,11 +108,19 @@ class _EditQuoteState extends State<EditQuote> {
                 decoration: const InputDecoration(
                   label: Text('Quote text'),
                   border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: AppPallete.borderColor,
+                      width: 1.5,
+                    ),
                     borderRadius: BorderRadius.all(
                       Radius.circular(5),
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: AppPallete.borderColor,
+                      width: 1.5,
+                    ),
                     borderRadius: BorderRadius.all(
                       Radius.circular(5),
                     ),
@@ -328,11 +335,19 @@ class _EditQuoteState extends State<EditQuote> {
                 decoration: const InputDecoration(
                   label: Text('Page, Paragraph, etc'),
                   border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: AppPallete.borderColor,
+                      width: 1.5,
+                    ),
                     borderRadius: BorderRadius.all(
                       Radius.circular(5),
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: AppPallete.borderColor,
+                      width: 1.5,
+                    ),
                     borderRadius: BorderRadius.all(
                       Radius.circular(5),
                     ),

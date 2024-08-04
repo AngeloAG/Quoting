@@ -429,6 +429,9 @@ class LocalDataSource
   TaskEither<Failure, List<QuoteModel>> searchQuotes(String query) {
     return TaskEither.tryCatch(
       () async {
+        if (query.isEmpty) {
+          return List<QuoteModel>.empty();
+        }
         final result = await driftDB.customSelect(
           '''
             SELECT 
