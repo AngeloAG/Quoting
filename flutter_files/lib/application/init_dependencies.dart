@@ -16,11 +16,14 @@ import 'package:flutter_files/application/sources/commands/remove_source_handler
 import 'package:flutter_files/application/sources/commands/update_source_handler.dart';
 import 'package:flutter_files/application/sources/commands/upload_source_handler.dart';
 import 'package:flutter_files/application/sources/queries/get_all_sources_handler.dart';
+import 'package:flutter_files/application/users/login_with_email_handler.dart';
+import 'package:flutter_files/application/users/signup_with_email_handler.dart';
 import 'package:flutter_files/domain/models/author.dart';
 import 'package:flutter_files/domain/models/failure.dart';
 import 'package:flutter_files/domain/models/label.dart';
 import 'package:flutter_files/domain/models/quote.dart';
 import 'package:flutter_files/domain/models/source.dart';
+import 'package:flutter_files/domain/models/user.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mediatr/mediatr.dart';
@@ -88,6 +91,12 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
 
   mediator.registerHandler<SearchQuoteRequest, Either<Failure, List<Quote>>,
       SearchQuoteHandler>(() => SearchQuoteHandler(serviceLocator()));
+
+  mediator.registerHandler<SignUpWithEmailRequest, Either<Failure, User>,
+      SignUpWithEmailHandler>(() => SignUpWithEmailHandler(serviceLocator()));
+
+  mediator.registerHandler<LoginWithEmailRequest, Either<Failure, User>,
+      LoginWithEmailHandler>(() => LoginWithEmailHandler(serviceLocator()));
 
   serviceLocator.registerLazySingleton(() => mediator);
 }

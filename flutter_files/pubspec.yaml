@@ -49,6 +49,7 @@ dependencies:
   drift: ^2.15.0
   sqlite3: ^2.4.0
   drift_db_viewer: ^2.1.0
+  supabase_flutter: ^2.5.11
 
 dev_dependencies:
   flutter_test:

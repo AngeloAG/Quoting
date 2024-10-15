@@ -9,9 +9,15 @@ import 'package:flutter_files/presentation/blocs/source/source_bloc.dart';
 import 'package:flutter_files/presentation/blocs/tabs/tabs_cubit.dart';
 import 'package:flutter_files/presentation/routes.dart';
 import 'package:flutter_files/presentation/theme/theme.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: '',
+    anonKey: '',
+  );
 
   await initDependencies();
 
