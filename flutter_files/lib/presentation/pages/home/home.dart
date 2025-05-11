@@ -68,20 +68,20 @@ class _HomeState extends State<Home> {
           ),
         ],
         onTap: (index) {
-          Beamer.of(context).update(
-              configuration: RouteInformation(
-                uri: Uri.parse(
-                  switch (index) {
-                    0 => '/quotes',
-                    1 => '/authors',
-                    2 => '/new_quote',
-                    3 => '/labels',
-                    4 => '/sources',
-                    int() => '/quotes',
-                  },
-                ),
-              ),
-              rebuild: false);
+          // Beamer.of(context).update(
+          //     configuration: RouteInformation(
+          //       uri: Uri.parse(
+          //         switch (index) {
+          //           0 => '/quotes',
+          //           1 => '/authors',
+          //           2 => '/new_quote',
+          //           3 => '/labels',
+          //           4 => '/sources',
+          //           int() => '/quotes',
+          //         },
+          //       ),
+          //     ),
+          //     rebuild: false);
           context.read<TabsCubit>().setTabIndex(index);
         },
       ),
