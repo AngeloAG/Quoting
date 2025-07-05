@@ -77,7 +77,7 @@ class _QuotesPageState extends State<QuotesPage> {
               searchController: _searchController,
               builder: (BuildContext context, SearchController controller) {
                 return SearchBar(
-                  padding: const MaterialStatePropertyAll<EdgeInsets>(
+                  padding: const WidgetStatePropertyAll(
                       EdgeInsets.symmetric(horizontal: 16.0)),
                   onTap: () {
                     controller.openView();
@@ -139,6 +139,7 @@ class _QuotesPageState extends State<QuotesPage> {
                             child: ListView.builder(
                               controller: _scrollController,
                               itemCount: state.quotes.length,
+                              physics: const AlwaysScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () {
@@ -154,21 +155,36 @@ class _QuotesPageState extends State<QuotesPage> {
                             ),
                           ),
                         ),
-                        Visibility(
-                          visible: state.status == QuoteStatus.loading &&
-                              state.quotes.isNotEmpty,
-                          child: const SizedBox(
+                        if (state.status == QuoteStatus.loading &&
+                            !context.read<QuoteBloc>().isLastPage)
+                          const SizedBox(
                             width: 100,
                             height: 100,
                             child: Center(
                               child: CircularProgressIndicator(),
                             ),
                           ),
-                        )
                       ],
                     );
                   }
-                  return const SizedBox();
+                  // Show a refreshable empty state when there are no quotes and not loading
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<QuoteBloc>().add(QuoteReloadEvent());
+                    },
+                    child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: const [
+                        SizedBox(height: 200),
+                        Center(
+                          child: Text(
+                            'No quotes found. Pull down to refresh.',
+                            style: TextStyle(fontSize: 18, color: Colors.grey),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 },
               ),
             )

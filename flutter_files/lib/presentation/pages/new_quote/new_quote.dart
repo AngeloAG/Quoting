@@ -346,6 +346,9 @@ class _NewQuotePageState extends State<NewQuotePage> {
                   _sourceTextController.clear();
                   _quoteContentController.clear();
                   _detailsTextController.clear();
+                  _authorFocusNode.unfocus();
+                  _labelFocusNode.unfocus();
+                  _sourceFocusNode.unfocus();
                   _author = null;
                   _label = null;
                   _source = null;

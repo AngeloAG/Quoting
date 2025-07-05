@@ -9,8 +9,8 @@ import 'package:flutter_files/presentation/pages/view_quote/view_quote.dart';
 var routerDelegate = BeamerDelegate(
   locationBuilder: RoutesLocationBuilder(
     routes: {
-      '': (context, state, data) => const Home(initialIndex: 0),
-      'quotes': (context, state, data) => const Home(initialIndex: 0),
+      '/': (context, state, data) => const Home(initialIndex: 0),
+      'quotes/:quoteId': (context, state, data) => const ViewQuote(),
       'quotes/:quoteId/edit': (context, state, data) {
         final quote = (data as Quote);
 
@@ -23,13 +23,8 @@ var routerDelegate = BeamerDelegate(
           initialDetails: quote.details,
         );
       },
-      'quotes/:quoteId': (context, state, data) => const ViewQuote(),
       'login': (context, state, data) => const LoginPage(),
-      'authors': (context, state, data) => const Home(initialIndex: 1),
-      'new_quote': (context, state, data) => const Home(initialIndex: 2),
       'settings': (context, state, data) => const SettingsPage(),
-      'labels': (context, state, data) => const Home(initialIndex: 3),
-      'sources': (context, state, data) => const Home(initialIndex: 4),
     },
   ),
 );
