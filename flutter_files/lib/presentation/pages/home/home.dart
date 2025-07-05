@@ -66,7 +66,10 @@ class _HomeState extends State<Home> {
             label: 'Source',
           ),
         ],
-        onTap: (index) {
+        onTap: (index) async {
+          // Close the drawer if it's open
+          Navigator.of(context).maybePop();
+          // Change the tab
           context.read<TabsCubit>().setTabIndex(index);
         },
       ),

@@ -19,8 +19,9 @@ class CustomDrawer extends StatelessWidget {
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(0.0),
-              children: const [
+              children: [
                 ListTile(
+                  onTap: () => Beamer.of(context).beamToNamed('/settings'),
                   title: Text('Settings'),
                 )
               ],

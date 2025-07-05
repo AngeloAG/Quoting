@@ -1,3 +1,4 @@
+import 'package:flutter_files/application/common/interfaces/database_file_repository.dart';
 import 'package:flutter_files/application/common/interfaces/iauthors_repository.dart';
 import 'package:flutter_files/application/common/interfaces/ilabels_repository.dart';
 import 'package:flutter_files/application/common/interfaces/iquotes_repository.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_files/infrastructure/repositories/authors_repository.dar
 import 'package:flutter_files/infrastructure/repositories/labels_repository.dart';
 import 'package:flutter_files/infrastructure/repositories/quotes_repository.dart';
 import 'package:flutter_files/infrastructure/repositories/sources_repository.dart';
+import 'package:flutter_files/infrastructure/services/db_file_service.dart';
 import 'package:flutter_files/infrastructure/settings/drift/drift_db.dart';
 import 'package:get_it/get_it.dart';
 
@@ -53,4 +55,7 @@ void _initRepos(GetIt serviceLocator) {
 
   serviceLocator.registerFactory<IQuotesRepository>(
       () => QuotesRepository(serviceLocator()));
+
+  serviceLocator
+      .registerFactory<IDatabaseFileRepository>(() => DatabaseFileService());
 }

@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter_files/application/authors/commands/remove_author_handler.dart';
 import 'package:flutter_files/application/authors/commands/update_author_handler.dart';
 import 'package:flutter_files/application/authors/commands/upload_author_handler.dart';
 import 'package:flutter_files/application/authors/queries/get_all_authors_handler.dart';
+import 'package:flutter_files/application/database/commands/backup_database_handler.dart';
+import 'package:flutter_files/application/database/commands/restore_database_handler.dart';
 import 'package:flutter_files/application/labels/commands/remove_label_handler.dart';
 import 'package:flutter_files/application/labels/commands/update_label_handler.dart';
 import 'package:flutter_files/application/labels/commands/upload_label_handler.dart';
@@ -88,6 +92,12 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
 
   mediator.registerHandler<SearchQuoteRequest, Either<Failure, List<Quote>>,
       SearchQuoteHandler>(() => SearchQuoteHandler(serviceLocator()));
+
+  mediator.registerHandler<BackupDatabaseRequest, Either<Failure, File>,
+      BackupDatabaseHandler>(() => BackupDatabaseHandler(serviceLocator()));
+
+  mediator.registerHandler<RestoreDatabaseRequest, Either<Failure, Unit>,
+      RestoreDatabaseHandler>(() => RestoreDatabaseHandler(serviceLocator()));
 
   serviceLocator.registerLazySingleton(() => mediator);
 }
