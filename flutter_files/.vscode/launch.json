@@ -5,19 +5,19 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "flutter_files",
+      "name": "quoting",
       "request": "launch",
       "type": "dart",
       "console": "debugConsole",
     },
     {
-      "name": "flutter_files (profile mode)",
+      "name": "quoting (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "flutter_files (release mode)",
+      "name": "quoting (release mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"
