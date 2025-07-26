@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:quoting/presentation/blocs/backup_restore/backup_restore_bloc.dart';
 import 'package:quoting/presentation/blocs/quotes/quote_bloc.dart';
+import 'package:quoting/presentation/shared/utilities.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -103,7 +104,6 @@ class _SettingsPageState extends State<SettingsPage> {
     if (_isDisposed || !mounted) return;
     if (file != null) {
       bloc.add(RestoreDatabaseRequested(backupPath: file.path));
-      context.read<QuoteBloc>().add(QuoteReloadEvent());
     }
   }
 
@@ -115,41 +115,53 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<BackupRestoreBloc, BackupRestoreState>(
-      listener: (context, state) {
-        if (state is BackupRestoreFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      },
-      child: Padding(
+    return Scaffold(
+      appBar: AppBar(title: Text('Settings')),
+      body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ElevatedButton.icon(
-              icon: const Icon(Icons.backup),
-              label: const Text('Backup Database'),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 18),
-                textStyle: const TextStyle(fontSize: 18),
+            BlocListener<BackupRestoreBloc, BackupRestoreState>(
+              listener: (context, state) {
+                if (state is BackupRestoreSuccess) {
+                  showSnackBar('Database saved successfully!', context);
+                } else if (state is BackupRestoreFailure) {
+                  showSnackBar(
+                      'Failed to save database: ${state.error}', context);
+                }
+              },
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.backup),
+                label: const Text('Backup Database'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  textStyle: const TextStyle(fontSize: 18),
+                ),
+                onPressed: _pickBackupLocation,
               ),
-              onPressed: _pickBackupLocation,
             ),
             const SizedBox(height: 24),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.restore),
-              label: const Text('Restore Database'),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 18),
-                textStyle: const TextStyle(fontSize: 18),
+            BlocListener<BackupRestoreBloc, BackupRestoreState>(
+              listener: (context, state) {
+                if (state is BackupRestoreSuccess) {
+                  showSnackBar('Database restored successfully!', context);
+                  context.read<QuoteBloc>().add(QuoteReloadEvent());
+                } else if (state is BackupRestoreFailure) {
+                  showSnackBar(
+                      'Failed to restore database: ${state.error}', context);
+                }
+              },
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.restore),
+                label: const Text('Restore Database'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  textStyle: const TextStyle(fontSize: 18),
+                ),
+                onPressed: _pickRestoreFile,
               ),
-              onPressed: _pickRestoreFile,
             ),
           ],
         ),
