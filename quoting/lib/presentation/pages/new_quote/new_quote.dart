@@ -329,32 +329,43 @@ class _NewQuotePageState extends State<NewQuotePage> {
                 maxLength: 300,
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<QuoteBloc>().add(QuoteUploadEvent(
-                      author: _author,
-                      authorText: _authorTextController.text,
-                      label: _label,
-                      labelText: _labelTextController.text,
-                      source: _source,
-                      sourceText: _sourceTextController.text,
-                      quoteText: _quoteContentController.text,
-                      detailsText: _detailsTextController.text));
-                  //context.read<QuoteBloc>().add(QuoteReloadEvent());
-                  _authorTextController.clear();
-                  _labelTextController.clear();
-                  _sourceTextController.clear();
-                  _quoteContentController.clear();
-                  _detailsTextController.clear();
-                  _authorFocusNode.unfocus();
-                  _labelFocusNode.unfocus();
-                  _sourceFocusNode.unfocus();
-                  _author = null;
-                  _label = null;
-                  _source = null;
-                  context.read<TabsCubit>().setTabIndex(0);
+              BlocListener<QuoteBloc, QuoteState>(
+                listener: (context, state) {
+                  if (state.status == QuoteStatus.success) {
+                    context.read<QuoteBloc>().add(QuoteReloadEvent());
+                    context.read<TabsCubit>().setTabIndex(0);
+                    showSnackBar('Quote saved successfully!', context);
+                  } else if (state.status == QuoteStatus.failure) {
+                    showSnackBar(
+                        'Failed to save quote: ${state.failureMessage}',
+                        context);
+                  }
                 },
-                child: const Text('Save'),
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.read<QuoteBloc>().add(QuoteUploadEvent(
+                        author: _author,
+                        authorText: _authorTextController.text,
+                        label: _label,
+                        labelText: _labelTextController.text,
+                        source: _source,
+                        sourceText: _sourceTextController.text,
+                        quoteText: _quoteContentController.text,
+                        detailsText: _detailsTextController.text));
+                    _authorTextController.clear();
+                    _labelTextController.clear();
+                    _sourceTextController.clear();
+                    _quoteContentController.clear();
+                    _detailsTextController.clear();
+                    _authorFocusNode.unfocus();
+                    _labelFocusNode.unfocus();
+                    _sourceFocusNode.unfocus();
+                    _author = null;
+                    _label = null;
+                    _source = null;
+                  },
+                  child: const Text('Save'),
+                ),
               )
             ],
           ),
