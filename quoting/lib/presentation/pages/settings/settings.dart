@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:quoting/presentation/blocs/author/author_bloc.dart';
 import 'package:quoting/presentation/blocs/backup_restore/backup_restore_bloc.dart';
+import 'package:quoting/presentation/blocs/label/label_bloc.dart';
 import 'package:quoting/presentation/blocs/quotes/quote_bloc.dart';
+import 'package:quoting/presentation/blocs/source/source_bloc.dart';
 import 'package:quoting/presentation/shared/utilities.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -148,6 +151,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 if (state is BackupRestoreSuccess) {
                   showSnackBar('Database restored successfully!', context);
                   context.read<QuoteBloc>().add(QuoteReloadEvent());
+                  context.read<AuthorBloc>().add(AuthorLoadEvent());
+                  context.read<LabelBloc>().add(LabelLoadEvent());
+                  context.read<SourceBloc>().add(SourceLoadEvent());
                 } else if (state is BackupRestoreFailure) {
                   showSnackBar(
                       'Failed to restore database: ${state.error}', context);
