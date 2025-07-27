@@ -331,11 +331,11 @@ class _NewQuotePageState extends State<NewQuotePage> {
               const SizedBox(height: 20),
               BlocListener<QuoteBloc, QuoteState>(
                 listener: (context, state) {
-                  if (state.status == QuoteStatus.success) {
+                  if (state.status == QuoteStatus.saveSuccess) {
                     context.read<QuoteBloc>().add(QuoteReloadEvent());
                     context.read<TabsCubit>().setTabIndex(0);
                     showSnackBar('Quote saved successfully!', context);
-                  } else if (state.status == QuoteStatus.failure) {
+                  } else if (state.status == QuoteStatus.saveFailure) {
                     showSnackBar(
                         'Failed to save quote: ${state.failureMessage}',
                         context);

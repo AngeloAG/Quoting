@@ -1,6 +1,16 @@
 part of 'quote_bloc.dart';
 
-enum QuoteStatus { initial, loading, success, failure, loaded }
+enum QuoteStatus {
+  initial,
+  loading,
+  success,
+  failure,
+  loaded,
+  saveSuccess,
+  deleteSuccess,
+  saveFailure,
+  deleteFailure
+}
 
 final class QuoteState extends Equatable {
   final QuoteStatus status;

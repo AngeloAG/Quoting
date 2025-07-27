@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:quoting/application/authors/commands/upload_author_handler.dart';
 import 'package:quoting/application/labels/commands/upload_label_handler.dart';
+import 'package:quoting/application/quotes/commands/remove_quote_handler.dart';
 import 'package:quoting/application/quotes/commands/update_quote_handler.dart';
 import 'package:quoting/application/quotes/commands/upload_quote_handler.dart';
 import 'package:quoting/application/quotes/queries/get_paginated_quotes_handler.dart';
@@ -44,6 +45,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
     on<QuoteSearchEvent>(_onQuoteSearch);
     on<QuoteUpdateEvent>(_onQuoteUpdate);
     on<QuoteSelectEvent>(_onQuoteSelect);
+    on<QuoteRemoveEvent>(_onQuoteRemove);
   }
 
   void _onQuoteSelect(QuoteSelectEvent event, Emitter<QuoteState> emit) async {
@@ -64,7 +66,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
 
         response.fold(
             (failure) => emit(state.copyWith(
-                status: () => QuoteStatus.failure,
+                status: () => QuoteStatus.saveFailure,
                 failureMessage: () => failure.message)),
             (uploadedAuthor) => author = uploadedAuthor);
       }
@@ -82,7 +84,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
 
         response.fold(
             (failure) => emit(state.copyWith(
-                status: () => QuoteStatus.failure,
+                status: () => QuoteStatus.saveFailure,
                 failureMessage: () => failure.message)),
             (uploadedLabel) => label = uploadedLabel);
       }
@@ -101,7 +103,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
 
         response.fold(
             (failure) => emit(state.copyWith(
-                status: () => QuoteStatus.failure,
+                status: () => QuoteStatus.saveFailure,
                 failureMessage: () => failure.message)),
             (uploadedSource) => source = uploadedSource);
       }
@@ -121,12 +123,12 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
 
     response.fold(
       (failure) => emit(state.copyWith(
-          status: () => QuoteStatus.failure,
+          status: () => QuoteStatus.saveFailure,
           failureMessage: () => failure.message)),
       (unit) {
         isLastPage = false;
         emit(state.copyWith(
-            status: () => QuoteStatus.success, failureMessage: () => ''));
+            status: () => QuoteStatus.saveSuccess, failureMessage: () => ''));
       },
     );
   }
@@ -169,7 +171,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
 
         response.fold(
             (failure) => emit(state.copyWith(
-                status: () => QuoteStatus.failure,
+                status: () => QuoteStatus.saveFailure,
                 failureMessage: () => failure.message)),
             (uploadedAuthor) => author = uploadedAuthor);
       }
@@ -187,7 +189,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
 
         response.fold(
             (failure) => emit(state.copyWith(
-                status: () => QuoteStatus.failure,
+                status: () => QuoteStatus.saveFailure,
                 failureMessage: () => failure.message)),
             (uploadedLabel) => label = uploadedLabel);
       }
@@ -206,7 +208,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
 
         response.fold(
             (failure) => emit(state.copyWith(
-                status: () => QuoteStatus.failure,
+                status: () => QuoteStatus.saveFailure,
                 failureMessage: () => failure.message)),
             (uploadedSource) => source = uploadedSource);
       }
@@ -226,7 +228,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
 
     response.fold(
       (failure) => emit(state.copyWith(
-          status: () => QuoteStatus.failure,
+          status: () => QuoteStatus.saveFailure,
           failureMessage: () => failure.message)),
       (unit) {
         final editedQuoteIndex =
@@ -242,7 +244,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
           );
         }
         emit(state.copyWith(
-            status: () => QuoteStatus.success, failureMessage: () => ''));
+            status: () => QuoteStatus.saveSuccess, failureMessage: () => ''));
       },
     );
   }
@@ -270,6 +272,23 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
           status: () => QuoteStatus.success,
           searchedQuotes: () => quotes,
           failureMessage: () => '')),
+    );
+  }
+
+  void _onQuoteRemove(QuoteRemoveEvent event, Emitter<QuoteState> emit) async {
+    final response =
+        await _mediator.send<RemoveQuoteRequest, Either<Failure, Unit>>(
+            RemoveQuoteRequest(event.quote.id));
+
+    response.fold(
+      (failure) => emit(state.copyWith(
+          status: () => QuoteStatus.deleteFailure,
+          failureMessage: () => failure.message)),
+      (unit) {
+        state.quotes.removeWhere((quote) => quote.id == event.quote.id);
+        emit(state.copyWith(
+            status: () => QuoteStatus.deleteSuccess, failureMessage: () => ''));
+      },
     );
   }
 }
