@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:quoting/infrastructure/settings/drift/seed_data.dart';
 import 'package:quoting/presentation/blocs/author/author_bloc.dart';
 import 'package:quoting/presentation/blocs/backup_restore/backup_restore_bloc.dart';
 import 'package:quoting/presentation/blocs/label/label_bloc.dart';
 import 'package:quoting/presentation/blocs/quotes/quote_bloc.dart';
 import 'package:quoting/presentation/blocs/source/source_bloc.dart';
+import 'package:quoting/presentation/blocs/theme/cubit/theme_cubit.dart';
 import 'package:quoting/presentation/shared/utilities.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -118,13 +120,30 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget? seedButton;
+    assert(() {
+      seedButton = Column(
+        children: [
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: () async {
+              await seedDatabase(count: 10000); // Seed with 1000 quotes
+              showSnackBar('Database seeded!', context);
+            },
+            child: Text('Seed Database'),
+          ),
+        ],
+      );
+      return true;
+    }());
+
     return Scaffold(
       appBar: AppBar(title: Text('Settings')),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             BlocListener<BackupRestoreBloc, BackupRestoreState>(
               listener: (context, state) {
@@ -169,6 +188,31 @@ class _SettingsPageState extends State<SettingsPage> {
                 onPressed: _pickRestoreFile,
               ),
             ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.light_mode),
+                BlocBuilder<ThemeCubit, ThemeMode>(
+                  builder: (context, themeMode) {
+                    return Switch(
+                      value: themeMode == ThemeMode.dark,
+                      onChanged: (isDark) {
+                        context.read<ThemeCubit>().setTheme(
+                              isDark ? ThemeMode.dark : ThemeMode.light,
+                            );
+                      },
+                    );
+                  },
+                ),
+                const Icon(Icons.dark_mode),
+              ],
+            ),
+            const SizedBox(height: 24),
+            if (seedButton != null) ...[
+              const SizedBox(height: 24),
+              seedButton!,
+            ],
           ],
         ),
       ),

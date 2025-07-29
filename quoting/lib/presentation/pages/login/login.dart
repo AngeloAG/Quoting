@@ -43,10 +43,9 @@ class _LoginPageState extends State<LoginPage> {
                                       topLeft: Radius.circular(10.0),
                                       topRight: Radius.circular(10.0),
                                     ),
-                                    color: AppPallete.backgroundColor,
+                                    color: AppPallete.lightBackground,
                                     border: Border.all(
-                                        width: 1.5,
-                                        color: AppPallete.borderColor),
+                                        width: 1.5, color: AppPallete.primary),
                                   ),
                                   child: TextButton(
                                       onPressed: () {
@@ -57,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
                                       child: const Text(
                                         'Login',
                                         style: TextStyle(
-                                            color: AppPallete.gradient1),
+                                            color: AppPallete.secondary),
                                       )),
                                 ),
                               ),
@@ -71,9 +70,9 @@ class _LoginPageState extends State<LoginPage> {
                                       topLeft: Radius.circular(10.0),
                                       topRight: Radius.circular(10.0),
                                     ),
-                                    color: AppPallete.backgroundColor,
-                                    border: Border.all(
-                                        color: AppPallete.borderColor),
+                                    color: AppPallete.lightBackground,
+                                    border:
+                                        Border.all(color: AppPallete.primary),
                                   ),
                                   child: TextButton(
                                     onPressed: () {
@@ -160,9 +159,9 @@ class _LoginPageState extends State<LoginPage> {
                                       topLeft: Radius.circular(10.0),
                                       topRight: Radius.circular(10.0),
                                     ),
-                                    color: AppPallete.backgroundColor,
-                                    border: Border.all(
-                                        color: AppPallete.borderColor),
+                                    color: AppPallete.lightBackground,
+                                    border:
+                                        Border.all(color: AppPallete.primary),
                                   ),
                                   child: TextButton(
                                     onPressed: () {
@@ -184,10 +183,9 @@ class _LoginPageState extends State<LoginPage> {
                                       topLeft: Radius.circular(10.0),
                                       topRight: Radius.circular(10.0),
                                     ),
-                                    color: AppPallete.backgroundColor,
+                                    color: AppPallete.lightBackground,
                                     border: Border.all(
-                                        width: 1.5,
-                                        color: AppPallete.borderColor),
+                                        width: 1.5, color: AppPallete.primary),
                                   ),
                                   child: TextButton(
                                     onPressed: () {
@@ -197,7 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                                     },
                                     child: const Text('Sign up',
                                         style: TextStyle(
-                                            color: AppPallete.gradient1)),
+                                            color: AppPallete.secondary)),
                                   ),
                                 ),
                               )

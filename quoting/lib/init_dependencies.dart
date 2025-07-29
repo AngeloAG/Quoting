@@ -7,6 +7,7 @@ import 'package:quoting/presentation/blocs/quotes/quote_bloc.dart';
 import 'package:quoting/presentation/blocs/source/source_bloc.dart';
 import 'package:quoting/presentation/blocs/tabs/tabs_cubit.dart';
 import 'package:get_it/get_it.dart';
+import 'package:quoting/presentation/blocs/theme/cubit/theme_cubit.dart';
 
 final GetIt serviceLocator = GetIt.instance;
 
@@ -30,4 +31,6 @@ Future<void> initDependencies() async {
       .registerFactory(() => BackupRestoreBloc(mediator: serviceLocator()));
 
   serviceLocator.registerLazySingleton(() => TabsCubit());
+
+  serviceLocator.registerLazySingleton(() => ThemeCubit());
 }
