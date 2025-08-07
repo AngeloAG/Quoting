@@ -168,19 +168,35 @@ class _QuotesPageState extends State<QuotesPage> {
                   Expanded(
                     child: BlocBuilder<AuthorBloc, AuthorState>(
                       builder: (context, authorState) {
-                        return DropdownButton<int>(
+                        return DropdownButtonFormField<int>(
                           isExpanded: true,
                           value: _selectedAuthorId,
-                          hint: const Text('Author'),
+                          decoration: InputDecoration(
+                            labelText: 'Author',
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
                           items: [
                             const DropdownMenuItem<int>(
                               value: null,
-                              child: Text('All Authors'),
+                              child: Text('All Authors',
+                                  overflow: TextOverflow.ellipsis, maxLines: 1),
                             ),
                             ...authorState.authors
                                 .map((author) => DropdownMenuItem<int>(
                                       value: int.tryParse(author.id),
-                                      child: Text(author.name),
+                                      child: Container(
+                                        constraints:
+                                            const BoxConstraints(maxWidth: 120),
+                                        child: Text(
+                                          author.name,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ),
                                     ))
                           ],
                           onChanged: (value) {
@@ -208,19 +224,35 @@ class _QuotesPageState extends State<QuotesPage> {
                   Expanded(
                     child: BlocBuilder<LabelBloc, LabelState>(
                       builder: (context, labelState) {
-                        return DropdownButton<int>(
+                        return DropdownButtonFormField<int>(
                           isExpanded: true,
                           value: _selectedLabelId,
-                          hint: const Text('Label'),
+                          decoration: InputDecoration(
+                            labelText: 'Label',
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
                           items: [
                             const DropdownMenuItem<int>(
                               value: null,
-                              child: Text('All Labels'),
+                              child: Text('All Labels',
+                                  overflow: TextOverflow.ellipsis, maxLines: 1),
                             ),
                             ...labelState.labels
                                 .map((label) => DropdownMenuItem<int>(
                                       value: int.tryParse(label.id),
-                                      child: Text(label.label),
+                                      child: Container(
+                                        constraints:
+                                            const BoxConstraints(maxWidth: 120),
+                                        child: Text(
+                                          label.label,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ),
                                     ))
                           ],
                           onChanged: (value) {
@@ -248,19 +280,35 @@ class _QuotesPageState extends State<QuotesPage> {
                   Expanded(
                     child: BlocBuilder<SourceBloc, SourceState>(
                       builder: (context, sourceState) {
-                        return DropdownButton<int>(
+                        return DropdownButtonFormField<int>(
                           isExpanded: true,
                           value: _selectedSourceId,
-                          hint: const Text('Source'),
+                          decoration: InputDecoration(
+                            labelText: 'Source',
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
                           items: [
                             const DropdownMenuItem<int>(
                               value: null,
-                              child: Text('All Sources'),
+                              child: Text('All Sources',
+                                  overflow: TextOverflow.ellipsis, maxLines: 1),
                             ),
                             ...sourceState.sources
                                 .map((source) => DropdownMenuItem<int>(
                                       value: int.tryParse(source.id),
-                                      child: Text(source.source),
+                                      child: Container(
+                                        constraints:
+                                            const BoxConstraints(maxWidth: 120),
+                                        child: Text(
+                                          source.source,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ),
                                     ))
                           ],
                           onChanged: (value) {

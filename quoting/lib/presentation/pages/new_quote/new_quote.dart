@@ -79,27 +79,14 @@ class _NewQuotePageState extends State<NewQuotePage> {
             key: _formKey,
             child: ListView(
               children: [
-                TextField(
+                TextFormField(
                   controller: _quoteContentController,
                   decoration: InputDecoration(
-                    label: Text('Quote text'),
+                    labelText: 'Quote text',
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 12),
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5),
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5),
-                      ),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   keyboardType: TextInputType.multiline,
@@ -135,8 +122,13 @@ class _NewQuotePageState extends State<NewQuotePage> {
                           focusNode, onFieldSubmitted) {
                         return TextFormField(
                           controller: textEditingController,
-                          decoration: const InputDecoration(
-                            hintText: 'Author',
+                          decoration: InputDecoration(
+                            labelText: 'Author',
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 12),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                           focusNode: focusNode,
                           onFieldSubmitted: (value) {
@@ -203,8 +195,13 @@ class _NewQuotePageState extends State<NewQuotePage> {
                           focusNode, onFieldSubmitted) {
                         return TextFormField(
                           controller: textEditingController,
-                          decoration: const InputDecoration(
-                            hintText: 'Label',
+                          decoration: InputDecoration(
+                            labelText: 'Label',
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 12),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                           focusNode: focusNode,
                           onFieldSubmitted: (value) {
@@ -269,8 +266,13 @@ class _NewQuotePageState extends State<NewQuotePage> {
                           focusNode, onFieldSubmitted) {
                         return TextFormField(
                           controller: textEditingController,
-                          decoration: const InputDecoration(
-                            hintText: 'Source',
+                          decoration: InputDecoration(
+                            labelText: 'Source',
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 12),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                           focusNode: focusNode,
                           onFieldSubmitted: (value) {
@@ -309,27 +311,14 @@ class _NewQuotePageState extends State<NewQuotePage> {
                   },
                 ),
                 const SizedBox(height: 20),
-                TextField(
+                TextFormField(
                   controller: _detailsTextController,
                   decoration: InputDecoration(
-                    label: Text('Page, Paragraph, etc'),
+                    labelText: 'Page, Paragraph, etc',
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 12),
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5),
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5),
-                      ),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   keyboardType: TextInputType.text,
