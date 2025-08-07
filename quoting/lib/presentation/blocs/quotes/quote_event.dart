@@ -78,3 +78,11 @@ final class QuoteSelectEvent extends QuoteEvent {
 
   QuoteSelectEvent({required this.index});
 }
+
+final class QuoteFilterEvent extends QuoteEvent {
+  final int? authorId;
+  final int? labelId;
+  final int? sourceId;
+
+  QuoteFilterEvent({this.authorId, this.labelId, this.sourceId});
+}

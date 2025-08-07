@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quoting/presentation/blocs/author/author_bloc.dart';
+import 'package:quoting/presentation/blocs/label/label_bloc.dart';
 import 'package:quoting/presentation/blocs/quotes/quote_bloc.dart';
+import 'package:quoting/presentation/blocs/source/source_bloc.dart';
 import 'package:quoting/presentation/shared/drawer.dart';
 import 'package:quoting/presentation/shared/quote_card.dart';
 import 'package:quoting/presentation/shared/utilities.dart';
@@ -16,6 +19,9 @@ class QuotesPage extends StatefulWidget {
 }
 
 class _QuotesPageState extends State<QuotesPage> {
+  int? _selectedAuthorId;
+  int? _selectedLabelId;
+  int? _selectedSourceId;
   final _scrollController = ScrollController();
   final SearchController _searchController = SearchController();
   final FocusNode _searchFocusNode = FocusNode();
@@ -44,6 +50,17 @@ class _QuotesPageState extends State<QuotesPage> {
     });
 
     context.read<QuoteBloc>().add(QuoteLoadEvent());
+    if (context.mounted) {
+      if (context.read<AuthorBloc>().state.authors.isEmpty) {
+        context.read<AuthorBloc>().add(AuthorLoadEvent());
+      }
+      if (context.read<LabelBloc>().state.labels.isEmpty) {
+        context.read<LabelBloc>().add(LabelLoadEvent());
+      }
+      if (context.read<SourceBloc>().state.sources.isEmpty) {
+        context.read<SourceBloc>().add(SourceLoadEvent());
+      }
+    }
     super.initState();
   }
 
@@ -144,6 +161,131 @@ class _QuotesPageState extends State<QuotesPage> {
               const SizedBox(
                 height: 20.0,
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Author Dropdown
+                  Expanded(
+                    child: BlocBuilder<AuthorBloc, AuthorState>(
+                      builder: (context, authorState) {
+                        return DropdownButton<int>(
+                          isExpanded: true,
+                          value: _selectedAuthorId,
+                          hint: const Text('Author'),
+                          items: [
+                            const DropdownMenuItem<int>(
+                              value: null,
+                              child: Text('All Authors'),
+                            ),
+                            ...authorState.authors
+                                .map((author) => DropdownMenuItem<int>(
+                                      value: int.tryParse(author.id),
+                                      child: Text(author.name),
+                                    ))
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedAuthorId = value;
+                            });
+                            if (value == null &&
+                                _selectedLabelId == null &&
+                                _selectedSourceId == null) {
+                              context.read<QuoteBloc>().add(QuoteReloadEvent());
+                              return;
+                            }
+                            context.read<QuoteBloc>().add(QuoteFilterEvent(
+                                  authorId: value,
+                                  labelId: _selectedLabelId,
+                                  sourceId: _selectedSourceId,
+                                ));
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Label Dropdown
+                  Expanded(
+                    child: BlocBuilder<LabelBloc, LabelState>(
+                      builder: (context, labelState) {
+                        return DropdownButton<int>(
+                          isExpanded: true,
+                          value: _selectedLabelId,
+                          hint: const Text('Label'),
+                          items: [
+                            const DropdownMenuItem<int>(
+                              value: null,
+                              child: Text('All Labels'),
+                            ),
+                            ...labelState.labels
+                                .map((label) => DropdownMenuItem<int>(
+                                      value: int.tryParse(label.id),
+                                      child: Text(label.label),
+                                    ))
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedLabelId = value;
+                            });
+                            if (value == null &&
+                                _selectedAuthorId == null &&
+                                _selectedSourceId == null) {
+                              context.read<QuoteBloc>().add(QuoteReloadEvent());
+                              return;
+                            }
+                            context.read<QuoteBloc>().add(QuoteFilterEvent(
+                                  authorId: _selectedAuthorId,
+                                  labelId: value,
+                                  sourceId: _selectedSourceId,
+                                ));
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Source Dropdown
+                  Expanded(
+                    child: BlocBuilder<SourceBloc, SourceState>(
+                      builder: (context, sourceState) {
+                        return DropdownButton<int>(
+                          isExpanded: true,
+                          value: _selectedSourceId,
+                          hint: const Text('Source'),
+                          items: [
+                            const DropdownMenuItem<int>(
+                              value: null,
+                              child: Text('All Sources'),
+                            ),
+                            ...sourceState.sources
+                                .map((source) => DropdownMenuItem<int>(
+                                      value: int.tryParse(source.id),
+                                      child: Text(source.source),
+                                    ))
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedSourceId = value;
+                            });
+                            if (value == null &&
+                                _selectedAuthorId == null &&
+                                _selectedLabelId == null) {
+                              context.read<QuoteBloc>().add(QuoteReloadEvent());
+                              return;
+                            }
+                            context.read<QuoteBloc>().add(QuoteFilterEvent(
+                                  authorId: _selectedAuthorId,
+                                  labelId: _selectedLabelId,
+                                  sourceId: value,
+                                ));
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
               Expanded(
                 child: BlocConsumer<QuoteBloc, QuoteState>(
                   listener: (context, state) {

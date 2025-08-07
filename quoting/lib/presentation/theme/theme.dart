@@ -36,13 +36,13 @@ final ThemeData darkTheme = ThemeData(
     primary: AppPallete.primary,
     secondary: AppPallete.secondary,
     surface: AppPallete.darkSurface,
-    onPrimary: AppPallete.secondary,
+    onPrimary: AppPallete.darkText,
     onSecondary: AppPallete.primary,
     onSurface: AppPallete.secondary,
     error: AppPallete.errorColor,
   ),
   textTheme: const TextTheme(
-    bodyLarge: TextStyle(color: AppPallete.secondary),
-    bodyMedium: TextStyle(color: AppPallete.secondary),
+    bodyLarge: TextStyle(color: AppPallete.darkText),
+    bodyMedium: TextStyle(color: AppPallete.darkText),
   ),
 );

@@ -42,7 +42,9 @@ class _AuthorsPageState extends State<AuthorsPage> {
       }
     });
 
-    context.read<AuthorBloc>().add(AuthorLoadEvent());
+    if (context.read<AuthorBloc>().state.authors.isEmpty) {
+      context.read<AuthorBloc>().add(AuthorLoadEvent());
+    }
     super.initState();
   }
 

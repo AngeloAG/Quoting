@@ -14,7 +14,7 @@ class AppPallete {
   // Dark theme
   static const Color darkBackground = accent;
   static const Color darkSurface = Color(0xFF2c2826);
-  static const Color darkText = secondary;
+  static const Color darkText = Colors.white;
 
   static const Color errorColor = Colors.redAccent;
   static const Color transparentColor = Colors.transparent;

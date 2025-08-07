@@ -386,6 +386,11 @@ class _EditQuoteState extends State<EditQuote> {
                     //context.read<QuoteBloc>().add(QuoteReloadEvent());
                     context.beamBack();
                   },
+                  style: ElevatedButton.styleFrom(
+                    textStyle: Theme.of(context).textTheme.bodyLarge,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                  ),
                   child: const Text('Update'),
                 )
               ],

@@ -18,6 +18,9 @@ final class QuoteState extends Equatable {
   final List<Quote> searchedQuotes;
   final String failureMessage;
   final int currentQuoteIndex;
+  final int? authorId;
+  final int? labelId;
+  final int? sourceId;
 
   const QuoteState({
     this.status = QuoteStatus.initial,
@@ -25,6 +28,9 @@ final class QuoteState extends Equatable {
     this.searchedQuotes = const [],
     this.failureMessage = '',
     this.currentQuoteIndex = 0,
+    this.authorId,
+    this.labelId,
+    this.sourceId,
   });
 
   QuoteState copyWith({
@@ -33,6 +39,9 @@ final class QuoteState extends Equatable {
     List<Quote> Function()? searchedQuotes,
     String Function()? failureMessage,
     int Function()? currentQuoteIndex,
+    int? Function()? authorId,
+    int? Function()? labelId,
+    int? Function()? sourceId,
   }) {
     return QuoteState(
       status: status != null ? status() : this.status,
@@ -44,10 +53,21 @@ final class QuoteState extends Equatable {
       currentQuoteIndex: currentQuoteIndex != null
           ? currentQuoteIndex()
           : this.currentQuoteIndex,
+      authorId: authorId != null ? authorId() : this.authorId,
+      labelId: labelId != null ? labelId() : this.labelId,
+      sourceId: sourceId != null ? sourceId() : this.sourceId,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [status, quotes, searchedQuotes, failureMessage, currentQuoteIndex];
+  List<Object?> get props => [
+        status,
+        quotes,
+        searchedQuotes,
+        failureMessage,
+        currentQuoteIndex,
+        authorId,
+        labelId,
+        sourceId
+      ];
 }

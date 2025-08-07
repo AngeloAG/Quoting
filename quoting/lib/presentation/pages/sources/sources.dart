@@ -42,7 +42,9 @@ class _SourcesPageState extends State<SourcesPage> {
       }
     });
 
-    context.read<SourceBloc>().add(SourceLoadEvent());
+    if (context.read<SourceBloc>().state.sources.isEmpty) {
+      context.read<SourceBloc>().add(SourceLoadEvent());
+    }
     super.initState();
   }
 

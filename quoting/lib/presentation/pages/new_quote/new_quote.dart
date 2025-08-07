@@ -377,6 +377,11 @@ class _NewQuotePageState extends State<NewQuotePage> {
                       _label = null;
                       _source = null;
                     },
+                    style: ElevatedButton.styleFrom(
+                      textStyle: Theme.of(context).textTheme.bodyLarge,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                    ),
                     child: const Text('Save'),
                   ),
                 )

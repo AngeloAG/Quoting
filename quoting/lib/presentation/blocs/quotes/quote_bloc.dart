@@ -6,6 +6,7 @@ import 'package:quoting/application/labels/commands/upload_label_handler.dart';
 import 'package:quoting/application/quotes/commands/remove_quote_handler.dart';
 import 'package:quoting/application/quotes/commands/update_quote_handler.dart';
 import 'package:quoting/application/quotes/commands/upload_quote_handler.dart';
+import 'package:quoting/application/quotes/queries/get_filtered_quotes_handler.dart';
 import 'package:quoting/application/quotes/queries/get_paginated_quotes_handler.dart';
 import 'package:quoting/application/quotes/queries/search_quote_handler.dart';
 import 'package:quoting/application/sources/commands/upload_source_handler.dart';
@@ -46,6 +47,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
     on<QuoteUpdateEvent>(_onQuoteUpdate);
     on<QuoteSelectEvent>(_onQuoteSelect);
     on<QuoteRemoveEvent>(_onQuoteRemove);
+    on<QuoteFilterEvent>(_onQuoteFilter);
   }
 
   void _onQuoteSelect(QuoteSelectEvent event, Emitter<QuoteState> emit) async {
@@ -290,5 +292,23 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
             status: () => QuoteStatus.deleteSuccess, failureMessage: () => ''));
       },
     );
+  }
+
+  void _onQuoteFilter(QuoteFilterEvent event, Emitter<QuoteState> emit) async {
+    final response = await _mediator
+        .send<GetFilteredQuotesRequest, Either<Failure, List<Quote>>>(
+            GetFilteredQuotesRequest(
+                authorId: event.authorId,
+                labelId: event.labelId,
+                sourceId: event.sourceId));
+
+    response.fold(
+        (failure) => emit(state.copyWith(
+            status: () => QuoteStatus.failure,
+            failureMessage: () => failure.message)),
+        (quotes) => emit(state.copyWith(
+            status: () => QuoteStatus.success,
+            quotes: (_) => quotes,
+            failureMessage: () => '')));
   }
 }

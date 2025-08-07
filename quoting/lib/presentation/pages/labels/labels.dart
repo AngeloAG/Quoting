@@ -42,7 +42,9 @@ class _LabelsPageState extends State<LabelsPage> {
       }
     });
 
-    context.read<LabelBloc>().add(LabelLoadEvent());
+    if (context.read<LabelBloc>().state.labels.isEmpty) {
+      context.read<LabelBloc>().add(LabelLoadEvent());
+    }
     super.initState();
   }
 
