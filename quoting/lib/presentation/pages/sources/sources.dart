@@ -147,8 +147,14 @@ class _SourcesPageState extends State<SourcesPage> {
                   Expanded(
                     child: TextFormField(
                       controller: newSourceController,
-                      decoration:
-                          const InputDecoration(hintText: 'Add new source'),
+                      decoration: InputDecoration(
+                        labelText: 'Add new source',
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                     ),
                   ),
                   Builder(builder: (context) {

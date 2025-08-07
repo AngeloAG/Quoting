@@ -147,8 +147,14 @@ class _LabelsPageState extends State<LabelsPage> {
                   Expanded(
                     child: TextFormField(
                       controller: newLabelController,
-                      decoration:
-                          const InputDecoration(hintText: 'Add new label'),
+                      decoration: InputDecoration(
+                        labelText: 'Add new label',
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                     ),
                   ),
                   Builder(builder: (context) {

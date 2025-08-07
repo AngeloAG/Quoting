@@ -144,8 +144,14 @@ class _AuthorsPageState extends State<AuthorsPage> {
                   Expanded(
                     child: TextFormField(
                       controller: newAuthorController,
-                      decoration:
-                          const InputDecoration(hintText: 'Add new author'),
+                      decoration: InputDecoration(
+                        labelText: 'Add new author',
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                     ),
                   ),
                   Builder(builder: (context) {
