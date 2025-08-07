@@ -72,6 +72,9 @@ flutter_launcher_icons:
   image_path: "assets/icon/app_icon.png" # <-- Put your icon here
   min_sdk_android: 21 # optional, for Android
   remove_alpha_ios: true
+  adaptive_icon_background: "#FFED7D4B"     # Only for Android adaptive icons
+  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
+  adaptive_icon_monochrome: "assets/icon/app_icon_monochrome.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
