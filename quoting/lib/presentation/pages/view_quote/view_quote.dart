@@ -50,12 +50,46 @@ class _ViewQuoteState extends State<ViewQuote> {
                     }
                   },
                   child: IconButton(
-                    onPressed: () {
-                      context.read<QuoteBloc>().add(
-                            QuoteRemoveEvent(
-                              quote: state.quotes[state.currentQuoteIndex],
+                    onPressed: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Delete Quote'),
+                          content: const Text(
+                              'Are you sure you want to delete this quote? This action cannot be undone.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              style: TextButton.styleFrom(
+                                foregroundColor:
+                                    Theme.of(context).colorScheme.primary,
+                                side: BorderSide(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimary),
+                              ),
+                              child: const Text('Cancel'),
                             ),
-                          );
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              style: TextButton.styleFrom(
+                                foregroundColor:
+                                    Theme.of(context).colorScheme.onPrimary,
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary,
+                              ),
+                              child: const Text('Delete'),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (mounted && confirm == true) {
+                        context.read<QuoteBloc>().add(
+                              QuoteRemoveEvent(
+                                quote: state.quotes[state.currentQuoteIndex],
+                              ),
+                            );
+                      }
                     },
                     icon: const Icon(Icons.delete),
                   ),

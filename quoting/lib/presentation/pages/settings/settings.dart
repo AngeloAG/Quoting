@@ -208,6 +208,23 @@ class _SettingsPageState extends State<SettingsPage> {
                 const Icon(Icons.dark_mode),
               ],
             ),
+            const SizedBox(height: 12),
+            BlocBuilder<ThemeCubit, ThemeMode>(
+              builder: (context, themeMode) {
+                return ElevatedButton.icon(
+                  icon: const Icon(Icons.settings_backup_restore),
+                  label: const Text('Reset to System Theme'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                  ),
+                  onPressed: themeMode != ThemeMode.system
+                      ? () =>
+                          context.read<ThemeCubit>().setTheme(ThemeMode.system)
+                      : null,
+                );
+              },
+            ),
             const SizedBox(height: 24),
             if (seedButton != null) ...[
               const SizedBox(height: 24),
