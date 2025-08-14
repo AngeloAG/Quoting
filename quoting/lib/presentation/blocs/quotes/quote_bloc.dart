@@ -38,8 +38,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
     required Mediator mediator,
   })  : _mediator = mediator,
         super(const QuoteState()) {
-    on<QuoteEvent>((event, emit) =>
-        emit(state.copyWith(status: () => QuoteStatus.loading)));
+    // Only set status to loading for actual loading events, not all events
     on<QuoteUploadEvent>(_onQuoteUpload);
     on<QuoteLoadEvent>(_onQuoteLoad);
     on<QuoteReloadEvent>(_onQuoteReload);
@@ -136,6 +135,7 @@ class QuoteBloc extends Bloc<QuoteEvent, QuoteState> {
   }
 
   void _onQuoteLoad(QuoteLoadEvent event, Emitter<QuoteState> emit) async {
+    emit(state.copyWith(status: () => QuoteStatus.loading));
     final response = await _mediator
         .send<GetPaginatedQuotesRequest, Either<Failure, List<Quote>>>(
             GetPaginatedQuotesRequest(quotesPerPage, currentPage));

@@ -376,7 +376,9 @@ class _QuotesPageState extends State<QuotesPage> {
                               ),
                             ),
                           ),
+                          // Only show spinner if loading AND there are already quotes
                           if (state.status == QuoteStatus.loading &&
+                              state.quotes.isNotEmpty &&
                               !context.read<QuoteBloc>().isLastPage)
                             const SizedBox(
                               width: 100,
