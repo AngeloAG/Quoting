@@ -17,12 +17,14 @@ class AuthorsPage extends StatefulWidget {
 class _AuthorsPageState extends State<AuthorsPage> {
   final newAuthorController = TextEditingController();
   final _searchController = SearchController();
+  final FocusNode _searchFocusNode = FocusNode();
   Timer? _debounce;
 
   @override
   void dispose() {
     newAuthorController.dispose();
     _searchController.dispose();
+    _searchFocusNode.dispose();
     _debounce?.cancel();
     super.dispose();
   }
@@ -40,104 +42,135 @@ class _AuthorsPageState extends State<AuthorsPage> {
       }
     });
 
-    context.read<AuthorBloc>().add(AuthorLoadEvent());
+    if (context.read<AuthorBloc>().state.authors.isEmpty) {
+      context.read<AuthorBloc>().add(AuthorLoadEvent());
+    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Authors'),
-      ),
-      endDrawer: const CustomDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            SearchAnchor(
-              searchController: _searchController,
-              builder: (BuildContext context, SearchController controller) {
-                return SearchBar(
-                  padding: const MaterialStatePropertyAll<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 16.0)),
-                  onTap: () {
-                    controller.openView();
-                  },
-                  leading: const Icon(Icons.search),
-                );
-              },
-              viewBuilder: (suggestions) {
-                return BlocBuilder<AuthorBloc, AuthorState>(
-                  builder: (context, state) {
-                    return ListView.builder(
-                      padding: const EdgeInsets.only(top: 0.0),
-                      itemCount: state.searchedAuthors.length,
-                      itemBuilder: (context, index) {
-                        return AuthorSmallCard(
-                            author: state.searchedAuthors[index]);
-                      },
-                    );
-                  },
-                );
-              },
-              suggestionsBuilder:
-                  (BuildContext context, SearchController controller) {
-                return List<ListTile>.empty();
-              },
-            ),
-            const SizedBox(
-              height: 20.0,
-            ),
-            Expanded(
-                child: BlocConsumer<AuthorBloc, AuthorState>(
-              listener: (context, state) {
-                if (state.status == AuthorStatus.failure) {
-                  showSnackBar(state.failureMessage, context);
-                }
-              },
-              builder: (context, state) {
-                if (state.status == AuthorStatus.loading &&
-                    state.authors.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (state.authors.isNotEmpty) {
-                  return ListView.builder(
-                    itemCount: state.authors.length,
-                    itemBuilder: (context, index) {
-                      return AuthorSmallCard(author: state.authors[index]);
-                    },
-                  );
-                }
-                return const SizedBox();
-              },
-            )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: newAuthorController,
-                    decoration:
-                        const InputDecoration(hintText: 'Add new author'),
-                  ),
-                ),
-                Builder(builder: (context) {
-                  return IconButton(
-                    onPressed: () {
-                      if (newAuthorController.text.isNotEmpty) {
-                        context.read<AuthorBloc>().add(AuthorUploadEvent(
-                            authorName: newAuthorController.text.trim()));
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        newAuthorController.clear();
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Authors'),
+        ),
+        endDrawer: const CustomDrawer(),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              SearchAnchor(
+                searchController: _searchController,
+                builder: (BuildContext context, SearchController controller) {
+                  return SearchBar(
+                    controller: _searchController,
+                    padding: const WidgetStatePropertyAll<EdgeInsets>(
+                        EdgeInsets.symmetric(horizontal: 16.0)),
+                    onTap: () {
+                      if (!_searchFocusNode.hasFocus) {
+                        controller.openView();
                       }
                     },
-                    icon: const Icon(Icons.add),
+                    onSubmitted: (value) {
+                      if (!controller.isOpen) {
+                        controller.openView();
+                      }
+                      if (value.isEmpty) {
+                        return;
+                      }
+                      // Trigger search with the submitted value
+                      context
+                          .read<AuthorBloc>()
+                          .add(AuthorSearchEvent(query: value));
+                      _searchController.text = value;
+                    },
+                    leading: const Icon(Icons.search),
+                    autoFocus: false,
                   );
-                }),
-              ],
-            )
-          ],
+                },
+                viewBuilder: (suggestions) {
+                  return BlocBuilder<AuthorBloc, AuthorState>(
+                    builder: (context, state) {
+                      return ListView.builder(
+                        padding: const EdgeInsets.only(top: 0.0),
+                        itemCount: state.searchedAuthors.length,
+                        itemBuilder: (context, index) {
+                          return AuthorSmallCard(
+                              author: state.searchedAuthors[index]);
+                        },
+                      );
+                    },
+                  );
+                },
+                suggestionsBuilder:
+                    (BuildContext context, SearchController controller) {
+                  return List<ListTile>.empty();
+                },
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              Expanded(
+                  child: BlocConsumer<AuthorBloc, AuthorState>(
+                listener: (context, state) {
+                  if (state.status == AuthorStatus.failure) {
+                    showSnackBar(state.failureMessage, context);
+                  }
+                },
+                builder: (context, state) {
+                  if (state.status == AuthorStatus.loading &&
+                      state.authors.isEmpty) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (state.authors.isNotEmpty) {
+                    return ListView.builder(
+                      itemCount: state.authors.length,
+                      itemBuilder: (context, index) {
+                        return AuthorSmallCard(author: state.authors[index]);
+                      },
+                    );
+                  }
+                  return const SizedBox();
+                },
+              )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: newAuthorController,
+                      decoration: InputDecoration(
+                        labelText: 'Add new author',
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Builder(builder: (context) {
+                    return IconButton(
+                      onPressed: () {
+                        if (newAuthorController.text.isNotEmpty) {
+                          context.read<AuthorBloc>().add(AuthorUploadEvent(
+                              authorName: newAuthorController.text.trim()));
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          newAuthorController.clear();
+                        }
+                      },
+                      icon: const Icon(Icons.add),
+                    );
+                  }),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

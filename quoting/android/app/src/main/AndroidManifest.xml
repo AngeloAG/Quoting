@@ -29,5 +29,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+				<meta-data 
+						android:name="android.adaptiveIcon.monochrome"
+				    android:resource="@mipmap/ic_launcher_monochrome" />
     </application>
 </manifest>

@@ -7,6 +7,7 @@ import 'package:quoting/presentation/blocs/label/label_bloc.dart';
 import 'package:quoting/presentation/blocs/quotes/quote_bloc.dart';
 import 'package:quoting/presentation/blocs/source/source_bloc.dart';
 import 'package:quoting/presentation/blocs/tabs/tabs_cubit.dart';
+import 'package:quoting/presentation/blocs/theme/cubit/theme_cubit.dart';
 import 'package:quoting/presentation/routes.dart';
 import 'package:quoting/presentation/theme/theme.dart';
 
@@ -34,13 +35,20 @@ class MyApp extends StatelessWidget {
         BlocProvider<SourceBloc>(create: (_) => serviceLocator<SourceBloc>()),
         BlocProvider<QuoteBloc>(create: (_) => serviceLocator<QuoteBloc>()),
         BlocProvider<TabsCubit>(create: (_) => serviceLocator<TabsCubit>()),
+        BlocProvider<ThemeCubit>(create: (_) => serviceLocator<ThemeCubit>()),
       ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        routeInformationParser: BeamerParser(),
-        routerDelegate: routerDelegate,
-        title: 'Quoting',
-        theme: AppTheme.darkThemeMode,
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, themeMode) {
+          return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            routeInformationParser: BeamerParser(),
+            routerDelegate: routerDelegate,
+            title: 'Quoting',
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            themeMode: themeMode,
+          );
+        },
       ),
     );
   }

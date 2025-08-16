@@ -478,4 +478,52 @@ class LocalDataSource
               'Failed to search for quotes in DB with error: ${error.toString()}'),
     );
   }
+
+  @override
+  TaskEither<Failure, List<QuoteModel>> getFilteredQuotes(
+      {int? authorId, int? labelId, int? sourceId}) {
+    return TaskEither.tryCatch(
+      () async {
+        final query = driftDB.select(driftDB.quotes);
+
+        if (authorId != null) {
+          query.where((q) => q.authorId.equals(authorId));
+        }
+        if (labelId != null) {
+          query.where((q) => q.labelId.equals(labelId));
+        }
+        if (sourceId != null) {
+          query.where((q) => q.sourceId.equals(sourceId));
+        }
+
+        return await query.join([
+          leftOuterJoin(driftDB.authors,
+              driftDB.authors.id.equalsExp(driftDB.quotes.authorId)),
+          leftOuterJoin(driftDB.labels,
+              driftDB.labels.id.equalsExp(driftDB.quotes.labelId)),
+          leftOuterJoin(driftDB.sources,
+              driftDB.sources.id.equalsExp(driftDB.quotes.sourceId)),
+        ]).map((row) {
+          final Quote quote = row.readTable(driftDB.quotes);
+          final Author? author = row.readTableOrNull(driftDB.authors);
+          final Label? label = row.readTableOrNull(driftDB.labels);
+          final Source? source = row.readTableOrNull(driftDB.sources);
+
+          return QuoteModel(
+              quote.id.toString(),
+              author?.name,
+              author?.id.toString(),
+              label?.content,
+              label?.id.toString(),
+              source?.content,
+              source?.id.toString(),
+              quote.details,
+              quote.content);
+        }).get();
+      },
+      (error, stackTrace) => Failure(
+          message:
+              'Failed to search for quotes in DB with error: ${error.toString()}'),
+    );
+  }
 }

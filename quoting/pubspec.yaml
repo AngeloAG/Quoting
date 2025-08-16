@@ -50,6 +50,7 @@ dependencies:
   sqlite3: ^2.4.0
   drift_db_viewer: ^2.1.0
   file_selector: ^1.0.3
+  hydrated_bloc: ^10.1.1
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +65,17 @@ dev_dependencies:
   drift_dev: ^2.15.0
   build_runner: ^2.4.9
   rename: ^3.0.1
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png" # <-- Put your icon here
+  min_sdk_android: 21 # optional, for Android
+  remove_alpha_ios: true
+  adaptive_icon_background: "#FFED7D4B"     # Only for Android adaptive icons
+  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
+  adaptive_icon_monochrome: "assets/icon/app_icon_monochrome.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

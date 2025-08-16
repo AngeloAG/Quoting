@@ -17,12 +17,14 @@ class SourcesPage extends StatefulWidget {
 class _SourcesPageState extends State<SourcesPage> {
   final newSourceController = TextEditingController();
   final _searchController = SearchController();
+  final _searchFocusNode = FocusNode();
   Timer? _debounce;
 
   @override
   void dispose() {
     newSourceController.dispose();
     _searchController.dispose();
+    _searchFocusNode.dispose();
     _debounce?.cancel();
     super.dispose();
   }
@@ -40,107 +42,138 @@ class _SourcesPageState extends State<SourcesPage> {
       }
     });
 
-    context.read<SourceBloc>().add(SourceLoadEvent());
+    if (context.read<SourceBloc>().state.sources.isEmpty) {
+      context.read<SourceBloc>().add(SourceLoadEvent());
+    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sources'),
-      ),
-      endDrawer: const CustomDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            SearchAnchor(
-              searchController: _searchController,
-              builder: (BuildContext context, SearchController controller) {
-                return SearchBar(
-                  padding: const MaterialStatePropertyAll<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 16.0)),
-                  onTap: () {
-                    controller.openView();
-                  },
-                  leading: const Icon(Icons.search),
-                );
-              },
-              viewBuilder: (suggestions) {
-                return BlocBuilder<SourceBloc, SourceState>(
-                  builder: (context, state) {
-                    return ListView.builder(
-                      padding: const EdgeInsets.only(top: 0.0),
-                      itemCount: state.searchedSources.length,
-                      itemBuilder: (context, index) {
-                        return SourceSmallCard(
-                          source: state.searchedSources[index],
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-              suggestionsBuilder:
-                  (BuildContext context, SearchController controller) {
-                return List<ListTile>.empty();
-              },
-            ),
-            const SizedBox(
-              height: 20.0,
-            ),
-            Expanded(
-                child: BlocConsumer<SourceBloc, SourceState>(
-              listener: (context, state) {
-                if (state.status == SourceStatus.failure) {
-                  showSnackBar(state.failureMessage, context);
-                }
-              },
-              builder: (context, state) {
-                if (state.status == SourceStatus.loading &&
-                    state.sources.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (state.sources.isNotEmpty) {
-                  return ListView.builder(
-                    itemCount: state.sources.length,
-                    itemBuilder: (context, index) {
-                      return SourceSmallCard(
-                        source: state.sources[index],
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Sources'),
+        ),
+        endDrawer: const CustomDrawer(),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              SearchAnchor(
+                searchController: _searchController,
+                builder: (BuildContext context, SearchController controller) {
+                  return SearchBar(
+                    controller: _searchController,
+                    padding: const WidgetStatePropertyAll<EdgeInsets>(
+                        EdgeInsets.symmetric(horizontal: 16.0)),
+                    onTap: () {
+                      if (!_searchFocusNode.hasFocus) {
+                        controller.openView();
+                      }
+                    },
+                    onSubmitted: (value) {
+                      if (!controller.isOpen) {
+                        controller.openView();
+                      }
+                      if (value.isEmpty) {
+                        return;
+                      }
+                      // Trigger search with the submitted value
+                      context
+                          .read<SourceBloc>()
+                          .add(SourceSearchEvent(query: value));
+                      _searchController.text = value;
+                    },
+                    leading: const Icon(Icons.search),
+                    autoFocus: false,
+                  );
+                },
+                viewBuilder: (suggestions) {
+                  return BlocBuilder<SourceBloc, SourceState>(
+                    builder: (context, state) {
+                      return ListView.builder(
+                        padding: const EdgeInsets.only(top: 0.0),
+                        itemCount: state.searchedSources.length,
+                        itemBuilder: (context, index) {
+                          return SourceSmallCard(
+                            source: state.searchedSources[index],
+                          );
+                        },
                       );
                     },
                   );
-                }
-                return const SizedBox();
-              },
-            )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: newSourceController,
-                    decoration:
-                        const InputDecoration(hintText: 'Add new source'),
+                },
+                suggestionsBuilder:
+                    (BuildContext context, SearchController controller) {
+                  return List<ListTile>.empty();
+                },
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              Expanded(
+                  child: BlocConsumer<SourceBloc, SourceState>(
+                listener: (context, state) {
+                  if (state.status == SourceStatus.failure) {
+                    showSnackBar(state.failureMessage, context);
+                  }
+                },
+                builder: (context, state) {
+                  if (state.status == SourceStatus.loading &&
+                      state.sources.isEmpty) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (state.sources.isNotEmpty) {
+                    return ListView.builder(
+                      itemCount: state.sources.length,
+                      itemBuilder: (context, index) {
+                        return SourceSmallCard(
+                          source: state.sources[index],
+                        );
+                      },
+                    );
+                  }
+                  return const SizedBox();
+                },
+              )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: newSourceController,
+                      decoration: InputDecoration(
+                        labelText: 'Add new source',
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                Builder(builder: (context) {
-                  return IconButton(
-                    onPressed: () {
-                      if (newSourceController.text.isNotEmpty) {
-                        context.read<SourceBloc>().add(SourceUploadEvent(
-                            sourceContent: newSourceController.text.trim()));
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        newSourceController.clear();
-                      }
-                    },
-                    icon: const Icon(Icons.add),
-                  );
-                }),
-              ],
-            )
-          ],
+                  Builder(builder: (context) {
+                    return IconButton(
+                      onPressed: () {
+                        if (newSourceController.text.isNotEmpty) {
+                          context.read<SourceBloc>().add(SourceUploadEvent(
+                              sourceContent: newSourceController.text.trim()));
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          newSourceController.clear();
+                        }
+                      },
+                      icon: const Icon(Icons.add),
+                    );
+                  }),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

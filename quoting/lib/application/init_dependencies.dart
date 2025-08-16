@@ -14,6 +14,7 @@ import 'package:quoting/application/quotes/commands/remove_quote_handler.dart';
 import 'package:quoting/application/quotes/commands/update_quote_handler.dart';
 import 'package:quoting/application/quotes/commands/upload_quote_handler.dart';
 import 'package:quoting/application/quotes/queries/get_all_quotes_handler.dart';
+import 'package:quoting/application/quotes/queries/get_filtered_quotes_handler.dart';
 import 'package:quoting/application/quotes/queries/get_paginated_quotes_handler.dart';
 import 'package:quoting/application/quotes/queries/search_quote_handler.dart';
 import 'package:quoting/application/sources/commands/remove_source_handler.dart';
@@ -98,6 +99,10 @@ Future<void> initApplicationDependencies(GetIt serviceLocator) async {
 
   mediator.registerHandler<RestoreDatabaseRequest, Either<Failure, Unit>,
       RestoreDatabaseHandler>(() => RestoreDatabaseHandler(serviceLocator()));
+
+  mediator.registerHandler<GetFilteredQuotesRequest,
+          Either<Failure, List<Quote>>, GetFilteredQuotesHandler>(
+      () => GetFilteredQuotesHandler(serviceLocator()));
 
   serviceLocator.registerLazySingleton(() => mediator);
 }

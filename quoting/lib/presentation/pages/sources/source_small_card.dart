@@ -40,10 +40,42 @@ class SourceSmallCard extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.delete_sharp),
-              onPressed: () {
-                context
-                    .read<SourceBloc>()
-                    .add(SourceRemoveEvent(source: source));
+              onPressed: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Delete Source'),
+                    content: const Text(
+                        'Are you sure you want to delete this source? This action cannot be undone.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        style: TextButton.styleFrom(
+                          foregroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          side: BorderSide(
+                              color: Theme.of(context).colorScheme.onPrimary),
+                        ),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        style: TextButton.styleFrom(
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onPrimary,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                        ),
+                        child: const Text('Delete'),
+                      ),
+                    ],
+                  ),
+                );
+                if (confirm == true) {
+                  context
+                      .read<SourceBloc>()
+                      .add(SourceRemoveEvent(source: source));
+                }
               },
             ),
           ]),

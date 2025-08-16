@@ -17,4 +17,10 @@ abstract interface class IQuotesDataSource {
   TaskEither<Failure, Unit> updateQuote(UpdateQuoteWork updateQuoteWork);
 
   TaskEither<Failure, List<QuoteModel>> searchQuotes(String query);
+
+  TaskEither<Failure, List<QuoteModel>> getFilteredQuotes({
+    int? authorId,
+    int? labelId,
+    int? sourceId,
+  });
 }

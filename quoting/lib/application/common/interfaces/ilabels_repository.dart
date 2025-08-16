@@ -1,4 +1,3 @@
-import 'package:quoting/application/common/interfaces/ilabels_repository.dart';
 import 'package:quoting/domain/models/failure.dart';
 import 'package:quoting/domain/models/label.dart';
 import 'package:quoting/domain/works/create_label_work.dart';

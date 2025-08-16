@@ -27,11 +27,11 @@ class CustomDrawer extends StatelessWidget {
               ],
             ),
           ),
-          ElevatedButton(
-              onPressed: () {
-                context.beamToNamed('/login');
-              },
-              child: const Text('Login')),
+          // ElevatedButton(
+          //     onPressed: () {
+          //       context.beamToNamed('/login');
+          //     },
+          //     child: const Text('Login')),
           const SizedBox(
             height: 10.0,
           )

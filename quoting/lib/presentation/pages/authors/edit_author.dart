@@ -41,6 +41,8 @@ class _EditAuthorDialogState extends State<EditAuthorDialog> {
         TextButton(
           style: TextButton.styleFrom(
             textStyle: Theme.of(context).textTheme.labelLarge,
+            foregroundColor: Theme.of(context).colorScheme.primary,
+            side: BorderSide(color: Theme.of(context).colorScheme.onPrimary),
           ),
           child: const Text('Cancel'),
           onPressed: () {
@@ -50,6 +52,8 @@ class _EditAuthorDialogState extends State<EditAuthorDialog> {
         TextButton(
           style: TextButton.styleFrom(
             textStyle: Theme.of(context).textTheme.labelLarge,
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            backgroundColor: Theme.of(context).colorScheme.primary,
           ),
           child: const Text('Update'),
           onPressed: () {
