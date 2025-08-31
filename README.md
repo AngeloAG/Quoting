@@ -68,10 +68,10 @@ flutter run
 
 ```
 lib/
-├── application/    # BLoC & state management
+├── application/    # Use cases and operations
 ├── domain/         # Entities & business logic
 ├── infrastructure/ # Database, services, repositories
-├── presentation/   # UI layer (Flutter widgets)
+├── presentation/   # UI layer (Flutter widgets and BLoC & state management)
 ```
 
 ---
