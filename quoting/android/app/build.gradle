@@ -24,9 +24,9 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.molar.quoting.flutter_files"
-    compileSdkVersion localProperties.getProperty('flutter.compileSdkVersion').toInteger()
+    compileSdkVersion localProperties.getProperty('flutter.compileSdkVersion').toInteger();
     ndkVersion flutter.ndkVersion
-		compileSdk = 35
+		compileSdk = 36
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
