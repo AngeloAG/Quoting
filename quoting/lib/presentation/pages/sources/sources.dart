@@ -35,9 +35,9 @@ class _SourcesPageState extends State<SourcesPage> {
       if (_searchController.text.isNotEmpty) {
         if (_debounce?.isActive ?? false) _debounce?.cancel();
         _debounce = Timer(const Duration(milliseconds: 500), () {
-          context
-              .read<SourceBloc>()
-              .add(SourceSearchEvent(query: _searchController.text));
+          context.read<SourceBloc>().add(
+            SourceSearchEvent(query: _searchController.text),
+          );
         });
       }
     });
@@ -56,9 +56,7 @@ class _SourcesPageState extends State<SourcesPage> {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Sources'),
-        ),
+        appBar: AppBar(title: const Text('Sources')),
         endDrawer: const CustomDrawer(),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -70,7 +68,8 @@ class _SourcesPageState extends State<SourcesPage> {
                   return SearchBar(
                     controller: _searchController,
                     padding: const WidgetStatePropertyAll<EdgeInsets>(
-                        EdgeInsets.symmetric(horizontal: 16.0)),
+                      EdgeInsets.symmetric(horizontal: 16.0),
+                    ),
                     onTap: () {
                       if (!_searchFocusNode.hasFocus) {
                         controller.openView();
@@ -84,9 +83,9 @@ class _SourcesPageState extends State<SourcesPage> {
                         return;
                       }
                       // Trigger search with the submitted value
-                      context
-                          .read<SourceBloc>()
-                          .add(SourceSearchEvent(query: value));
+                      context.read<SourceBloc>().add(
+                        SourceSearchEvent(query: value),
+                      );
                       _searchController.text = value;
                     },
                     leading: const Icon(Icons.search),
@@ -94,53 +93,53 @@ class _SourcesPageState extends State<SourcesPage> {
                   );
                 },
                 viewBuilder: (suggestions) {
-                  return BlocBuilder<SourceBloc, SourceState>(
-                    builder: (context, state) {
-                      return ListView.builder(
-                        padding: const EdgeInsets.only(top: 0.0),
-                        itemCount: state.searchedSources.length,
-                        itemBuilder: (context, index) {
-                          return SourceSmallCard(
-                            source: state.searchedSources[index],
-                          );
-                        },
-                      );
-                    },
+                  return Container(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: BlocBuilder<SourceBloc, SourceState>(
+                      builder: (context, state) {
+                        return ListView.builder(
+                          padding: const EdgeInsets.only(top: 0.0),
+                          itemCount: state.searchedSources.length,
+                          itemBuilder: (context, index) {
+                            return SourceSmallCard(
+                              source: state.searchedSources[index],
+                            );
+                          },
+                        );
+                      },
+                    ),
                   );
                 },
                 suggestionsBuilder:
                     (BuildContext context, SearchController controller) {
-                  return List<ListTile>.empty();
-                },
+                      return List<ListTile>.empty();
+                    },
               ),
-              const SizedBox(
-                height: 20.0,
-              ),
+              const SizedBox(height: 20.0),
               Expanded(
-                  child: BlocConsumer<SourceBloc, SourceState>(
-                listener: (context, state) {
-                  if (state.status == SourceStatus.failure) {
-                    showSnackBar(state.failureMessage, context);
-                  }
-                },
-                builder: (context, state) {
-                  if (state.status == SourceStatus.loading &&
-                      state.sources.isEmpty) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state.sources.isNotEmpty) {
-                    return ListView.builder(
-                      itemCount: state.sources.length,
-                      itemBuilder: (context, index) {
-                        return SourceSmallCard(
-                          source: state.sources[index],
-                        );
-                      },
-                    );
-                  }
-                  return const SizedBox();
-                },
-              )),
+                child: BlocConsumer<SourceBloc, SourceState>(
+                  listener: (context, state) {
+                    if (state.status == SourceStatus.failure) {
+                      showSnackBar(state.failureMessage, context);
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state.status == SourceStatus.loading &&
+                        state.sources.isEmpty) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state.sources.isNotEmpty) {
+                      return ListView.builder(
+                        itemCount: state.sources.length,
+                        itemBuilder: (context, index) {
+                          return SourceSmallCard(source: state.sources[index]);
+                        },
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -150,28 +149,35 @@ class _SourcesPageState extends State<SourcesPage> {
                       decoration: InputDecoration(
                         labelText: 'Add new source',
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 12),
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                     ),
                   ),
-                  Builder(builder: (context) {
-                    return IconButton(
-                      onPressed: () {
-                        if (newSourceController.text.isNotEmpty) {
-                          context.read<SourceBloc>().add(SourceUploadEvent(
-                              sourceContent: newSourceController.text.trim()));
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          newSourceController.clear();
-                        }
-                      },
-                      icon: const Icon(Icons.add),
-                    );
-                  }),
+                  Builder(
+                    builder: (context) {
+                      return IconButton(
+                        onPressed: () {
+                          if (newSourceController.text.isNotEmpty) {
+                            context.read<SourceBloc>().add(
+                              SourceUploadEvent(
+                                sourceContent: newSourceController.text.trim(),
+                              ),
+                            );
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            newSourceController.clear();
+                          }
+                        },
+                        icon: const Icon(Icons.add),
+                      );
+                    },
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),

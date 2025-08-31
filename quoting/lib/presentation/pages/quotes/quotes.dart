@@ -42,9 +42,9 @@ class _QuotesPageState extends State<QuotesPage> {
       if (_searchController.text.isNotEmpty) {
         if (_debounce?.isActive ?? false) _debounce?.cancel();
         _debounce = Timer(const Duration(milliseconds: 500), () {
-          context
-              .read<QuoteBloc>()
-              .add(QuoteSearchEvent(query: _searchController.text));
+          context.read<QuoteBloc>().add(
+            QuoteSearchEvent(query: _searchController.text),
+          );
         });
       }
     });
@@ -105,7 +105,8 @@ class _QuotesPageState extends State<QuotesPage> {
                     controller: _searchController,
                     focusNode: _searchFocusNode,
                     padding: const WidgetStatePropertyAll(
-                        EdgeInsets.symmetric(horizontal: 16.0)),
+                      EdgeInsets.symmetric(horizontal: 16.0),
+                    ),
                     onTap: () {
                       if (!_searchFocusNode.hasFocus) {
                         controller.openView();
@@ -119,9 +120,9 @@ class _QuotesPageState extends State<QuotesPage> {
                         return;
                       }
                       // Trigger search with the submitted value
-                      context
-                          .read<QuoteBloc>()
-                          .add(QuoteSearchEvent(query: value));
+                      context.read<QuoteBloc>().add(
+                        QuoteSearchEvent(query: value),
+                      );
                       _searchController.text = value;
                     },
                     leading: const Icon(Icons.search),
@@ -129,38 +130,43 @@ class _QuotesPageState extends State<QuotesPage> {
                   );
                 },
                 viewBuilder: (suggestions) {
-                  return BlocBuilder<QuoteBloc, QuoteState>(
-                    builder: (context, state) {
-                      // Optionally, you could filter here if needed
-                      return ListView.builder(
-                        padding: const EdgeInsets.only(
-                            top: 0.0, left: 8.0, right: 8.0),
-                        itemCount: state.searchedQuotes.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              context
-                                  .read<QuoteBloc>()
-                                  .add(QuoteSelectEvent(index: index));
-                              context.beamToNamed(
-                                  '/quotes/${state.quotes[index].id}');
-                            },
-                            child:
-                                QuoteCard(quote: state.searchedQuotes[index]),
-                          );
-                        },
-                      );
-                    },
+                  return Container(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: BlocBuilder<QuoteBloc, QuoteState>(
+                      builder: (context, state) {
+                        return ListView.builder(
+                          padding: const EdgeInsets.only(
+                            top: 0.0,
+                            left: 8.0,
+                            right: 8.0,
+                          ),
+                          itemCount: state.searchedQuotes.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                context.read<QuoteBloc>().add(
+                                  QuoteSelectEvent(index: index),
+                                );
+                                context.beamToNamed(
+                                  '/quotes/${state.quotes[index].id}',
+                                );
+                              },
+                              child: QuoteCard(
+                                quote: state.searchedQuotes[index],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
                   );
                 },
                 suggestionsBuilder:
                     (BuildContext context, SearchController controller) {
-                  return List<ListTile>.empty();
-                },
+                      return List<ListTile>.empty();
+                    },
               ),
-              const SizedBox(
-                height: 20.0,
-              ),
+              const SizedBox(height: 20.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -174,30 +180,38 @@ class _QuotesPageState extends State<QuotesPage> {
                           decoration: InputDecoration(
                             labelText: 'Author',
                             contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                           items: [
                             const DropdownMenuItem<int>(
                               value: null,
-                              child: Text('All Authors',
-                                  overflow: TextOverflow.ellipsis, maxLines: 1),
+                              child: Text(
+                                'All Authors',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
                             ),
-                            ...authorState.authors
-                                .map((author) => DropdownMenuItem<int>(
-                                      value: int.tryParse(author.id),
-                                      child: Container(
-                                        constraints:
-                                            const BoxConstraints(maxWidth: 120),
-                                        child: Text(
-                                          author.name,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          style: const TextStyle(fontSize: 14),
-                                        ),
-                                      ),
-                                    ))
+                            ...authorState.authors.map(
+                              (author) => DropdownMenuItem<int>(
+                                value: int.tryParse(author.id),
+                                child: Container(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 120,
+                                  ),
+                                  child: Text(
+                                    author.name,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                           onChanged: (value) {
                             setState(() {
@@ -209,11 +223,13 @@ class _QuotesPageState extends State<QuotesPage> {
                               context.read<QuoteBloc>().add(QuoteReloadEvent());
                               return;
                             }
-                            context.read<QuoteBloc>().add(QuoteFilterEvent(
-                                  authorId: value,
-                                  labelId: _selectedLabelId,
-                                  sourceId: _selectedSourceId,
-                                ));
+                            context.read<QuoteBloc>().add(
+                              QuoteFilterEvent(
+                                authorId: value,
+                                labelId: _selectedLabelId,
+                                sourceId: _selectedSourceId,
+                              ),
+                            );
                           },
                         );
                       },
@@ -230,30 +246,38 @@ class _QuotesPageState extends State<QuotesPage> {
                           decoration: InputDecoration(
                             labelText: 'Label',
                             contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                           items: [
                             const DropdownMenuItem<int>(
                               value: null,
-                              child: Text('All Labels',
-                                  overflow: TextOverflow.ellipsis, maxLines: 1),
+                              child: Text(
+                                'All Labels',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
                             ),
-                            ...labelState.labels
-                                .map((label) => DropdownMenuItem<int>(
-                                      value: int.tryParse(label.id),
-                                      child: Container(
-                                        constraints:
-                                            const BoxConstraints(maxWidth: 120),
-                                        child: Text(
-                                          label.label,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          style: const TextStyle(fontSize: 14),
-                                        ),
-                                      ),
-                                    ))
+                            ...labelState.labels.map(
+                              (label) => DropdownMenuItem<int>(
+                                value: int.tryParse(label.id),
+                                child: Container(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 120,
+                                  ),
+                                  child: Text(
+                                    label.label,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                           onChanged: (value) {
                             setState(() {
@@ -265,11 +289,13 @@ class _QuotesPageState extends State<QuotesPage> {
                               context.read<QuoteBloc>().add(QuoteReloadEvent());
                               return;
                             }
-                            context.read<QuoteBloc>().add(QuoteFilterEvent(
-                                  authorId: _selectedAuthorId,
-                                  labelId: value,
-                                  sourceId: _selectedSourceId,
-                                ));
+                            context.read<QuoteBloc>().add(
+                              QuoteFilterEvent(
+                                authorId: _selectedAuthorId,
+                                labelId: value,
+                                sourceId: _selectedSourceId,
+                              ),
+                            );
                           },
                         );
                       },
@@ -286,30 +312,38 @@ class _QuotesPageState extends State<QuotesPage> {
                           decoration: InputDecoration(
                             labelText: 'Source',
                             contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                           items: [
                             const DropdownMenuItem<int>(
                               value: null,
-                              child: Text('All Sources',
-                                  overflow: TextOverflow.ellipsis, maxLines: 1),
+                              child: Text(
+                                'All Sources',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
                             ),
-                            ...sourceState.sources
-                                .map((source) => DropdownMenuItem<int>(
-                                      value: int.tryParse(source.id),
-                                      child: Container(
-                                        constraints:
-                                            const BoxConstraints(maxWidth: 120),
-                                        child: Text(
-                                          source.source,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          style: const TextStyle(fontSize: 14),
-                                        ),
-                                      ),
-                                    ))
+                            ...sourceState.sources.map(
+                              (source) => DropdownMenuItem<int>(
+                                value: int.tryParse(source.id),
+                                child: Container(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 120,
+                                  ),
+                                  child: Text(
+                                    source.source,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                           onChanged: (value) {
                             setState(() {
@@ -321,11 +355,13 @@ class _QuotesPageState extends State<QuotesPage> {
                               context.read<QuoteBloc>().add(QuoteReloadEvent());
                               return;
                             }
-                            context.read<QuoteBloc>().add(QuoteFilterEvent(
-                                  authorId: _selectedAuthorId,
-                                  labelId: _selectedLabelId,
-                                  sourceId: value,
-                                ));
+                            context.read<QuoteBloc>().add(
+                              QuoteFilterEvent(
+                                authorId: _selectedAuthorId,
+                                labelId: _selectedLabelId,
+                                sourceId: value,
+                              ),
+                            );
                           },
                         );
                       },
@@ -352,9 +388,9 @@ class _QuotesPageState extends State<QuotesPage> {
                           Expanded(
                             child: RefreshIndicator(
                               onRefresh: () async {
-                                context
-                                    .read<QuoteBloc>()
-                                    .add(QuoteReloadEvent());
+                                context.read<QuoteBloc>().add(
+                                  QuoteReloadEvent(),
+                                );
                               },
                               child: ListView.builder(
                                 controller: _scrollController,
@@ -363,14 +399,16 @@ class _QuotesPageState extends State<QuotesPage> {
                                 itemBuilder: (context, index) {
                                   return GestureDetector(
                                     onTap: () {
-                                      context
-                                          .read<QuoteBloc>()
-                                          .add(QuoteSelectEvent(index: index));
+                                      context.read<QuoteBloc>().add(
+                                        QuoteSelectEvent(index: index),
+                                      );
                                       context.beamToNamed(
-                                          '/quotes/${state.quotes[index].id}');
+                                        '/quotes/${state.quotes[index].id}',
+                                      );
                                     },
-                                    child:
-                                        QuoteCard(quote: state.quotes[index]),
+                                    child: QuoteCard(
+                                      quote: state.quotes[index],
+                                    ),
                                   );
                                 },
                               ),
@@ -383,9 +421,7 @@ class _QuotesPageState extends State<QuotesPage> {
                             const SizedBox(
                               width: 100,
                               height: 50,
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
+                              child: Center(child: CircularProgressIndicator()),
                             ),
                         ],
                       );
@@ -402,8 +438,10 @@ class _QuotesPageState extends State<QuotesPage> {
                           Center(
                             child: Text(
                               'No quotes found. Pull down to refresh.',
-                              style:
-                                  TextStyle(fontSize: 18, color: Colors.grey),
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey,
+                              ),
                             ),
                           ),
                         ],
@@ -411,7 +449,7 @@ class _QuotesPageState extends State<QuotesPage> {
                     );
                   },
                 ),
-              )
+              ),
             ],
           ),
         ),

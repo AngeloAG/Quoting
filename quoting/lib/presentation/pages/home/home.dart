@@ -40,7 +40,7 @@ class _HomeState extends State<Home> {
             AuthorsPage(),
             NewQuotePage(),
             LabelsPage(),
-            SourcesPage()
+            SourcesPage(),
           ],
         ),
         bottomNavigationBar: GestureDetector(

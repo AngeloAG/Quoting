@@ -35,9 +35,9 @@ class _LabelsPageState extends State<LabelsPage> {
       if (_searchController.text.isNotEmpty && _searchController.text != "") {
         if (_debounce?.isActive ?? false) _debounce?.cancel();
         _debounce = Timer(const Duration(milliseconds: 500), () {
-          context
-              .read<LabelBloc>()
-              .add(LabelSearchEvent(query: _searchController.text));
+          context.read<LabelBloc>().add(
+            LabelSearchEvent(query: _searchController.text),
+          );
         });
       }
     });
@@ -56,9 +56,7 @@ class _LabelsPageState extends State<LabelsPage> {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Labels'),
-        ),
+        appBar: AppBar(title: const Text('Labels')),
         endDrawer: const CustomDrawer(),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -70,7 +68,8 @@ class _LabelsPageState extends State<LabelsPage> {
                   return SearchBar(
                     controller: _searchController,
                     padding: const WidgetStatePropertyAll<EdgeInsets>(
-                        EdgeInsets.symmetric(horizontal: 16.0)),
+                      EdgeInsets.symmetric(horizontal: 16.0),
+                    ),
                     onTap: () {
                       if (!_searchFocusNode.hasFocus) {
                         controller.openView();
@@ -84,9 +83,9 @@ class _LabelsPageState extends State<LabelsPage> {
                         return;
                       }
                       // Trigger search with the submitted value
-                      context
-                          .read<LabelBloc>()
-                          .add(LabelSearchEvent(query: value));
+                      context.read<LabelBloc>().add(
+                        LabelSearchEvent(query: value),
+                      );
                       _searchController.text = value;
                     },
                     leading: const Icon(Icons.search),
@@ -94,53 +93,53 @@ class _LabelsPageState extends State<LabelsPage> {
                   );
                 },
                 viewBuilder: (suggestions) {
-                  return BlocBuilder<LabelBloc, LabelState>(
-                    builder: (context, state) {
-                      return ListView.builder(
-                        padding: const EdgeInsets.only(top: 0.0),
-                        itemCount: state.searchedLabels.length,
-                        itemBuilder: (context, index) {
-                          return LabelSmallCard(
-                            label: state.searchedLabels[index],
-                          );
-                        },
-                      );
-                    },
+                  return Container(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: BlocBuilder<LabelBloc, LabelState>(
+                      builder: (context, state) {
+                        return ListView.builder(
+                          padding: const EdgeInsets.only(top: 0.0),
+                          itemCount: state.searchedLabels.length,
+                          itemBuilder: (context, index) {
+                            return LabelSmallCard(
+                              label: state.searchedLabels[index],
+                            );
+                          },
+                        );
+                      },
+                    ),
                   );
                 },
                 suggestionsBuilder:
                     (BuildContext context, SearchController controller) {
-                  return List<ListTile>.empty();
-                },
+                      return List<ListTile>.empty();
+                    },
               ),
-              const SizedBox(
-                height: 20.0,
-              ),
+              const SizedBox(height: 20.0),
               Expanded(
-                  child: BlocConsumer<LabelBloc, LabelState>(
-                listener: (context, state) {
-                  if (state.status == LabelStatus.failure) {
-                    showSnackBar(state.failureMessage, context);
-                  }
-                },
-                builder: (context, state) {
-                  if (state.status == LabelStatus.loading &&
-                      state.labels.isEmpty) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state.labels.isNotEmpty) {
-                    return ListView.builder(
-                      itemCount: state.labels.length,
-                      itemBuilder: (context, index) {
-                        return LabelSmallCard(
-                          label: state.labels[index],
-                        );
-                      },
-                    );
-                  }
-                  return const SizedBox();
-                },
-              )),
+                child: BlocConsumer<LabelBloc, LabelState>(
+                  listener: (context, state) {
+                    if (state.status == LabelStatus.failure) {
+                      showSnackBar(state.failureMessage, context);
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state.status == LabelStatus.loading &&
+                        state.labels.isEmpty) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state.labels.isNotEmpty) {
+                      return ListView.builder(
+                        itemCount: state.labels.length,
+                        itemBuilder: (context, index) {
+                          return LabelSmallCard(label: state.labels[index]);
+                        },
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -150,28 +149,35 @@ class _LabelsPageState extends State<LabelsPage> {
                       decoration: InputDecoration(
                         labelText: 'Add new label',
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 12),
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                     ),
                   ),
-                  Builder(builder: (context) {
-                    return IconButton(
-                      onPressed: () {
-                        if (newLabelController.text.isNotEmpty) {
-                          context.read<LabelBloc>().add(LabelUploadEvent(
-                              labelContent: newLabelController.text.trim()));
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          newLabelController.clear();
-                        }
-                      },
-                      icon: const Icon(Icons.add),
-                    );
-                  }),
+                  Builder(
+                    builder: (context) {
+                      return IconButton(
+                        onPressed: () {
+                          if (newLabelController.text.isNotEmpty) {
+                            context.read<LabelBloc>().add(
+                              LabelUploadEvent(
+                                labelContent: newLabelController.text.trim(),
+                              ),
+                            );
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            newLabelController.clear();
+                          }
+                        },
+                        icon: const Icon(Icons.add),
+                      );
+                    },
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
