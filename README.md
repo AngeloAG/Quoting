@@ -6,7 +6,7 @@
 [![BLoC](https://img.shields.io/badge/State%20Management-BLoC-blueviolet)](https://bloclibrary.dev)
 [![Database](https://img.shields.io/badge/Database-Drift%20%2B%20SQLite-orange)](https://drift.simonbinder.eu)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/quoting?style=social)](https://github.com/AngeloAG/Quoting)
+[![GitHub stars](https://img.shields.io/github/stars/AngeloAG/quoting?style=social)](https://github.com/AngeloAG/Quoting)
 
 Quoting is a Flutter app that lets you capture, organize, and revisit quotes from books, talks, and presentations.
 Unlike many existing quote apps, Quoting is built with a focus on scalability, clean architecture, and blazing-fast search performance — so whether you save 10 quotes or 10,000, lookup stays smooth and instant.
@@ -99,4 +99,4 @@ Feel free to open an issue
 --- 
 
 ## 📜 License
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** — see the [LICENSE](quoting/LICENSE) file for details.
