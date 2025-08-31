@@ -50,7 +50,7 @@ Future plans include account login, cloud sync, and a web version, so you’ll b
 ### Installation
 Clone the repository:
 ```bash
-git clone https://github.com/yourusername/quoting.git
+git clone https://github.com/AngeloAG/quoting.git
 cd quoting
 ```
 Install dependencies:
@@ -78,7 +78,7 @@ lib/
 
 ## 📸 Screenshots
 
-<p align="center"> <img src="assets/screenshots/home.png" alt="Home Screen" width="250"/> <img src="assets/screenshots/search.png" alt="Search Quotes" width="250"/> <img src="assets/screenshots/authors.png" alt="Quote Details" width="250"/> <img src="assets/screenshots/new_quote.png" alt="Quote Details" width="250"/> </p>
+<p align="center"> <img src="quoting/assets/screenshots/home.png" alt="Home Screen" width="250"/> <img src="quoting/assets/screenshots/search.png" alt="Search Quotes" width="250"/> <img src="quoting/assets/screenshots/authors.png" alt="Quote Details" width="250"/> <img src="quoting/assets/screenshots/new_quote.png" alt="Quote Details" width="250"/> </p>
 
 ---
 
