@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
@@ -24,20 +26,25 @@ Future<void> initDependencies() async {
         : HydratedStorageDirectory((await getTemporaryDirectory()).path),
   );
 
-  serviceLocator
-      .registerLazySingleton(() => LabelBloc(mediator: serviceLocator()));
+  serviceLocator.registerLazySingleton(
+    () => LabelBloc(mediator: serviceLocator()),
+  );
 
-  serviceLocator
-      .registerLazySingleton(() => AuthorBloc(mediator: serviceLocator()));
+  serviceLocator.registerLazySingleton(
+    () => AuthorBloc(mediator: serviceLocator()),
+  );
 
-  serviceLocator
-      .registerLazySingleton(() => SourceBloc(mediator: serviceLocator()));
+  serviceLocator.registerLazySingleton(
+    () => SourceBloc(mediator: serviceLocator()),
+  );
 
-  serviceLocator
-      .registerLazySingleton(() => QuoteBloc(mediator: serviceLocator()));
+  serviceLocator.registerLazySingleton(
+    () => QuoteBloc(mediator: serviceLocator()),
+  );
 
-  serviceLocator
-      .registerFactory(() => BackupRestoreBloc(mediator: serviceLocator()));
+  serviceLocator.registerFactory(
+    () => BackupRestoreBloc(mediator: serviceLocator()),
+  );
 
   serviceLocator.registerLazySingleton(() => TabsCubit());
 

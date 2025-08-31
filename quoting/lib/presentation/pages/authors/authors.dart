@@ -35,9 +35,9 @@ class _AuthorsPageState extends State<AuthorsPage> {
       if (_searchController.text.isNotEmpty && _searchController.text != "") {
         if (_debounce?.isActive ?? false) _debounce?.cancel();
         _debounce = Timer(const Duration(milliseconds: 500), () {
-          context
-              .read<AuthorBloc>()
-              .add(AuthorSearchEvent(query: _searchController.text));
+          context.read<AuthorBloc>().add(
+            AuthorSearchEvent(query: _searchController.text),
+          );
         });
       }
     });
@@ -56,9 +56,7 @@ class _AuthorsPageState extends State<AuthorsPage> {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Authors'),
-        ),
+        appBar: AppBar(title: const Text('Authors')),
         endDrawer: const CustomDrawer(),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -70,7 +68,8 @@ class _AuthorsPageState extends State<AuthorsPage> {
                   return SearchBar(
                     controller: _searchController,
                     padding: const WidgetStatePropertyAll<EdgeInsets>(
-                        EdgeInsets.symmetric(horizontal: 16.0)),
+                      EdgeInsets.symmetric(horizontal: 16.0),
+                    ),
                     onTap: () {
                       if (!_searchFocusNode.hasFocus) {
                         controller.openView();
@@ -84,9 +83,9 @@ class _AuthorsPageState extends State<AuthorsPage> {
                         return;
                       }
                       // Trigger search with the submitted value
-                      context
-                          .read<AuthorBloc>()
-                          .add(AuthorSearchEvent(query: value));
+                      context.read<AuthorBloc>().add(
+                        AuthorSearchEvent(query: value),
+                      );
                       _searchController.text = value;
                     },
                     leading: const Icon(Icons.search),
@@ -94,50 +93,53 @@ class _AuthorsPageState extends State<AuthorsPage> {
                   );
                 },
                 viewBuilder: (suggestions) {
-                  return BlocBuilder<AuthorBloc, AuthorState>(
-                    builder: (context, state) {
-                      return ListView.builder(
-                        padding: const EdgeInsets.only(top: 0.0),
-                        itemCount: state.searchedAuthors.length,
-                        itemBuilder: (context, index) {
-                          return AuthorSmallCard(
-                              author: state.searchedAuthors[index]);
-                        },
-                      );
-                    },
+                  return Container(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: BlocBuilder<AuthorBloc, AuthorState>(
+                      builder: (context, state) {
+                        return ListView.builder(
+                          padding: const EdgeInsets.only(top: 0.0),
+                          itemCount: state.searchedAuthors.length,
+                          itemBuilder: (context, index) {
+                            return AuthorSmallCard(
+                              author: state.searchedAuthors[index],
+                            );
+                          },
+                        );
+                      },
+                    ),
                   );
                 },
                 suggestionsBuilder:
                     (BuildContext context, SearchController controller) {
-                  return List<ListTile>.empty();
-                },
+                      return List<ListTile>.empty();
+                    },
               ),
-              const SizedBox(
-                height: 20.0,
-              ),
+              const SizedBox(height: 20.0),
               Expanded(
-                  child: BlocConsumer<AuthorBloc, AuthorState>(
-                listener: (context, state) {
-                  if (state.status == AuthorStatus.failure) {
-                    showSnackBar(state.failureMessage, context);
-                  }
-                },
-                builder: (context, state) {
-                  if (state.status == AuthorStatus.loading &&
-                      state.authors.isEmpty) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state.authors.isNotEmpty) {
-                    return ListView.builder(
-                      itemCount: state.authors.length,
-                      itemBuilder: (context, index) {
-                        return AuthorSmallCard(author: state.authors[index]);
-                      },
-                    );
-                  }
-                  return const SizedBox();
-                },
-              )),
+                child: BlocConsumer<AuthorBloc, AuthorState>(
+                  listener: (context, state) {
+                    if (state.status == AuthorStatus.failure) {
+                      showSnackBar(state.failureMessage, context);
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state.status == AuthorStatus.loading &&
+                        state.authors.isEmpty) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state.authors.isNotEmpty) {
+                      return ListView.builder(
+                        itemCount: state.authors.length,
+                        itemBuilder: (context, index) {
+                          return AuthorSmallCard(author: state.authors[index]);
+                        },
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -147,28 +149,35 @@ class _AuthorsPageState extends State<AuthorsPage> {
                       decoration: InputDecoration(
                         labelText: 'Add new author',
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 12),
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                     ),
                   ),
-                  Builder(builder: (context) {
-                    return IconButton(
-                      onPressed: () {
-                        if (newAuthorController.text.isNotEmpty) {
-                          context.read<AuthorBloc>().add(AuthorUploadEvent(
-                              authorName: newAuthorController.text.trim()));
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          newAuthorController.clear();
-                        }
-                      },
-                      icon: const Icon(Icons.add),
-                    );
-                  }),
+                  Builder(
+                    builder: (context) {
+                      return IconButton(
+                        onPressed: () {
+                          if (newAuthorController.text.isNotEmpty) {
+                            context.read<AuthorBloc>().add(
+                              AuthorUploadEvent(
+                                authorName: newAuthorController.text.trim(),
+                              ),
+                            );
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            newAuthorController.clear();
+                          }
+                        },
+                        icon: const Icon(Icons.add),
+                      );
+                    },
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
